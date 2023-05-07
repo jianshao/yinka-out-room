@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="pixel-ratio-2 retina watch-active-state"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no,
+minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="robots" content="all">
+    <meta name="author" content="Tencent-TGideas">
+    <meta name="Copyright" content="YIyou">
+    <meta name="Description" content="音恋充值">
+    <meta name="Keywords" content="音恋充值">
+    <title>音恋充值</title>
+    <link rel="stylesheet" href="./zhifu/css/style.css">
+    <link rel="shortcut icon" href="https://image.fqparty.com/images/favicon.png"  type="image/x-icon">
+</head>
+
+<body>
+<div class="statusbar-overlay"></div>
+<div class="views">
+    <div class="view view-main">
+        <div class="pages">
+            <noscript>
+                <div class="no-js-tips">Javascript被系统禁用，导致无法正常访问，请检查浏览器设置！</div>
+            </noscript>
+            <input type="hidden" id="sure" value="false">
+            <div class="page-content">
+                <div id="wrong-account">请输入正确的账号</div>
+                <!-- 安卓界面 -->
+                <div class="main-post androd">
+                    <div id="mask"></div>
+                    <div class="title-container">
+                        <img id="user-icon" src="./zhifu/images/ic_avatar_default.png">
+                        <div class="account-box">
+                            <div class="input-box">
+                                {if condition="!empty($id)"}
+                                <input type="number" id="account" value="{$id}" name="account" class="text account-enpty" placeholder="请输入账号ID" style="width: 30rem; ">
+                                {/if}
+                                {if condition="empty($id)"}
+                                <input type="number" id="account" name="account" class="text account-enpty" placeholder="请输入账号ID" style="width: 30rem; ">
+                                {/if}
+                                <button class="checkAccount">检测账号</button>
+                            </div>
+                            <div id="nick-name"></div>
+                        </div>
+                    </div>
+                    <!-- 历史记录列表 20180718 -->
+                    <div class="history">
+                        <div class="user-list">
+                        </div>
+                    </div>
+                    <div class="slec-container">
+                        <h4>选择充值金额</h4>
+                        <div class="content-text">
+                            <div class="groups-list row">
+                                {volist name="data" id="result" offset="0" length='10' key="k"}
+                                <a href="#" class="col-50 groups-item " data-count="{$result.rmb}"
+                                   rmb="{$result.rmb}">
+                                    <span>{$result.rmb}元  ({$result.diamond} 番茄豆)</span>
+                                </a>
+                                {/volist}
+                            </div>
+                        </div>
+                        <h4>选择充值方式：</h4>
+                        <div class="content-text">
+                            <div class="groups-list row">
+                                <div>
+                                    <label>
+                                        <input style="margin : 3% 0px 0px 0%;" name="channel_type" type="radio" class="channel_type" value="2" checked>
+                                        <img src="/web/images/zhifubao.png" style="width: 10%;height: 10%;" alt="">
+                                        <span>支付宝支付</span>
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label>
+                                        <input style="margin : 3% 0px 0px 0%;" name="channel_type" type="radio" class="channel_type" value="15"/>
+                                        <img src="/web/images/weixin.png" style="width: 10%;height: 10%;" alt="">
+                                        <span>微信支付</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="qrcode" class="groups-list row">
+                        <img src="" alt="" id="code">
+                    </div>
+                    <div class="submit-contain">
+                        <span style="color: red; text-align: center;display:block;" id="tips"></span>
+                    </div>
+                    <div class="question-box">
+                        <a href="http://fqparty.com/czsm.html" class="external question-link" id="questionBtn">
+                            <img class="question-icon" src="./zhifu/images/ic_invite_code.png">
+                            <div class="question-text">充值问题</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/web/index/js/jquery.min.js"></script>
+<script src="https://www.jq22.com/jquery/jquery-3.3.1.js"></script>
+<script src="/web/js/jquery-3.5.1.js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/web/js/jquery.qrcode.min.js"></script>
+
+<script>
+    //使用用户ID加载用户头像和名称
+    $(document).ready(function(){
+    //     var account = $("#account").val();
+    //     if(account.length == 7) {
+    //         $.ajax({
+    //             url : "/web/userData",
+    //             type:'GET',
+    //             data : {
+    //                 uid : account
+    //             },
+    //             success : function(result) {
+    //                 if(result.code == 200) {
+    //                     var nickname = result.data.nickname;
+    //                     var avatar = result.data.avatar;
+    //                     $("#user-icon").attr('src',avatar);
+    //                     $("#nick-name").html(nickname);
+    //                 } else{
+    //                     alert('请输入正确的账号id')
+    //                 }
+    //             }
+    //         });
+    //     }
+    //     $('#account').blur(function(){
+    //         var account = $("#account").val();
+    //         $.ajax({
+    //             url : "/web/userData",
+    //             type:'GET',
+    //             data : {
+    //                 uid : account
+    //             },
+    //             success : function(result) {
+    //                 if(result.code == 200) {
+    //                     var nickname = result.data.nickname;
+    //                     var avatar = result.data.avatar;
+    //                     $("#user-icon").attr('src',avatar);
+    //                     $("#nick-name").html(nickname);
+    //                 } else{
+    //                     alert('请输入正确的账号id')
+    //                 }
+    //
+    //             }
+    //         });
+    //     })
+    // })
+
+    var rmb = 100;
+    //选择金额弹出充值二维吗
+    $('.groups-list').on('click', '.groups-item', function(e){
+        var sure = $("#sure").val();
+        if(sure != 'true') {
+            alert("请先检测账号");
+        } else {
+            $('.groups-item').removeClass('active');
+            $(this).addClass('active');
+            var channel = $('input[class="channel_type"]:checked').val();
+            rmb = $(this).attr('rmb');
+            var uid = $("#account").val();
+            // console.log(channel)
+            // console.log(rmb)
+            // console.log(uid)
+            // return false
+            if(channel == 15) { //微信扫码支付
+                var str = "/api/v1/payment?uid="+uid+"&rmb="+rmb+"&channel="+channel;
+                $("#code").attr('src', str)
+            } else{  //支付宝网页支付
+                $.ajax({
+                    url:'/api/v1/payment',
+                    data:{uid:uid,rmb:rmb,channel:channel},
+                    type:'post',
+                    dataType:'json',
+                    success:function(resa){
+                        const div = document.createElement('divform');
+                        div.innerHTML = resa.data.web_alipay_normal;
+                        document.body.appendChild(div);
+                        document.forms[0].submit();
+                    }
+                })
+            }
+        }
+    });
+
+    // $("#account").blur(function() {
+    //     var uid = $("#uid").val();
+    //     $.ajax({
+    //         url : "/v1/payment",
+    //         type:'GET',
+    //         data : {
+    //             uid : uid,rmb : rmb,channel : 3
+    //         },
+    //         success : function(result) {
+    //             console.log(result)
+    //         }
+    //     });
+    // });
+
+    // $("#confirmBtn").click(function() {
+        // var uid = $("#account").val();
+        // var url = "{$web_url}web/gzhindex";
+        // url = url + "?uid=" + uid + "&rmb=" + rmb;
+        // window.location.href = url;
+
+
+
+        // $.ajax({
+        //
+        //     url : "/web/gzhindex",
+        //     type:'GET',
+        //     data : {
+        //         uid : uid,rmb : rmb
+        //     },
+        //     success : function(result) {
+        //
+        //     },
+        //     error: function(e) {
+        //         alert(JSON.stringify(e));
+        //     }
+        // });
+
+        // var xmld=new XMLHttpRequest();
+        // xmld.open("GET", url, true); //打开页面
+        // xmld.withCredentials = true;
+        // xmld.setRequestHeader("dh","donghhhh");//设置请求头
+        // xmld.send(null); //发送数据需要手动在url添加
+        // xmld.onreadystatechange=function(){
+        //     if(xmld.readyState == 4){
+        //         //获取返回数据
+        //         // alert(xmld.getResponseHeader("Server"));//获取响应头
+        //         alert(xmld.status+"--"+xmld.statusText);//得到如200：ok、404：Not Found 等等
+        //         alert(xmld.responseText); //得到字符串
+        //         //var xx=xmld.responseXML //得到HTML对象
+        //     }
+        // };
+
+    })
+
+    //$("#account").keypress(function() {
+    $(".checkAccount").click(function() {
+        var sure = $("#sure").val();
+        var account = $("#account").val();
+        $.ajax({
+            url : "/api/v1/userData",
+            type:'GET',
+            data : {
+                uid : account
+            },
+            success : function(result) {
+                if(result.code == 200) {
+                    var nickname = result.data.nickname;
+                    var avatar = result.data.avatar;
+                    $("#user-icon").attr('src',avatar);
+                    $("#nick-name").html(nickname);
+                    if(confirm("确定要在 "+nickname+" 账号充值？"))
+                    {
+                        $("#user-icon").attr('src',avatar);
+                        $("#nick-name").html(nickname);
+                        $("#sure").val(true);
+                    } else {
+                        $("#user-icon").attr('src',"./zhifu/images/ic_avatar_default.png");
+                        $("#nick-name").html("");
+                    }
+                } else{
+                    $("#user-icon").attr('src',"./zhifu/images/ic_avatar_default.png");
+                    $("#nick-name").html("");
+                    $("#sure").val(false);
+                    alert('请输入正确的账号id')
+                }
+
+            }
+        });
+    })
+    // $("#account").blur(function() {
+    //     var account = $("#account").val();
+    //     $.ajax({
+    //
+    //         url : "/web/userData",
+    //         type:'GET',
+    //         data : {
+    //             uid : account
+    //         },
+    //         success : function(result) {
+    //             if(result.code == 200) {
+    //                 var nickname = result.data.nickname;
+    //                 var avatar = result.data.avatar;
+    //                 $("#user-icon").attr('src',avatar);
+    //                 $("#nick-name").html(nickname);
+    //             } else{
+    //                 alert('请输入正确的账号id')
+    //             }
+    //
+    //         }
+    //     });
+    // })
+
+
+
+</script>
+
+</body></html>

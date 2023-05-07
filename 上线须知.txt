@@ -1,0 +1,4320 @@
+v2-08-28版本更新日志 (已上线)
+sql：
+alter table zb_chargedetail  ADD COLUMN `paid_time` int(20) NOT NULL DEFAULT '0'  COMMENT '支付成功时间';
+alter table zb_chargedetail MODIFY COLUMN `finish_time` int(20) NOT NULL DEFAULT '0'  COMMENT '发货时间';
+
+alter table zb_user_last_info add edition varchar(20) not null default "" COMMENT "client version";
+
+alter table zb_member modify vip_exp bigint(20) default 0;
+alter table zb_member modify svip_exp bigint(20) default 0;
+
+crontab:
+1.config/console.log 新增
+'UserCancellationCheckCommand'=>'app\api\script\UserCancellationCheckCommand', //注销用户15天过滤
+2.jobby.php          新增
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think UserCancellationCheckCommand",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/UserCancellationCheckCommand.log',
+    'enabled' => true,
+));
+
+
+//TODO: 每次新增的sql和crontab 按照上面的格式写
+v1-09-08版本更新日志 (已上线)
+CREATE TABLE `zb_delivery_address` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '填些单子的人',
+    `name` varchar(255) NOT NULL DEFAULT '' COMMENT '收货人',
+    `mobile` varchar(255) NOT NULL DEFAULT '' COMMENT '手机号',
+    `reward` varchar(255) NOT NULL DEFAULT '' COMMENT '奖品kindId或者是奖品描述',
+    `count` varchar(255) NOT NULL DEFAULT '' COMMENT '奖品数量',
+    `region` varchar(255) NOT NULL DEFAULT '' COMMENT '地区',
+    `address` varchar(255) NOT NULL DEFAULT '' COMMENT '详细地址',
+    `activity_type` varchar(255) NOT NULL DEFAULT '' COMMENT '活动类型:哪个活动得的',
+    `create_time` int(20) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`) USING BTREE,
+    KEY `create_time` (`create_time`) USING BTREE,
+    KEY `activity_type` (`activity_type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收货地址表';
+
+v1-09-13(已上线)
+'ZhongQiuPKCommand'=>'app\api\script\ZhongQiuPKCommand', //中秋pk
+$jobby->add('ZhongQiuPKCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think ZhongQiuPKCommand",
+    'schedule' => '01 0 * * *',
+    'output' => 'runtime/joblog/ZhongQiuPKCommand.log',
+    'enabled' => true,
+));
+
+'GuoQingCommand'=>'app\api\script\GuoQingCommand'
+$jobby->add('GuoQingCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think GuoQingCommand",
+    'schedule' => '01 0 * * *',
+    'output' => 'runtime/joblog/GuoQingCommand.log',
+    'enabled' => true,
+));
+
+
+CREATE TABLE `zb_channel_data` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) not null COMMENT '用户id',
+  `device_id` varchar(60) not null default '' comment '设备id',
+  `data` text NOT NULL COMMENT '渠道数据',
+  `channel` varchar(20) NOT NULL DEFAULT '' COMMENT '渠道类型',
+  `ctime` int(20) NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`) USING BTREE,
+  KEY `idx_channel` (`channel`) USING BTREE,
+  KEY `idx_device_id` (`device_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+## 用户注销功能模块上线说明
+
+sql：
+
+CREATE TABLE `zb_cancel_detail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `qopenid` varchar(32) NOT NULL DEFAULT '' COMMENT 'qq',
+  `wxopenid` varchar(32) NOT NULL DEFAULT '' COMMENT 'wechat',
+  `appleid` varchar(255) NOT NULL DEFAULT '' COMMENT '苹果id',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT 'username',
+  `userid` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `cancel_user_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '⽤户注销账户状态 0：⽆操作 1：已通过 2：审核中 (default:2)',
+  `cancellation_time` int(11) NOT NULL DEFAULT '0' COMMENT '申请注销的时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '通过注销的时间',
+  PRIMARY KEY (`id`),
+  KEY `userid_key` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='注销申请记录表';
+
+alter table zb_member MODIFY COLUMN `qopenid` varchar(50) NOT NULL DEFAULT '';
+
+alter table zb_member MODIFY COLUMN `wxopenid` varchar(50) NOT NULL DEFAULT '';
+
+
+crontab:
+        'UserCancellationCheckCommand' => 'app\api\script\UserCancellationCheckCommand',   // 注销超过15天则修改为注销成功状态
+
+jobby:
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think UserCancellationCheckCommand exceed",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/UserCancellationCheckCommand.log',
+    'enabled' => true,
+));
+
+
+## 用户短信召回活动
+
+sql:
+CREATE TABLE `zb_recall_sms_detail`
+(
+    `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`           int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `origin_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '召回前的登陆时间',
+    `sms_status`        tinyint(1) NOT NULL DEFAULT '0' COMMENT '短信发送是否成功 0失败 1 成功',
+    `sms_detail`        varchar(255) NOT NULL DEFAULT '' COMMENT '短信发送response',
+    `login_time`        int(10) NOT NULL DEFAULT '0' COMMENT '回归登陆的时间',
+    `send_gift`         tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发送头像框0没有1已送',
+    `create_time`       int(10) NOT NULL DEFAULT '0' COMMENT 'create_time',
+    `update_time`       int(10) NOT NULL DEFAULT '0' COMMENT 'update_time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='短信召回活动的用户数据详情';
+
+
+
+CREATE TABLE `zb_recall_sms_info`
+(
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`     int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `platform`    varchar(60) NOT NULL DEFAULT '' COMMENT '平台',
+    `action`      varchar(60) NOT NULL DEFAULT '' COMMENT '行为 click：点击 download：下载',
+    `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    KEY           `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='用户短信召回行为上报表';
+
+
+
+crontab:
+        'RecallSmsCommand' => 'app\api\script\RecallSmsCommand',   // 用户召回短信活动
+
+
+# 国庆节上跑马灯
+redis 3库
+led_jump_conf
+{
+	"taojing": {
+		"linkUrl": "https://newmapi2.fqparty.com/tjzl",
+		"title": "淘金之旅",
+		"showType": 1
+	},
+	"box": {
+		"linkUrl": "https://newmapi2.fqparty.com/baoxiang",
+		"title": "宝箱",
+		"showType": 0
+	},
+	"turntable": {
+		"linkUrl": "https://newmapi2.fqparty.com/zhuanpan/",
+		"title": "转盘",
+		"showType": 0
+	}
+}
+led_conf
+{
+	"giftTop": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"giftMiddle": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableTop": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableMiddle": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxTop": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxMiddle": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"taojing": {
+		"imgTop": "resource/images/djs/fxq.png",
+		"imgEnd": "",
+		"color": "#B1811F",
+		"borderColor": "#66FFFFFF"
+	},
+	"duke": {
+		"imgTop": "resource/images/djs/gj.png",
+		"imgEnd": "",
+		"color": "#1F5ACF",
+		"borderColor": "#66FFFFFF"
+	},
+	"dukeKing": {
+		"imgTop": "resource/images/djs/gw.png",
+		"imgEnd": "",
+		"color": "#9C37A4",
+		"borderColor": "#66FFFFFF"
+	},
+	"svip": {
+		"imgTop": "resource/images/djs/svip.png",
+		"imgEnd": "",
+		"color": "#353535",
+		"borderColor": "#66FFFFFF"
+	},
+	"hongbao": {
+		"imgTop": "resource/images/djs/hb.png",
+		"imgEnd": "",
+		"color": "#FB3D5E",
+		"borderColor": "#66FFFFFF"
+	},
+	"common": {
+		"imgTop": "resource/images/djs/tx.png",
+		"imgEnd": "",
+		"color": "#FF537D",
+		"borderColor": "#66FFFFFF"
+	}
+}
+
+
+
+
+
+### 用户信息修改审核功能
+
+
+
+
+
+db sql:
+CREATE TABLE `zb_member_detail_audit`
+(
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`     int(11) unsigned NOT NULL COMMENT '用户id',
+    `content`     varchar(255) NOT NULL DEFAULT '' COMMENT '数据内容',
+    `status`      tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态:0未审核,1审核通过,2未通过',
+    `action`      varchar(30)  NOT NULL DEFAULT '' COMMENT '行为(avatar,nickname,intro,wall)',
+    `update_time` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
+    `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `useridaction_key` (`user_id`,`action`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户信息详情审核记录表';
+
+# 10月19号上打地鼠
+redis 3库
+led_jump_conf
+{
+	"taojing": {
+		"linkUrl": "https://newmapi2.fqparty.com/tjzl",
+		"title": "淘金之旅",
+		"showType": 1
+	},
+	"box": {
+		"linkUrl": "https://newmapi2.fqparty.com/baoxiang",
+		"title": "宝箱",
+		"showType": 0
+	},
+	"turntable": {
+		"linkUrl": "https://newmapi2.fqparty.com/zhuanpan/",
+		"title": "转盘",
+		"showType": 0
+	},
+    "gopher": {
+        "linkUrl": "https://newmapi2.fqparty.com/dadishu/",
+        "title": "打地鼠",
+        "showType": 0
+    }
+}
+led_conf
+{
+	"giftTop": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"giftMiddle": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableTop": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableMiddle": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxTop": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxMiddle": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"taojing": {
+		"imgTop": "resource/images/djs/fxq.png",
+		"imgEnd": "",
+		"color": "#B1811F",
+		"borderColor": "#66FFFFFF"
+	},
+	"duke": {
+		"imgTop": "resource/images/djs/gj.png",
+		"imgEnd": "",
+		"color": "#1F5ACF",
+		"borderColor": "#66FFFFFF"
+	},
+	"dukeKing": {
+		"imgTop": "resource/images/djs/gw.png",
+		"imgEnd": "",
+		"color": "#9C37A4",
+		"borderColor": "#66FFFFFF"
+	},
+	"svip": {
+		"imgTop": "resource/images/djs/svip.png",
+		"imgEnd": "",
+		"color": "#353535",
+		"borderColor": "#66FFFFFF"
+	},
+	"hongbao": {
+		"imgTop": "resource/images/djs/hb.png",
+		"imgEnd": "",
+		"color": "#FB3D5E",
+		"borderColor": "#66FFFFFF"
+	},
+	"gopherKing": {
+		"imgTop": "resource/images/dds/dswll.png",
+		"imgEnd": "",
+		"color": "#FFAF00",
+		"borderColor": "#66FFFFFF"
+	},
+	"koGopherKing": {
+		"imgTop": "resource/images/dds/dswsw.png",
+		"imgEnd": "",
+		"color": "#FFAF00",
+		"borderColor": "#66FFFFFF"
+	},
+	"common": {
+		"imgTop": "resource/images/djs/tx.png",
+		"imgEnd": "",
+		"color": "#FF537D",
+		"borderColor": "#66FFFFFF"
+	}
+}
+
+
+alter table zb_member_detail_audit MODIFY COLUMN `content` varchar(1000) NOT NULL DEFAULT ''  COMMENT '数据内容';
+
+
+db:
+CREATE TABLE `zb_halloween_award` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT '0' COMMENT '用户id',
+  `type` tinyint(1) DEFAULT '0' COMMENT '已领取1 满足领取条件0',
+  `level` tinyint(2) unsigned DEFAULT '0' COMMENT '礼物等级 总等级数1-10',
+  `str_date` varchar(80) DEFAULT '' COMMENT '文本的日期时间',
+  `create_time` int(10) DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='万圣节活动大魔王礼包数据统计表';
+
+
+crontab:
+        'HalloweenClearCommon' => 'app\api\script\HalloweenClearCommond', //万圣节活动物料回收脚本
+
+jobby:
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think HalloweenClearCommond handler",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/HalloweenClearCommond.log',
+    'enabled' => true,
+));
+
+alter table zb_languageroom add COLUMN `is_show` tinyint(1) NOT NULL DEFAULT 1 COMMENT '首页是否展示1展示 2不展示';
+
+
+
+房间人气值相关：
+
+jobby:
+
+
+$jobby->add('DeductRoomHotCommandPopular', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/mua/think DeductRoomHotCommand entry_popular",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/deductRoomHotCommandPopular.log',
+    'enabled' => true,
+));
+
+
+
+
+
+
+
+
+
+召回活动：
+
+短信召回活动的用户数据详情表:
+CREATE TABLE `zb_recall_sms_detail_20211111` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `origin_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '召回前的登陆时间',
+  `sms_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '短信发送是否成功 0失败 1 成功',
+  `sms_detail` varchar(255) NOT NULL DEFAULT '' COMMENT '短信发送response',
+  `login_time` int(10) NOT NULL DEFAULT '0' COMMENT '回归登陆的时间',
+  `send_gift` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发送头像框0没有1已送',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT 'create_time',
+  `update_time` int(10) NOT NULL DEFAULT '0' COMMENT 'update_time',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='短信召回活动的用户数据详情';
+
+
+新增落地页活动记录表
+CREATE TABLE `zb_recall_sms_info_20211111` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `platform` varchar(60) NOT NULL DEFAULT '' COMMENT '平台',
+  `action` varchar(60) NOT NULL DEFAULT '' COMMENT '行为 click：点击 download：下载',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COMMENT='用户短信召回行为上报表';
+
+
+
+默认昵称库相关:
+$jobby->add('GenerateNicknameCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/mua/think GenerateNicknameCommand",
+    'schedule' => '21 0 * * *',
+    'output' => 'runtime/joblog/GenerateNicknameCommand.log',
+    'enabled' => true,
+));
+
+
+# 11月19添加风险提示
+redis的3库 risk_warning_conf
+{
+	"keywords": [
+		"银行",
+		"钱",
+		"人民币",
+		"转账",
+		"汇款",
+		"支付宝",
+		"微信",
+		"花呗",
+		"借呗",
+		"信用卡",
+		"网银",
+		"U盾",
+		"手机号",
+		"财付通",
+		"京东白条",
+		"贷"
+	],
+	"prompt": "安全提示：请注意核实对方身份，涉及汇款、转账等务必确认对方身份，保护自身财产及隐私安全"
+}
+
+
+
+crontab:
+        'BlackForumCommand' => 'app\api\script\BlackForumCommand',//BlackForumCommand 处理历史注销用户的朋友圈
+
+执行 commond:
+       /usr/local/php/bin/php /www/wwwroot/mua/think BlackForumCommand exceed
+
+11月29 mua首充
+config.php的配置
+'firstPayUrlIndex' => 'https://newmapi2.fqparty.com/shouchong?mtoken=',
+
+redis 3库 charge_conf 29号从线上redis复制的，只修改了209的配置
+{
+	"products": [
+		{
+			"productId": 101,
+			"price": 6,
+			"bean": 42,
+			"present": 60,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.6",
+			"chargeMsg": "充了一小笔寻币，想找人聊聊。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 42
+				}
+			]
+		},
+		{
+			"productId": 102,
+			"price": 30,
+			"bean": 210,
+			"present": 210,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.m.30",
+			"chargeMsg": "没什么好谈的，只想和你谈恋爱。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 210
+				}
+			]
+		},
+		{
+			"productId": 103,
+			"price": 68,
+			"bean": 476,
+			"present": 476,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.m.68",
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 476
+				}
+			]
+		},
+		{
+			"productId": 104,
+			"price": 6,
+			"bean": 0,
+			"present": 60,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.0",
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 30
+				},
+				{
+					"assetId": "prop:5",
+					"count": 7
+				},
+				{
+					"assetId": "prop:203",
+					"count": 1
+				},
+				{
+					"assetId": "gift:360",
+					"count": 18
+				},
+				{
+					"assetId": "gift:368",
+					"count": 8
+				},
+				{
+					"assetId": "gift:251",
+					"count": 8
+				}
+			]
+		},
+		{
+			"productId": 105,
+			"price": 40,
+			"bean": 0,
+			"present": 60,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.vip.40",
+			"chargeMsg": "",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 1
+				}
+			]
+		},
+		{
+			"productId": 106,
+			"price": 88,
+			"bean": 0,
+			"present": 108,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.vip.88",
+			"chargeMsg": "",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 3
+				}
+			]
+		},
+		{
+			"productId": 107,
+			"price": 168,
+			"bean": 0,
+			"present": 188,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.vip.168",
+			"chargeMsg": "",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 6
+				}
+			]
+		},
+		{
+			"productId": 108,
+			"price": 288,
+			"bean": 0,
+			"present": 308,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.vip.288",
+			"chargeMsg": "",
+			"deliveryItems": [
+				{
+					"assetId": "user:svip_month",
+					"count": 12
+				}
+			]
+		},
+		{
+			"productId": 109,
+			"price": 30,
+			"bean": 210,
+			"present": 30,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.30",
+			"chargeMsg": "充了一小笔寻币，想找人聊聊。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 210
+				}
+			]
+		},
+		{
+			"productId": 110,
+			"price": 208,
+			"bean": 1456,
+			"present": 208,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.208",
+			"chargeMsg": "充了一小笔寻币，想找人聊聊。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 1456
+				}
+			]
+		},
+		{
+			"productId": 111,
+			"price": 1408,
+			"bean": 4536,
+			"present": 1408,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"appStoreProductId": "com.party.fq.1408",
+			"chargeMsg": "充了一小笔寻币，想找人聊聊。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 4536
+				}
+			]
+		},
+		{
+			"productId": 201,
+			"price": 10,
+			"bean": 100,
+			"present": 100,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 100
+				}
+			]
+		},
+		{
+			"productId": 202,
+			"price": 30,
+			"bean": 300,
+			"present": 30,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 300
+				}
+			]
+		},
+		{
+			"productId": 203,
+			"price": 50,
+			"bean": 500,
+			"present": 50,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 500
+				}
+			]
+		},
+		{
+			"productId": 204,
+			"price": 100,
+			"bean": 1000,
+			"present": 396,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 1000
+				}
+			]
+		},
+		{
+			"productId": 205,
+			"price": 200,
+			"bean": 2000,
+			"present": 656,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 2000
+				}
+			]
+		},
+		{
+			"productId": 206,
+			"price": 500,
+			"bean": 5000,
+			"present": 1296,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 5000
+				}
+			]
+		},
+		{
+			"productId": 207,
+			"price": 1000,
+			"bean": 10000,
+			"present": 1000,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 10000
+				}
+			]
+		},
+		{
+			"productId": 208,
+			"price": 5000,
+			"bean": 50000,
+			"present": 1996,
+			"image": "/Public/Uploads/img/123.png",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 50000
+				}
+			]
+		},
+		{
+			"productId": 209,
+			"price": 6,
+			"bean": 60,
+			"present": 60,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:bean",
+					"count": 60
+				},
+				{
+					"assetId": "prop:5",
+					"count": 7
+				},
+				{
+					"assetId": "gift:360",
+					"count": 8
+				},
+				{
+					"assetId": "prop:255",
+					"count": 1
+				}
+			]
+		},
+		{
+			"productId": 210,
+			"price": 36,
+			"bean": 0,
+			"present": 36,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 1
+				}
+			]
+		},
+		{
+			"productId": 211,
+			"price": 88,
+			"bean": 0,
+			"present": 100,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 3
+				}
+			]
+		},
+		{
+			"productId": 212,
+			"price": 166,
+			"bean": 0,
+			"present": 216,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:vip_month",
+					"count": 6
+				}
+			]
+		},
+		{
+			"productId": 213,
+			"price": 288,
+			"bean": 0,
+			"present": 432,
+			"image": "/Public/Uploads/img/123.png",
+			"status": 0,
+			"chargeMsg": "就是这么任性，不服来辩。",
+			"deliveryItems": [
+				{
+					"assetId": "user:svip_month",
+					"count": 12
+				}
+			]
+		}
+	]
+}
+
+CREATE TABLE `zb_room_pk`
+(
+    `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `red_room_id`   int(11) unsigned NOT NULL DEFAULT '0' COMMENT '红队房间id',
+    `blue_room_id`  int(11) unsigned NOT NULL DEFAULT '0' COMMENT '蓝队房间id',
+    `pk_mode`       int(11) unsigned NOT NULL COMMENT 'pk模式 1团战 2跨房',
+    `create_time`   bigint(20) NOT NULL DEFAULT '0' COMMENT '开始时间',
+    `end_time`      bigint(20) NOT NULL DEFAULT '0' COMMENT '结束时间',
+    `punishment`    varchar(255) DEFAULT '' COMMENT '惩罚',
+    `win_team`      varchar(30) DEFAULT '' COMMENT '赢的队 red-红 blue-蓝',
+    `red_pk_data`   varchar(255) NOT NULL DEFAULT '' COMMENT '红队pk数据',
+    `red_contribute_data`   varchar(255) NOT NULL DEFAULT '' COMMENT '红队贡献数据',
+    `blue_pk_data`          varchar(255) NOT NULL DEFAULT '' COMMENT '蓝队pk数据',
+    `blue_contribute_data`  varchar(255) NOT NULL DEFAULT '' COMMENT '蓝队贡献数据',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `red_room_id_blue_room_id_create_time` (`red_room_id`,`blue_room_id`,`create_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='pk数据';
+
+
+豆兑换金币:
+ 新增config/config.php
+    'bean_coin_scale' => 100,//豆兑换金币 1:100
+
+redis  3 库:
+bean_coin_conf:
+[
+	{
+		"productId": 1,
+		"price": 1,
+		"bean": 100,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 2,
+		"price": 5,
+		"bean": 500,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 3,
+		"price": 10,
+		"bean": 1000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 4,
+		"price": 30,
+		"bean": 3000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 5,
+		"price": 50,
+		"bean": 5000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 6,
+		"price": 100,
+		"bean": 10000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 7,
+		"price": 500,
+		"bean": 50000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	},
+	{
+		"productId": 8,
+		"price": 1000,
+		"bean": 100000,
+		"present": 432,
+		"image": "gold.png",
+		"status": 0,
+		"chargeMsg": "就是这么任性，不服来辩。",
+		"deliveryItems": []
+	}
+]
+
+
+CREATE TABLE `zb_login_detail_new` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '登录记录id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `ctime` int(20) NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `channel` varchar(100) NOT NULL DEFAULT '' COMMENT '登录渠道',
+  `device_id` varchar(255) NOT NULL DEFAULT '' COMMENT '设备',
+  `login_ip` varchar(255) NOT NULL DEFAULT '' COMMENT 'ip',
+  `mobile_version` varchar(255) NOT NULL DEFAULT '' COMMENT '手机型号',
+  `idfa` varchar(255) NOT NULL DEFAULT '',
+  `version` varchar(255) NOT NULL COMMENT '版本号',
+  `simulator` tinyint(1) NOT NULL COMMENT '是否为模拟器 0不是 1是',
+  `imei` varchar(255) NOT NULL COMMENT '设备号',
+  `app_id` varchar(255) NOT NULL COMMENT '包名',
+  `source` varchar(255) NOT NULL COMMENT '渠道名',
+  `ext_param_1` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段1',
+  `ext_param_2` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段2',
+  `ext_param_3` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段3',
+  `ext_param_4` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段4',
+  `ext_param_5` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段5',
+  `ext_param_6` varchar(255) NOT NULL DEFAULT '' COMMENT '扩展参数字段6',
+  PRIMARY KEY (`id`),
+  KEY `idx_uid` (`user_id`),
+  KEY `idx_idfa` (`idfa`),
+  KEY `idx_ctime` (`ctime`),
+  KEY `idx_device_id` (`device_id`),
+  KEY `idx_imei` (`imei`),
+  KEY `idx_ext_param_1` (`ext_param_1`),
+  KEY `idx_ext_param_2` (`ext_param_2`),
+  KEY `idx_ext_param_3` (`ext_param_3`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='登录记录';
+
+
+
+
+
+清理工会超过15天没有登录的用户:
+
+        'ClearGuildMemberCommand' => 'app\api\script\ClearGuildMemberCommand', //清理工会 超过15天没有登录的成员
+
+
+$jobby->add('ClearGuildMemberCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/mua/think ClearGuildMemberCommand",
+    'schedule' => '12 0 * * *',
+    'output' => 'runtime/joblog/clearGuildMemberCommand.log',
+    'enabled' => true,
+));
+
+
+
+
+
+用户召回活动(长期)：
+
+CREATE TABLE `zb_member_detail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) DEFAULT NULL COMMENT 'uid',
+  `amount` decimal(10,2) DEFAULT '0.00' COMMENT '充值豆数量',
+  `create_time` int(11) DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) DEFAULT '0' COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id__key` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `zb_push_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `platform` varchar(20) NOT NULL COMMENT '平台信息 创蓝短信/容通达/push/ai电话',
+  `receiver` varchar(150) NOT NULL DEFAULT '' COMMENT '接收验证的用户名',
+  `pswd` varchar(150) NOT NULL DEFAULT '' COMMENT '接收验证的密码',
+  `msg_id` varchar(150) NOT NULL DEFAULT '' COMMENT '消息id',
+  `report_time` varchar(150) NOT NULL DEFAULT '' COMMENT '运营商返回的状态更新时间',
+  `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '接收短信的手机号码',
+  `status` varchar(20) NOT NULL DEFAULT '' COMMENT '运营商返回的状态',
+  `notify_time` varchar(150) NOT NULL DEFAULT '' COMMENT '253平台收到运营商回复状态报告的时间',
+  `status_desc` varchar(150) NOT NULL DEFAULT '' COMMENT 'statusDesc',
+  `uid` varchar(50) NOT NULL DEFAULT '' COMMENT '该条短信在您业务系统内的ID',
+  `length` int(10) NOT NULL COMMENT '下发短信计费条数',
+  `ext_1` int(11) NOT NULL,
+  `ext_2` int(11) NOT NULL,
+  `ext_3` int(11) NOT NULL,
+  `ext_4` int(11) NOT NULL,
+  `origin_param` varchar(500) NOT NULL DEFAULT '' COMMENT '原始推送消息',
+  `create_time` int(10) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `msg_id_platform_key` (`msg_id`,`platform`),
+  KEY `mobile_key` (`mobile`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息推送回调';
+
+
+
+
+
+CREATE TABLE `zb_member_recall_detail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `origin_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '召回前的登陆时间',
+  `charge_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户类型 0普通 1付费',
+  `amount` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '充值豆',
+  `free_coin` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟币消费',
+  `coin_balance` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '用户豆余额',
+  `sns_response` varchar(255) NOT NULL DEFAULT '' COMMENT '三方推送的response',
+  `login_time` int(10) NOT NULL DEFAULT '0' COMMENT '召回登录时间',
+  `recall_login_status` tinyint(1) NOT NULL COMMENT '召回登录状态，0否 1是',
+  `mobile` varchar(20) NOT NULL COMMENT '手机号',
+  `type` varchar(20) NOT NULL COMMENT '触达方式 sms,push,aiphone',
+  `push_when_time` int(10) NOT NULL DEFAULT '0' COMMENT '触达用户的离线时间节点 单位s',
+  `sns_id` varchar(100) NOT NULL COMMENT '第三方消息id',
+  `sns_confirm` tinyint(1) NOT NULL COMMENT '发送状态 0未确认，1已确认 sms为发送成功，push为点击了push消息',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '年月日',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) NOT NULL DEFAULT '0' COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id_key` (`user_id`),
+  KEY `sns_id_type_key` (`sns_id`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户召回(长期)统计';
+
+
+CREATE TABLE `zb_push_recall_conf` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `push_when` varchar(500) NOT NULL DEFAULT '' COMMENT '触犯条件 charge:充值 time：时间',
+  `push_type` varchar(50) NOT NULL DEFAULT '' COMMENT '类型 push:app推送  sms:短信 ai:ai电话 man:客服服务 ',
+  `template_ids` varchar(500) NOT NULL DEFAULT '' COMMENT '模板ids',
+  `is_delete` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '是否删除 0正常 1:删除',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '注册时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户召回活动push配置';
+
+LOCK TABLES `zb_push_recall_conf` WRITE;
+/*!40000 ALTER TABLE `zb_push_recall_conf` DISABLE KEYS */;
+
+INSERT INTO `zb_push_recall_conf` (`id`, `push_when`, `push_type`, `template_ids`, `is_delete`, `create_time`)
+VALUES
+	(1,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(2,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(3,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(4,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(5,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(6,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(7,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(8,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(9,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(10,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(11,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(12,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(13,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(14,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(15,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(16,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(17,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(18,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(19,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(20,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(21,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(22,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(23,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(24,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(25,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(26,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"8\",\"9\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(39,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(40,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(41,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(42,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(43,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(44,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(45,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(46,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(47,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(48,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(49,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(50,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(51,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(52,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(53,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(54,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(55,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(56,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(57,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(58,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(59,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(60,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(61,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(62,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(63,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(64,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(65,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(66,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(67,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(68,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(69,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(70,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(71,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(72,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(73,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(74,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(75,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(76,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(77,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(78,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(79,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(80,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(81,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(82,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(83,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(84,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(85,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(86,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(87,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(88,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(89,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(90,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(91,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(92,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(93,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(94,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(95,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(96,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(97,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(98,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(99,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(100,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(101,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(102,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(103,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(104,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"300\"}','getuipush','[\"1\"]',0,0),
+	(105,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"10800\"}','getuipush','[\"2\"]',0,0),
+	(106,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"86400\"}','getuipush','[\"3\"]',0,0),
+	(107,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"172800\"}','getuipush','[\"4\"]',0,0),
+	(108,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"518400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(109,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"777600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(110,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1036800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(111,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1296000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(112,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1555200\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(113,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1814400\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(114,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2073600\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(115,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2332800\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0),
+	(116,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2592000\"}','getuipush','[\"5\",\"6\",\"7\",\"9\",\"8\",\"10\",\"11\",\"12\",\"13\"]',0,0);
+
+/*!40000 ALTER TABLE `zb_push_recall_conf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+CREATE TABLE `zb_push_template` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `origin_id` varchar(32) NOT NULL COMMENT '第三方模版id',
+  `title` varchar(200) NOT NULL COMMENT '模版消息标题',
+  `content` varbinary(500) NOT NULL COMMENT '模版内容',
+  `type` varchar(255) NOT NULL COMMENT '消息类型 (短信/push/ai电话)',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `template_name` varchar(100) NOT NULL DEFAULT '' COMMENT '模板名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `zb_push_template` WRITE;
+/*!40000 ALTER TABLE `zb_push_template` DISABLE KEYS */;
+
+INSERT INTO `zb_push_template` (`id`, `origin_id`, `title`, `content`, `type`, `create_time`, `update_time`, `template_name`)
+VALUES
+	(1,'push1','重要提醒',X'E4B880E5AE9AE8A681E8AEB0E5BE97E6AF8FE5A4A9E4B88AE7BABFE8B79FE5B08FE99FB3E4BA92E58AA8EFBC8CE5B08FE99FB3E7AD89E79D80E4BDA07E','getuipush',1641353674,1641353674,'5m模版'),
+	(2,'push2','小音提醒',X'E4BDA0E79A84E8B4A6E58FB7E69C89E696B0E4BABAE69DA5E8AEBFE593A6E38090E8B7B3E8BDAC20E68891E79A842020E9A1B5E99DA2E38091','getuipush',1641353727,1641353727,'3h模版'),
+	(3,'push3','系统消息',X'E58FAE7EE4BDA0E69C89E4B880E69DA1E794A8E688B7E7A781E8818AE69CAAE59B9EE5A48DEFBC8CE7AB8BE58DB3E59B9EE5A48D544120E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641353770,1641353770,'24h模版'),
+	(4,'push4','小音提醒',X'E7B4AFE4BA86EFBC8CE783A6E4BA86EFBC8CE8AEB0E5BE97E689BEE5B08FE99FB3E593A67EE38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641353832,1641353832,'48h模版'),
+	(5,'push5','系统消息',X'E58FAE7EE4BDA0E69C89E4B880E69DA1E794A8E688B7E7A781E8818AE69CAAE59B9EE5A48DEFBC8CE7AB8BE58DB3E59B9EE5A48D544120E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641353905,1641353905,'模版切换'),
+	(6,'push6','邀请提醒',X'E585A8E68385E6BC94E587BAEFBC8CE58FAAE4B8BAE4BA86E4BDA0EFBC81E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641353963,1641353963,'默认模版'),
+	(7,'push7','天冷了',X'E6AD8CE5A3B0E6B8A9E69A96E4BDA0E79A84E29DA4E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641353997,1641353997,'默认模版'),
+	(8,'push8','小音提醒',X'E682A8E79A84E5A5BDE58F8BE98280E8AFB7E682A8E58AA0E585A5E688BFE997B4EFBC8CE5B0BDE68385E5BC80E692A9EFBC8CE782B9E587BBE58AA0E585A5E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641354036,1641354036,'默认模版'),
+	(9,'push9','小音提醒',X'E68891E4B88DE8A681E4BDA0E7BB99E68891E88AB1E992B1EFBC8CE58FAAE683B3E8AEA9E4BDA0E999AAE68891E88AB1E782B9E697B6E997B4E280A6E59B9EE69DA5E4B880E8B5B7E8818AE8818AE5A4A9EFBC8CE5B08FE99FB3E59CA8E7AD89E79D80E4BDA0E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641354066,1641354066,'默认模版'),
+	(10,'push10','重要提醒',X'E4B880E5AE9AE8A681E8AEB0E5BE97E6AF8FE5A4A9E4B88AE7BABFE8B79FE5B08FE99FB3E4BA92E58AA8EFBC8CE5B08FE99FB3E7AD89E79D80E4BDA07EE38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641354112,1641354112,'默认模版'),
+	(11,'push11','小音提醒',X'E4BDA0E79A84E8B4A6E58FB7E69C89E696B0E4BABAE69DA5E8AEBFE593A6E38090E8B7B3E8BDAC20E68891E79A842020E9A1B5E99DA2E38091','getuipush',1641354141,1641354141,'默认模版'),
+	(12,'push12','快来找我！',X'E683B3E7BB99E4BDA0E58886E4BAABE4B880E4B88BE68891E79A84E69585E4BA8BE38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641354164,1641354164,'默认模版'),
+	(13,'push13','上车邀请',X'E8BF99E58FAFE883BDE698AFE69C80E5908EE4B880E6ACA1E5968AE4BDA0E7BB84E9989FE4BA86EFBC8CE684BFE88085E69DA5E688B3E38090E8B7B3E8BDACE799BBE5BD95415050E38091','getuipush',1641354189,1641354189,'默认模版');
+
+/*!40000 ALTER TABLE `zb_push_template` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+crontab:
+
+        'RecallQueueCommand' => 'app\api\script\RecallQueueCommand',//用户召回（长期活动队列）
+
+
+jobby:
+每小时扫描一次1天内的离线用户推送
+$jobby->add('RecallQueueCommandDay', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 2",
+    'schedule' => '01 * * * *',
+    'output' => 'runtime/joblog/recallQueueCommandDay.log',
+    'enabled' => true,
+));
+
+每天上午扫描一次1天-30天内离线用户推送
+$jobby->add('RecallQueueCommandMouth', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 4",
+    'schedule' => '55 11 * * *',
+    'output' => 'runtime/joblog/recallQueueCommandMouth.log',
+    'enabled' => true,
+));
+
+每天下午扫描一次30天以上离线用户推送
+$jobby->add('RecallQueueCommandtouchUsersMore', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 14",
+    'schedule' => '55 17 * * *',
+    'output' => 'runtime/joblog/recallQueueCommandtouchUsersMore.log',
+    'enabled' => true,
+));
+
+
+
+config:
+
+
+    'ampq_recall' => [
+        'host' => '172.17.213.49',
+        'vhost' => '/',
+        'queue_name' => 'q_member_recall',
+        'exchange' => 'ex_member_recall',
+        'port' => 5672,
+        'user' => 'phpapi',
+        'pass' => 'phpapi123',
+    ],
+
+//    ampq_recall_user_push
+    'ampq_recall_user_push' => [
+        'host' => '172.17.213.49',
+        'vhost' => '/',
+        'queue_name' => 'q_member_recall_user_push',
+        'exchange' => 'ex_member_recall_user_push',
+        'port' => 5672,
+        'user' => 'phpapi',
+        'pass' => 'phpapi123',
+    ],
+
+
+
+        'APP_URL_image_two' => 'http://image.muayuyin.com/',   //域名2地址oss
+
+添加新表
+CREATE TABLE `zb_room_photo`
+(
+    `id`       int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '图片id',
+    `user_id`  int(11) NOT NULL COMMENT '上传图片的用户id',
+    `room_id`  int(11) NOT NULL COMMENT '房间id',
+    `image` varchar(255) NOT NULL COMMENT '图片',
+    `gift_id`  int(11) NOT NULL COMMENT '解锁图片需要的礼物id',
+    `status`    tinyint(1) NOT NULL COMMENT '图片状态 1审核中 2审核成功 3审核失败',
+    `create_time`    int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_room_id` (`room_id`) USING BTREE,
+    KEY `idx_status` (`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='房间相册';
+
+房间状态功能补充
+
+alter table zb_languageroom  ADD COLUMN `is_hide` TINYINT(1) NOT NULL DEFAULT 0  COMMENT '是否隐藏 0未隐藏 1隐藏';
+
+alter table zb_languageroom  ADD COLUMN `is_block` TINYINT(1) NOT NULL DEFAULT 0  COMMENT '是否封禁 0未封禁 1封禁';
+
+
+alter table zb_push_report drop index msg_id_platform_key;
+
+alter table zb_push_report  ADD COLUMN `task_id` VARCHAR(150) NOT NULL DEFAULT ''  COMMENT '群推返回的任务id';
+
+alter table zb_push_report add index task_id_platform_key(task_id,platform);
+
+   闪萌聊天表情相关:
+
+    redis 设置打招呼表情:
+    weshine_shineHi
+    [
+    	{
+    		"src": "https://dl4.weshineapp.com/gif/20210915/eb3dad0278e98c158397a7cd49d941cc.gif?v=61416fd5c9155",
+    		"width": 240,
+    		"height": 240
+    	},
+    	{
+    		"src": "http://dl.weshineapp.com/gif/20210429/7c944628212b45323dfdc672f37ddd34.gif?v=608a213d48f06&f=momo",
+    		"width": 300,
+    		"height": 300
+    	},
+    	{
+    		"src": "http://dl.weshineapp.com/gif/20211223/5cb2f1736615a4ea835513b5192b5c33.gif?v=61c42c8840b89&f=momo",
+    		"width": 240,
+    		"height": 240
+    	},
+    	{
+    		"src": "https://dl4.weshineapp.com/gif/20220209/9dc251eecfe8bd41703abd21729762a4.gif?v=62032e316256c",
+    		"width": 295,
+    		"height": 295
+    	}
+    ]
+
+
+        'SmsCallbackCommand' => 'app\api\script\SmsCallbackCommand',//短信回调相关
+
+CREATE TABLE `zb_sms_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` bigint(11) NOT NULL DEFAULT '0' COMMENT '第三方用户id',
+  `uname` varchar(100) NOT NULL DEFAULT '' COMMENT '第三方用户名称',
+  `seq` varchar(100) NOT NULL DEFAULT '' COMMENT '第三方发送编号',
+  `pn` varchar(20) NOT NULL DEFAULT '' COMMENT '目标手机号',
+  `stm` varchar(20) NOT NULL DEFAULT '' COMMENT '第三方发送时间',
+  `sc` varchar(20) NOT NULL DEFAULT '' COMMENT '第三方状态码',
+  `st` varchar(20) NOT NULL DEFAULT '' COMMENT '第三方状态时间',
+  `bid` varchar(50) NOT NULL DEFAULT '' COMMENT '第三方状态批次号',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '我方入库年月日string',
+  `platform` varchar(20) NOT NULL DEFAULT '' COMMENT '平台信息 	蓉通达rtdsms',
+  `create_time` bigint(11) NOT NULL DEFAULT '0' COMMENT '我方入库时间戳',
+  `origin_data` varchar(500) NOT NULL DEFAULT '' COMMENT '第三方推送的原始数据保留',
+  `ext_1` varchar(100) NOT NULL DEFAULT '' COMMENT '拓展预留fileld1',
+  `ext_2` varchar(100) NOT NULL DEFAULT '' COMMENT '拓展预留field2',
+  `ext_3` varchar(100) NOT NULL DEFAULT '' COMMENT '拓展预留field3',
+  PRIMARY KEY (`id`),
+  KEY `uname_strdate` (`uname`,`str_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+jobby:
+
+$jobby->add('SmsCallbackCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think SmsCallbackCommand rongtongdaPull",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/SmsCallbackCommand.log',
+    'enabled' => true,
+));
+
+
+
+INSERT INTO `zb_push_template` (`id`, `origin_id`, `title`, `content`, `type`, `create_time`, `update_time`, `template_name`)
+VALUES
+	(14,'sms1','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE4BDA0E694B6E588B0E4BA86E696B0E79599E8A880E593A6EFBC8CE5BFABE9809FE69FA5E79C8B207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'24h模版'),
+	(15,'sms2','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE5B08FE99FB3E4B880E79BB4E983BDE59CA8E591A2EFBC8CE5BFABE9809FE4B88AE7BABF207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'3day模版'),
+	(16,'sms3','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE69C89E5BE88E5A49AE8AF9DE683B3E5AFB9E4BDA0E8AFB4EFBC8CE5BFABE69DA5207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'7day模版'),
+	(17,'sms4','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE8BF98E8AEB0E5BE97E58FAFE58FAFE788B1E788B1E79A84E68891E5989B7EE688B3207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'14day模版'),
+	(18,'sms5','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE69C89E4B8AAE6838AE5969CEFBC8CE5BFABE69DA5E79C8BE79C8BE591807EE688B3207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'21day模版'),
+	(19,'sms6','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE5AFB9E4BDA0E5BFB5E5BFB5E4B88DE5BF98EFBC8CE683B3E4B880E79BB4E59CA8E4BDA0E8BAABE8BEB97EE688B3207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'28day模版'),
+	(20,'sms7','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE69C89E4B8AAE6838AE5969CEFBC8CE5BFABE69DA5E79C8BE79C8B207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'随机模版'),
+	(21,'sms8','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE8BF98E8AEB0E5BE97E58FAFE58FAFE788B1E788B1E79A84E68891E5989B7E207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'随机模版'),
+	(22,'sms9','',X'E380907B247369676E7DE380917B246E69636B6E616D657D2CE5AFB9E4BDA0E5BFB5E5BFB5E4B88DE5BF98EFBC8CE683B3E4B880E79BB4E59CA8E4BDA0E8BAABE8BEB97EE688B3207B246C696E6B7D20E9808054','rtdsms',1644993375,1644993375,'随机模版');
+
+
+
+
+INSERT INTO `zb_push_recall_conf` (`id`, `push_when`, `push_type`, `template_ids`, `is_delete`, `create_time`)
+VALUES
+	(117,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(118,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(119,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(120,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(121,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(122,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(123,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(124,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(125,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(126,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(127,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(128,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(129,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(130,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(131,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(132,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(133,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(134,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(135,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(136,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(137,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(138,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(139,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(140,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(141,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(142,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(143,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(144,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(145,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(146,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(147,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(148,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(149,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(150,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(151,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(152,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(153,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(154,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(155,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(156,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(157,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(158,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(159,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(160,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(161,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(162,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(163,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(164,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(165,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(166,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(167,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(168,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(169,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(170,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(171,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(172,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0);
+
+
+
+
+短信召回
+
+每天上午扫描一次1天-30天内离线用户推送
+$jobby->add('RecallQueueCommandMouthSms', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 117",
+    'schedule' => '55 11 * * *',
+    'output' => 'runtime/joblog/RecallQueueCommandMouthSms.log',
+    'enabled' => true,
+));
+
+   闪萌聊天表情相关:
+
+    redis 设置打招呼表情:
+    weshine_shineHi
+    [
+    	{
+    		"src": "https://dl4.weshineapp.com/gif/20210915/eb3dad0278e98c158397a7cd49d941cc.gif?v=61416fd5c9155",
+    		"width": 240,
+    		"height": 240
+    	},
+    	{
+    		"src": "http://dl.weshineapp.com/gif/20210429/7c944628212b45323dfdc672f37ddd34.gif?v=608a213d48f06&f=momo",
+    		"width": 300,
+    		"height": 300
+    	},
+    	{
+    		"src": "http://dl.weshineapp.com/gif/20211223/5cb2f1736615a4ea835513b5192b5c33.gif?v=61c42c8840b89&f=momo",
+    		"width": 240,
+    		"height": 240
+    	},
+    	{
+    		"src": "https://dl4.weshineapp.com/gif/20220209/9dc251eecfe8bd41703abd21729762a4.gif?v=62032e316256c",
+    		"width": 295,
+    		"height": 295
+    	}
+    ]
+
+
+
+每天下午扫描一次30天以上离线用户推送
+$jobby->add('RecallQueueCommandtouchUsersMoreSms', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 123",
+    'schedule' => '55 15 * * *',
+    'output' => 'runtime/joblog/RecallQueueCommandtouchUsersMoreSms.log',
+    'enabled' => true,
+));
+
+
+
+
+
+CREATE TABLE `zb_kuaishou_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) NOT NULL DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `mission_id` varchar(50) NOT NULL DEFAULT '' COMMENT '任务id，标识当前任务（总订单）',
+  `order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '订单id，标识当前任务下对应达人的子订单\\n（此字段是唯一 且 可区分同一个任务下的多个达人）',
+  `idfa_md5` varchar(50) NOT NULL DEFAULT '' COMMENT 'iOS下的idfa计算MD5，规则为32位十六进制数字+4位连接符“-”的原文',
+  `imei_md5` varchar(50) NOT NULL DEFAULT '' COMMENT '对15位数字的 IMEI （比如860576038225452）进行 MD5',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调信息，编码一次的URL，长度小于10k',
+  `str_date` varchar(10) NOT NULL DEFAULT '' COMMENT '年月日',
+  `create_time` bigint(10) unsigned NOT NULL COMMENT '创建时间',
+  `ext_1` varchar(32) NOT NULL DEFAULT '' COMMENT '参数1',
+  `ext_2` varchar(32) NOT NULL DEFAULT '' COMMENT '参数2',
+  `ext_3` varchar(32) NOT NULL DEFAULT '' COMMENT '参数3',
+  `ext_4` varchar(32) NOT NULL DEFAULT '' COMMENT '参数4',
+  `ext_5` varchar(32) NOT NULL DEFAULT '' COMMENT '参数5',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`),
+  KEY `idfa_md5` (`idfa_md5`),
+  KEY `imei_md5` (`imei_md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='快手推广数据上报';
+
+
+
+CREATE TABLE `zb_kuaishou_callback` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `idfa_md5` varchar(50) NOT NULL DEFAULT '',
+  `imei_md5` varchar(50) NOT NULL DEFAULT '',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调地址',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0未成功 1已成功',
+  `response` varchar(255) NOT NULL DEFAULT '' COMMENT '返回信息',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '时间unix',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串日期',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+CREATE TABLE `zb_promote_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) NOT NULL DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `mission_id` varchar(50) NOT NULL DEFAULT '' COMMENT '任务id，标识当前任务（总订单）',
+  `order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '订单id，标识当前任务下对应达人的子订单\\n（此字段是唯一 且 可区分同一个任务下的多个达人）',
+  `idfa_md5` varchar(100) NOT NULL DEFAULT '' COMMENT 'iOS下的idfa计算MD5，规则为32位十六进制数字+4位连接符“-”的原文',
+  `imei_md5` varchar(100) NOT NULL DEFAULT '' COMMENT '对15位数字的 IMEI （比如860576038225452）进行 MD5',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调信息，编码一次的URL，长度小于10k',
+  `str_date` varchar(10) NOT NULL DEFAULT '' COMMENT '年月日',
+  `create_time` bigint(10) unsigned NOT NULL COMMENT '创建时间',
+  `ext_1` varchar(32) NOT NULL DEFAULT '' COMMENT '参数1',
+  `ext_2` varchar(32) NOT NULL DEFAULT '' COMMENT '参数2',
+  `ext_3` varchar(32) NOT NULL DEFAULT '' COMMENT '参数3',
+  `ext_4` varchar(32) NOT NULL DEFAULT '' COMMENT '参数4',
+  `ext_5` varchar(32) NOT NULL DEFAULT '' COMMENT '参数5',
+  `aid` varchar(50) NOT NULL DEFAULT '' COMMENT '广告计划id',
+  `cid` varchar(50) NOT NULL DEFAULT '' COMMENT '广告创意 id，长整型',
+  `mac` varchar(32) NOT NULL DEFAULT '' COMMENT '移动设备mac地址,转换成大写字母,去掉“:”，并且取md5摘要后的结果',
+  `oaid` varchar(150) NOT NULL DEFAULT '' COMMENT 'Android Q 版本的 oaid 原值',
+  `androidid` varchar(32) NOT NULL DEFAULT '' COMMENT '安卓id原值的md5，32位',
+  `os` tinyint(1) NOT NULL DEFAULT '0' COMMENT '操作系统平台  安卓：0 ,IOS：1 ,其他：3',
+  `tempstamp` varchar(20) NOT NULL DEFAULT '' COMMENT '客户端发生广告点击事件的时间，以毫秒为单位时间戳',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`),
+  KEY `idfa_md5` (`idfa_md5`),
+  KEY `imei_md5` (`imei_md5`),
+  KEY `oaid_key` (`oaid`),
+  KEY `androidid_key` (`androidid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推广数据上报';
+
+
+CREATE TABLE `zb_promote_callback` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `idfa_md5` varchar(100) NOT NULL DEFAULT '',
+  `imei_md5` varchar(100) NOT NULL DEFAULT '',
+  `oaid` varchar(150) DEFAULT '' COMMENT 'Android Q 版本的 oaid 原值',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调地址',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0未成功 1已成功',
+  `response` varchar(255) NOT NULL DEFAULT '' COMMENT '返回信息',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '时间unix',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串日期',
+  `event_type` mediumint(5) NOT NULL DEFAULT '0' COMMENT '上报行为类型，0激活1注册',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`),
+  KEY `oaid_key` (`oaid`),
+  KEY `imei_md5_key` (`imei_md5`),
+  KEY `idfa_md5_key` (`idfa_md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='第三方厂商推广的回调记录表';
+
+    city_conf
+
+[
+	{
+		"name": "北京",
+		"child": [
+			{
+				"name": "东城区"
+			},
+			{
+				"name": "西城区"
+			},
+			{
+				"name": "崇文区"
+			},
+			{
+				"name": "宣武区"
+			},
+			{
+				"name": "朝阳区"
+			},
+			{
+				"name": "丰台区"
+			},
+			{
+				"name": "石景山区"
+			},
+			{
+				"name": "海淀区"
+			},
+			{
+				"name": "门头沟区"
+			},
+			{
+				"name": "房山区"
+			},
+			{
+				"name": "通州区"
+			},
+			{
+				"name": "顺义区"
+			},
+			{
+				"name": "昌平区"
+			},
+			{
+				"name": "大兴区"
+			},
+			{
+				"name": "平谷区"
+			},
+			{
+				"name": "怀柔区"
+			},
+			{
+				"name": "密云县"
+			},
+			{
+				"name": "延庆县"
+			}
+		]
+	},
+	{
+		"name": "天津",
+		"child": [
+			{
+				"name": "和平区"
+			},
+			{
+				"name": "河东区"
+			},
+			{
+				"name": "河西区"
+			},
+			{
+				"name": "南开区"
+			},
+			{
+				"name": "河北区"
+			},
+			{
+				"name": "红桥区"
+			},
+			{
+				"name": "塘沽区"
+			},
+			{
+				"name": "汉沽区"
+			},
+			{
+				"name": "大港区"
+			},
+			{
+				"name": "东丽区"
+			},
+			{
+				"name": "西青区"
+			},
+			{
+				"name": "津南区"
+			},
+			{
+				"name": "北辰区"
+			},
+			{
+				"name": "武清区"
+			},
+			{
+				"name": "宝坻区"
+			},
+			{
+				"name": "宁河县"
+			},
+			{
+				"name": "静海县"
+			},
+			{
+				"name": "蓟 县"
+			}
+		]
+	},
+	{
+		"name": "河北",
+		"child": [
+			{
+				"name": "石家庄"
+			},
+			{
+				"name": "唐山"
+			},
+			{
+				"name": "秦皇岛"
+			},
+			{
+				"name": "邯郸"
+			},
+			{
+				"name": "邢台"
+			},
+			{
+				"name": "保定"
+			},
+			{
+				"name": "张家口"
+			},
+			{
+				"name": "承德"
+			},
+			{
+				"name": "沧州"
+			},
+			{
+				"name": "廊坊"
+			},
+			{
+				"name": "衡水"
+			}
+		]
+	},
+	{
+		"name": "山西",
+		"child": [
+			{
+				"name": "太原"
+			},
+			{
+				"name": "大同"
+			},
+			{
+				"name": "阳泉"
+			},
+			{
+				"name": "长治"
+			},
+			{
+				"name": "晋城"
+			},
+			{
+				"name": "朔州"
+			},
+			{
+				"name": "忻州"
+			},
+			{
+				"name": "吕梁"
+			},
+			{
+				"name": "晋中"
+			},
+			{
+				"name": "临汾"
+			},
+			{
+				"name": "运城"
+			}
+		]
+	},
+	{
+		"name": "内蒙古",
+		"child": [
+			{
+				"name": "呼和浩特"
+			},
+			{
+				"name": "包头"
+			},
+			{
+				"name": "乌海"
+			},
+			{
+				"name": "赤峰"
+			},
+			{
+				"name": "呼伦贝尔"
+			},
+			{
+				"name": "兴安盟"
+			},
+			{
+				"name": "通辽"
+			},
+			{
+				"name": "锡林郭勒盟"
+			},
+			{
+				"name": "乌兰察布盟"
+			},
+			{
+				"name": "伊克昭盟"
+			},
+			{
+				"name": "巴彦淖尔盟"
+			},
+			{
+				"name": "阿拉善盟"
+			}
+		]
+	},
+	{
+		"name": "辽宁",
+		"child": [
+			{
+				"name": "沈阳"
+			},
+			{
+				"name": "大连"
+			},
+			{
+				"name": "鞍山"
+			},
+			{
+				"name": "抚顺"
+			},
+			{
+				"name": "本溪"
+			},
+			{
+				"name": "丹东"
+			},
+			{
+				"name": "锦州"
+			},
+			{
+				"name": "营口"
+			},
+			{
+				"name": "阜新"
+			},
+			{
+				"name": "辽阳"
+			},
+			{
+				"name": "盘锦"
+			},
+			{
+				"name": "铁岭"
+			},
+			{
+				"name": "朝阳"
+			},
+			{
+				"name": "葫芦岛"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "吉林",
+		"child": [
+			{
+				"name": "长春"
+			},
+			{
+				"name": "吉林"
+			},
+			{
+				"name": "四平"
+			},
+			{
+				"name": "辽源"
+			},
+			{
+				"name": "通化"
+			},
+			{
+				"name": "白山"
+			},
+			{
+				"name": "松原"
+			},
+			{
+				"name": "白城"
+			},
+			{
+				"name": "延边朝鲜族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "黑龙江",
+		"child": [
+			{
+				"name": "哈尔滨"
+			},
+			{
+				"name": "齐齐哈尔"
+			},
+			{
+				"name": "鹤岗"
+			},
+			{
+				"name": "双鸭山"
+			},
+			{
+				"name": "鸡西"
+			},
+			{
+				"name": "大庆"
+			},
+			{
+				"name": "伊春"
+			},
+			{
+				"name": "牡丹江"
+			},
+			{
+				"name": "佳木斯"
+			},
+			{
+				"name": "七台河"
+			},
+			{
+				"name": "黑河"
+			},
+			{
+				"name": "绥化"
+			},
+			{
+				"name": "大兴安岭地区"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "上海",
+		"child": [
+			{
+				"name": "黄浦区"
+			},
+			{
+				"name": "卢湾区"
+			},
+			{
+				"name": "徐汇区"
+			},
+			{
+				"name": "长宁区"
+			},
+			{
+				"name": "静安区"
+			},
+			{
+				"name": "普陀区"
+			},
+			{
+				"name": "闸北区"
+			},
+			{
+				"name": "虹口区"
+			},
+			{
+				"name": "杨浦区"
+			},
+			{
+				"name": "宝山区"
+			},
+			{
+				"name": "闵行区"
+			},
+			{
+				"name": "嘉定区"
+			},
+			{
+				"name": "松江区"
+			},
+			{
+				"name": "金山区"
+			},
+			{
+				"name": "青浦区"
+			},
+			{
+				"name": "南汇区"
+			},
+			{
+				"name": "奉贤区"
+			},
+			{
+				"name": "浦东新区"
+			},
+			{
+				"name": "崇明县"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "江苏",
+		"child": [
+			{
+				"name": "南京"
+			},
+			{
+				"name": "苏州"
+			},
+			{
+				"name": "无锡"
+			},
+			{
+				"name": "常州"
+			},
+			{
+				"name": "镇江"
+			},
+			{
+				"name": "南通"
+			},
+			{
+				"name": "泰州"
+			},
+			{
+				"name": "扬州"
+			},
+			{
+				"name": "盐城"
+			},
+			{
+				"name": "连云港"
+			},
+			{
+				"name": "徐州"
+			},
+			{
+				"name": "淮安"
+			},
+			{
+				"name": "宿迁"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "浙江",
+		"child": [
+			{
+				"name": "杭州"
+			},
+			{
+				"name": "宁波"
+			},
+			{
+				"name": "温州"
+			},
+			{
+				"name": "嘉兴"
+			},
+			{
+				"name": "湖州"
+			},
+			{
+				"name": "绍兴"
+			},
+			{
+				"name": "金华"
+			},
+			{
+				"name": "衢州"
+			},
+			{
+				"name": "舟山"
+			},
+			{
+				"name": "台州"
+			},
+			{
+				"name": "丽水"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "安徽",
+		"child": [
+			{
+				"name": "合肥"
+			},
+			{
+				"name": "芜湖"
+			},
+			{
+				"name": "蚌埠"
+			},
+			{
+				"name": "淮南"
+			},
+			{
+				"name": "马鞍山"
+			},
+			{
+				"name": "淮北"
+			},
+			{
+				"name": "铜陵"
+			},
+			{
+				"name": "安庆"
+			},
+			{
+				"name": "黄山"
+			},
+			{
+				"name": "滁州"
+			},
+			{
+				"name": "阜阳"
+			},
+			{
+				"name": "宿州"
+			},
+			{
+				"name": "巢湖"
+			},
+			{
+				"name": "六安"
+			},
+			{
+				"name": "亳州"
+			},
+			{
+				"name": "池州"
+			},
+			{
+				"name": "宣城"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "福建",
+		"child": [
+			{
+				"name": "福州"
+			},
+			{
+				"name": "厦门"
+			},
+			{
+				"name": "莆田"
+			},
+			{
+				"name": "三明"
+			},
+			{
+				"name": "泉州"
+			},
+			{
+				"name": "漳州"
+			},
+			{
+				"name": "南平"
+			},
+			{
+				"name": "龙岩"
+			},
+			{
+				"name": "宁德"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "江西",
+		"child": [
+			{
+				"name": "南昌"
+			},
+			{
+				"name": "景德镇"
+			},
+			{
+				"name": "萍乡"
+			},
+			{
+				"name": "九江"
+			},
+			{
+				"name": "新余"
+			},
+			{
+				"name": "鹰潭"
+			},
+			{
+				"name": "赣州"
+			},
+			{
+				"name": "吉安"
+			},
+			{
+				"name": "宜春"
+			},
+			{
+				"name": "抚州"
+			},
+			{
+				"name": "上饶"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "山东",
+		"child": [
+			{
+				"name": "济南"
+			},
+			{
+				"name": "青岛"
+			},
+			{
+				"name": "淄博"
+			},
+			{
+				"name": "枣庄"
+			},
+			{
+				"name": "东营"
+			},
+			{
+				"name": "烟台"
+			},
+			{
+				"name": "潍坊"
+			},
+			{
+				"name": "济宁"
+			},
+			{
+				"name": "泰安"
+			},
+			{
+				"name": "威海"
+			},
+			{
+				"name": "日照"
+			},
+			{
+				"name": "莱芜"
+			},
+			{
+				"name": "临沂"
+			},
+			{
+				"name": "德州"
+			},
+			{
+				"name": "聊城"
+			},
+			{
+				"name": "滨州"
+			},
+			{
+				"name": "菏泽"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "河南",
+		"child": [
+			{
+				"name": "郑州"
+			},
+			{
+				"name": "开封"
+			},
+			{
+				"name": "洛阳"
+			},
+			{
+				"name": "平顶山"
+			},
+			{
+				"name": "安阳"
+			},
+			{
+				"name": "鹤壁"
+			},
+			{
+				"name": "新乡"
+			},
+			{
+				"name": "焦作"
+			},
+			{
+				"name": "濮阳"
+			},
+			{
+				"name": "许昌"
+			},
+			{
+				"name": "漯河"
+			},
+			{
+				"name": "三门峡"
+			},
+			{
+				"name": "南阳"
+			},
+			{
+				"name": "商丘"
+			},
+			{
+				"name": "信阳"
+			},
+			{
+				"name": "周口"
+			},
+			{
+				"name": "驻马店"
+			},
+			{
+				"name": "焦作"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "湖北",
+		"child": [
+			{
+				"name": "武汉"
+			},
+			{
+				"name": "黄石"
+			},
+			{
+				"name": "十堰"
+			},
+			{
+				"name": "荆州"
+			},
+			{
+				"name": "宜昌"
+			},
+			{
+				"name": "襄樊"
+			},
+			{
+				"name": "鄂州"
+			},
+			{
+				"name": "荆门"
+			},
+			{
+				"name": "孝感"
+			},
+			{
+				"name": "黄冈"
+			},
+			{
+				"name": "咸宁"
+			},
+			{
+				"name": "随州"
+			},
+			{
+				"name": "恩施土家族苗族自治州"
+			},
+			{
+				"name": "仙桃"
+			},
+			{
+				"name": "天门"
+			},
+			{
+				"name": "潜江"
+			},
+			{
+				"name": "神农架林区"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "湖南",
+		"child": [
+			{
+				"name": "长沙"
+			},
+			{
+				"name": "株洲"
+			},
+			{
+				"name": "湘潭"
+			},
+			{
+				"name": "衡阳"
+			},
+			{
+				"name": "邵阳"
+			},
+			{
+				"name": "岳阳"
+			},
+			{
+				"name": "常德"
+			},
+			{
+				"name": "张家界"
+			},
+			{
+				"name": "益阳"
+			},
+			{
+				"name": "郴州"
+			},
+			{
+				"name": "永州"
+			},
+			{
+				"name": "怀化"
+			},
+			{
+				"name": "娄底"
+			},
+			{
+				"name": "湘西土家族苗族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "广东",
+		"child": [
+			{
+				"name": "广州"
+			},
+			{
+				"name": "深圳"
+			},
+			{
+				"name": "东莞"
+			},
+			{
+				"name": "中山",
+				"child": [
+					{
+						"value": "中山"
+					}
+				]
+			},
+			{
+				"name": "潮州"
+			},
+			{
+				"name": "揭阳"
+			},
+			{
+				"name": "云浮"
+			},
+			{
+				"name": "珠海"
+			},
+			{
+				"name": "汕头"
+			},
+			{
+				"name": "韶关"
+			},
+			{
+				"name": "佛山"
+			},
+			{
+				"name": "江门"
+			},
+			{
+				"name": "湛江"
+			},
+			{
+				"name": "茂名"
+			},
+			{
+				"name": "肇庆"
+			},
+			{
+				"name": "惠州"
+			},
+			{
+				"name": "梅州"
+			},
+			{
+				"name": "汕尾"
+			},
+			{
+				"name": "河源"
+			},
+			{
+				"name": "阳江"
+			},
+			{
+				"name": "清远"
+			}
+		]
+	},
+	{
+		"name": "广西",
+		"child": [
+			{
+				"name": "南宁"
+			},
+			{
+				"name": "柳州"
+			},
+			{
+				"name": "桂林"
+			},
+			{
+				"name": "梧州"
+			},
+			{
+				"name": "北海"
+			},
+			{
+				"name": "防城港"
+			},
+			{
+				"name": "钦州"
+			},
+			{
+				"name": "贵港"
+			},
+			{
+				"name": "玉林"
+			},
+			{
+				"name": "百色"
+			},
+			{
+				"name": "贺州"
+			},
+			{
+				"name": "河池"
+			},
+			{
+				"name": "来宾"
+			},
+			{
+				"name": "崇左"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "海南",
+		"child": [
+			{
+				"name": "海口"
+			},
+			{
+				"name": "三亚"
+			},
+			{
+				"name": "五指山"
+			},
+			{
+				"name": "琼海"
+			},
+			{
+				"name": "儋州"
+			},
+			{
+				"name": "文昌"
+			},
+			{
+				"name": "万宁"
+			},
+			{
+				"name": "东方"
+			},
+			{
+				"name": "澄迈县"
+			},
+			{
+				"name": "定安县"
+			},
+			{
+				"name": "屯昌县"
+			},
+			{
+				"name": "临高县"
+			},
+			{
+				"name": "白沙黎族自治县"
+			},
+			{
+				"name": "昌江黎族自治县"
+			},
+			{
+				"name": "乐东黎族自治县"
+			},
+			{
+				"name": "陵水黎族自治县"
+			},
+			{
+				"name": "保亭黎族苗族自治县"
+			},
+			{
+				"name": "琼中黎族苗族自治县"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "重庆",
+		"child": [
+			{
+				"name": "渝中区"
+			},
+			{
+				"name": "大渡口区"
+			},
+			{
+				"name": "江北区"
+			},
+			{
+				"name": "南岸区"
+			},
+			{
+				"name": "北碚区"
+			},
+			{
+				"name": "渝北区"
+			},
+			{
+				"name": "巴南区"
+			},
+			{
+				"name": "长寿区"
+			},
+			{
+				"name": "双桥区"
+			},
+			{
+				"name": "沙坪坝区"
+			},
+			{
+				"name": "万盛区"
+			},
+			{
+				"name": "万州区"
+			},
+			{
+				"name": "涪陵区"
+			},
+			{
+				"name": "黔江区"
+			},
+			{
+				"name": "永川区"
+			},
+			{
+				"name": "合川区"
+			},
+			{
+				"name": "江津区"
+			},
+			{
+				"name": "九龙坡区"
+			},
+			{
+				"name": "南川区"
+			},
+			{
+				"name": "綦江县"
+			},
+			{
+				"name": "潼南县"
+			},
+			{
+				"name": "荣昌县"
+			},
+			{
+				"name": "璧山县"
+			},
+			{
+				"name": "大足县"
+			},
+			{
+				"name": "铜梁县"
+			},
+			{
+				"name": "梁平县"
+			},
+			{
+				"name": "开县"
+			},
+			{
+				"name": "忠县"
+			},
+			{
+				"name": "城口县"
+			},
+			{
+				"name": "垫江县"
+			},
+			{
+				"name": "武隆县"
+			},
+			{
+				"name": "丰都县"
+			},
+			{
+				"name": "奉节县"
+			},
+			{
+				"name": "云阳县"
+			},
+			{
+				"name": "巫溪县"
+			},
+			{
+				"name": "巫山县"
+			},
+			{
+				"name": "石柱土家族自治县"
+			},
+			{
+				"name": "秀山土家族苗族自治县"
+			},
+			{
+				"name": "酉阳土家族苗族自治县"
+			},
+			{
+				"name": "彭水苗族土家族自治县"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "四川",
+		"child": [
+			{
+				"name": "成都"
+			},
+			{
+				"name": "自贡"
+			},
+			{
+				"name": "攀枝花"
+			},
+			{
+				"name": "泸州"
+			},
+			{
+				"name": "德阳"
+			},
+			{
+				"name": "绵阳"
+			},
+			{
+				"name": "广元"
+			},
+			{
+				"name": "遂宁"
+			},
+			{
+				"name": "内江"
+			},
+			{
+				"name": "乐山"
+			},
+			{
+				"name": "南充"
+			},
+			{
+				"name": "眉山"
+			},
+			{
+				"name": "宜宾"
+			},
+			{
+				"name": "广安"
+			},
+			{
+				"name": "达州"
+			},
+			{
+				"name": "雅安"
+			},
+			{
+				"name": "巴中"
+			},
+			{
+				"name": "资阳"
+			},
+			{
+				"name": "阿坝藏族羌族自治州"
+			},
+			{
+				"name": "甘孜藏族自治州"
+			},
+			{
+				"name": "凉山彝族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "贵州",
+		"child": [
+			{
+				"name": "贵阳"
+			},
+			{
+				"name": "六盘水"
+			},
+			{
+				"name": "遵义"
+			},
+			{
+				"name": "安顺"
+			},
+			{
+				"name": "铜仁地区"
+			},
+			{
+				"name": "毕节地区"
+			},
+			{
+				"name": "黔西南布依族苗族自治州"
+			},
+			{
+				"name": "黔东南苗族侗族自治州"
+			},
+			{
+				"name": "黔南布依族苗族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "云南",
+		"child": [
+			{
+				"name": "昆明"
+			},
+			{
+				"name": "曲靖"
+			},
+			{
+				"name": "玉溪"
+			},
+			{
+				"name": "保山"
+			},
+			{
+				"name": "昭通"
+			},
+			{
+				"name": "丽江"
+			},
+			{
+				"name": "普洱"
+			},
+			{
+				"name": "临沧"
+			},
+			{
+				"name": "德宏傣族景颇族自治州"
+			},
+			{
+				"name": "怒江傈僳族自治州"
+			},
+			{
+				"name": "迪庆藏族自治州"
+			},
+			{
+				"name": "大理白族自治州"
+			},
+			{
+				"name": "楚雄彝族自治州"
+			},
+			{
+				"name": "红河哈尼族彝族自治州"
+			},
+			{
+				"name": "文山壮族苗族自治州"
+			},
+			{
+				"name": "西双版纳傣族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "西藏",
+		"child": [
+			{
+				"name": "拉萨"
+			},
+			{
+				"name": "那曲地区"
+			},
+			{
+				"name": "昌都地区"
+			},
+			{
+				"name": "林芝地区"
+			},
+			{
+				"name": "山南地区"
+			},
+			{
+				"name": "日喀则地区"
+			},
+			{
+				"name": "阿里地区"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "陕西",
+		"child": [
+			{
+				"name": "西安"
+			},
+			{
+				"name": "铜川"
+			},
+			{
+				"name": "宝鸡"
+			},
+			{
+				"name": "咸阳"
+			},
+			{
+				"name": "渭南"
+			},
+			{
+				"name": "延安"
+			},
+			{
+				"name": "汉中"
+			},
+			{
+				"name": "榆林"
+			},
+			{
+				"name": "安康"
+			},
+			{
+				"name": "商洛"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "甘肃",
+		"child": [
+			{
+				"name": "兰州"
+			},
+			{
+				"name": "嘉峪关"
+			},
+			{
+				"name": "金昌"
+			},
+			{
+				"name": "白银"
+			},
+			{
+				"name": "天水"
+			},
+			{
+				"name": "武威"
+			},
+			{
+				"name": "酒泉"
+			},
+			{
+				"name": "张掖"
+			},
+			{
+				"name": "庆阳"
+			},
+			{
+				"name": "平凉"
+			},
+			{
+				"name": "定西"
+			},
+			{
+				"name": "陇南"
+			},
+			{
+				"name": "临夏回族自治州"
+			},
+			{
+				"name": "甘南藏族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "青海",
+		"child": [
+			{
+				"name": "西宁"
+			},
+			{
+				"name": "海东地区"
+			},
+			{
+				"name": "海北藏族自治州"
+			},
+			{
+				"name": "海南藏族自治州"
+			},
+			{
+				"name": "黄南藏族自治州"
+			},
+			{
+				"name": "果洛藏族自治州"
+			},
+			{
+				"name": "玉树藏族自治州"
+			},
+			{
+				"name": "海西蒙古族藏族自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "宁夏",
+		"child": [
+			{
+				"name": "银川"
+			},
+			{
+				"name": "石嘴山"
+			},
+			{
+				"name": "吴忠"
+			},
+			{
+				"name": "固原"
+			},
+			{
+				"name": "中卫"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "新疆",
+		"child": [
+			{
+				"name": "乌鲁木齐"
+			},
+			{
+				"name": "克拉玛依"
+			},
+			{
+				"name": "吐鲁番地区"
+			},
+			{
+				"name": "哈密地区"
+			},
+			{
+				"name": "和田地区"
+			},
+			{
+				"name": "阿克苏地区"
+			},
+			{
+				"name": "喀什地区"
+			},
+			{
+				"name": "克孜勒苏柯尔克孜自治州"
+			},
+			{
+				"name": "巴音郭楞蒙古自治州"
+			},
+			{
+				"name": "昌吉回族自治州"
+			},
+			{
+				"name": "博尔塔拉蒙古自治州"
+			},
+			{
+				"name": "石河子"
+			},
+			{
+				"name": "阿拉尔"
+			},
+			{
+				"name": "图木舒克"
+			},
+			{
+				"name": "五家渠"
+			},
+			{
+				"name": "伊犁哈萨克自治州"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "台湾",
+		"child": [
+			{
+				"name": "台北市"
+			},
+			{
+				"name": "高雄市"
+			},
+			{
+				"name": "台北县"
+			},
+			{
+				"name": "桃园县"
+			},
+			{
+				"name": "新竹县"
+			},
+			{
+				"name": "苗栗县"
+			},
+			{
+				"name": "台中县"
+			},
+			{
+				"name": "彰化县"
+			},
+			{
+				"name": "南投县"
+			},
+			{
+				"name": "云林县"
+			},
+			{
+				"name": "嘉义县"
+			},
+			{
+				"name": "台南县"
+			},
+			{
+				"name": "高雄县"
+			},
+			{
+				"name": "屏东县"
+			},
+			{
+				"name": "宜兰县"
+			},
+			{
+				"name": "花莲县"
+			},
+			{
+				"name": "台东县"
+			},
+			{
+				"name": "澎湖县"
+			},
+			{
+				"name": "基隆市"
+			},
+			{
+				"name": "新竹市"
+			},
+			{
+				"name": "台中市"
+			},
+			{
+				"name": "嘉义市"
+			},
+			{
+				"name": "台南市"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "澳门",
+		"child": [
+			{
+				"name": "花地玛堂区"
+			},
+			{
+				"name": "圣安多尼堂区"
+			},
+			{
+				"name": "大堂区"
+			},
+			{
+				"name": "望德堂区"
+			},
+			{
+				"name": "风顺堂区"
+			},
+			{
+				"name": "嘉模堂区"
+			},
+			{
+				"name": "圣方济各堂区"
+			},
+			{
+				"name": "路凼"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	},
+	{
+		"name": "香港",
+		"child": [
+			{
+				"name": "中西区"
+			},
+			{
+				"name": "湾仔区"
+			},
+			{
+				"name": "东区"
+			},
+			{
+				"name": "南区"
+			},
+			{
+				"name": "深水埗区"
+			},
+			{
+				"name": "油尖旺区"
+			},
+			{
+				"name": "九龙城区"
+			},
+			{
+				"name": "黄大仙区"
+			},
+			{
+				"name": "观塘区"
+			},
+			{
+				"name": "北区"
+			},
+			{
+				"name": "大埔区"
+			},
+			{
+				"name": "沙田区"
+			},
+			{
+				"name": "西贡区"
+			},
+			{
+				"name": "元朗区"
+			},
+			{
+				"name": "屯门区"
+			},
+			{
+				"name": "荃湾区"
+			},
+			{
+				"name": "葵青区"
+			},
+			{
+				"name": "离岛区"
+			},
+			{
+				"name": "其他"
+			}
+		]
+	}
+]
+
+
+INSERT INTO `zb_push_recall_conf` (`id`, `push_when`, `push_type`, `template_ids`, `is_delete`, `create_time`)
+VALUES
+	(117,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(118,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(119,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(120,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(121,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(122,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(123,'{\"charge_max\":\"0\",\"charge_min\":\"0\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(124,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(125,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(126,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(127,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(128,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(129,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(130,'{\"charge_max\":\"100\",\"charge_min\":\"1\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(131,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(132,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(133,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(134,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(135,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(136,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(137,'{\"charge_max\":\"1000\",\"charge_min\":\"101\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(138,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(139,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(140,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(141,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(142,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(143,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(144,'{\"charge_max\":\"10000\",\"charge_min\":\"1001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(145,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(146,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(147,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(148,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(149,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(150,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(151,'{\"charge_max\":\"50000\",\"charge_min\":\"10001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(152,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(153,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(154,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(155,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(156,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(157,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(158,'{\"charge_max\":\"100000\",\"charge_min\":\"50001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(159,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(160,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(161,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(162,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(163,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(164,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(165,'{\"charge_max\":\"500000\",\"charge_min\":\"100001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0),
+	(166,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"86400\"}','rtdsms','[\"14\"]',0,0),
+	(167,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"259200\"}','rtdsms','[\"15\"]',0,0),
+	(168,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"604800\"}','rtdsms','[\"16\"]',0,0),
+	(169,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1209600\"}','rtdsms','[\"17\"]',0,0),
+	(170,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"1814400\"}','rtdsms','[\"18\"]',0,0),
+	(171,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2419200\"}','rtdsms','[\"19\"]',0,0),
+	(172,'{\"charge_max\":\"1000000\",\"charge_min\":\"500001\",\"time\":\"2592000\"}','rtdsms','[\"20\",\"21\",\"22\"]',0,0);
+
+
+短信召回
+
+每天上午扫描一次1天-30天内离线用户推送
+$jobby->add('RecallQueueCommandMouthSms', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 117",
+    'schedule' => '55 11 * * *',
+    'output' => 'runtime/joblog/RecallQueueCommandMouthSms.log',
+     'enabled' => true,
+));
+
+
+房间推荐位的人气值功能：
+
+$jobby->add('RecommendRoomCommandhomeHotHandler', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecommendRoomCommand homeHotHandler",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/RecommendRoomCommandhomeHotHandler.log',
+    'enabled' => true,
+));
+
+$jobby->add('RecommendRoomCommandrecreationHotHandler', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecommendRoomCommand recreationHotHandler",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/RecommendRoomCommandrecreationHotHandler.log',
+    'enabled' => true,
+));
+
+        'RecommendRoomCommand' => 'app\api\script\RecommendRoomCommand',                         //房间推荐位相关
+
+每天下午扫描一次30天以上离线用户推送
+$jobby->add('RecallQueueCommandtouchUsersMoreSms', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think RecallQueueCommand touchUsers 123",
+    'schedule' => '55 17 * * *',
+    'output' => 'runtime/joblog/RecallQueueCommandtouchUsersMoreSms.log',
+    'enabled' => true,
+));
+
+$jobby->add('DeductRoomHotCommandGuildEntryHomeHot', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think DeductRoomHotCommand entry_homeHot",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/DeductRoomHotCommandGuildEntryHomeHot.log',
+    'enabled' => true,
+));
+
+$jobby->add('DeductRoomHotCommandGuildRecreationHot', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think DeductRoomHotCommand entry_recreationHot",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/DeductRoomHotCommandGuildRecreationHot.log',
+    'enabled' => true,
+));
+---
+rediskey :weshine_search_filter_text
+type: set
+data:[约 加]
+select: 0 db
+
+
+
+
+CREATE TABLE `zb_kuaishou_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) NOT NULL DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `mission_id` varchar(50) NOT NULL DEFAULT '' COMMENT '任务id，标识当前任务（总订单）',
+  `order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '订单id，标识当前任务下对应达人的子订单\\n（此字段是唯一 且 可区分同一个任务下的多个达人）',
+  `idfa_md5` varchar(50) NOT NULL DEFAULT '' COMMENT 'iOS下的idfa计算MD5，规则为32位十六进制数字+4位连接符“-”的原文',
+  `imei_md5` varchar(50) NOT NULL DEFAULT '' COMMENT '对15位数字的 IMEI （比如860576038225452）进行 MD5',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调信息，编码一次的URL，长度小于10k',
+  `str_date` varchar(10) NOT NULL DEFAULT '' COMMENT '年月日',
+  `create_time` bigint(10) unsigned NOT NULL COMMENT '创建时间',
+  `ext_1` varchar(32) NOT NULL DEFAULT '' COMMENT '参数1',
+  `ext_2` varchar(32) NOT NULL DEFAULT '' COMMENT '参数2',
+  `ext_3` varchar(32) NOT NULL DEFAULT '' COMMENT '参数3',
+  `ext_4` varchar(32) NOT NULL DEFAULT '' COMMENT '参数4',
+  `ext_5` varchar(32) NOT NULL DEFAULT '' COMMENT '参数5',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`),
+  KEY `idfa_md5` (`idfa_md5`),
+  KEY `imei_md5` (`imei_md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='快手推广数据上报';
+
+
+
+CREATE TABLE `zb_kuaishou_callback` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `idfa_md5` varchar(50) NOT NULL DEFAULT '',
+  `imei_md5` varchar(50) NOT NULL DEFAULT '',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调地址',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0未成功 1已成功',
+  `response` varchar(255) NOT NULL DEFAULT '' COMMENT '返回信息',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '时间unix',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串日期',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `zb_promote_report` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) NOT NULL DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `mission_id` varchar(50) NOT NULL DEFAULT '' COMMENT '任务id，标识当前任务（总订单）',
+  `order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '订单id，标识当前任务下对应达人的子订单\\n（此字段是唯一 且 可区分同一个任务下的多个达人）',
+  `idfa_md5` varchar(100) NOT NULL DEFAULT '' COMMENT 'iOS下的idfa计算MD5，规则为32位十六进制数字+4位连接符“-”的原文',
+  `imei_md5` varchar(100) NOT NULL DEFAULT '' COMMENT '对15位数字的 IMEI （比如860576038225452）进行 MD5',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调信息，编码一次的URL，长度小于10k',
+  `str_date` varchar(10) NOT NULL DEFAULT '' COMMENT '年月日',
+  `create_time` bigint(10) unsigned NOT NULL COMMENT '创建时间',
+  `ext_1` varchar(32) NOT NULL DEFAULT '' COMMENT '参数1',
+  `ext_2` varchar(32) NOT NULL DEFAULT '' COMMENT '参数2',
+  `ext_3` varchar(32) NOT NULL DEFAULT '' COMMENT '参数3',
+  `ext_4` varchar(32) NOT NULL DEFAULT '' COMMENT '参数4',
+  `ext_5` varchar(32) NOT NULL DEFAULT '' COMMENT '参数5',
+  `aid` varchar(50) NOT NULL DEFAULT '' COMMENT '广告计划id',
+  `cid` varchar(50) NOT NULL DEFAULT '' COMMENT '广告创意 id，长整型',
+  `mac` varchar(32) NOT NULL DEFAULT '' COMMENT '移动设备mac地址,转换成大写字母,去掉“:”，并且取md5摘要后的结果',
+  `oaid` varchar(150) NOT NULL DEFAULT '' COMMENT 'Android Q 版本的 oaid 原值',
+  `androidid` varchar(32) NOT NULL DEFAULT '' COMMENT '安卓id原值的md5，32位',
+  `os` tinyint(1) NOT NULL DEFAULT '0' COMMENT '操作系统平台  安卓：0 ,IOS：1 ,其他：3',
+  `tempstamp` varchar(20) NOT NULL DEFAULT '' COMMENT '客户端发生广告点击事件的时间，以毫秒为单位时间戳',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`),
+  KEY `idfa_md5` (`idfa_md5`),
+  KEY `imei_md5` (`imei_md5`),
+  KEY `oaid_key` (`oaid`),
+  KEY `androidid_key` (`androidid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推广数据上报';
+
+
+CREATE TABLE `zb_promote_callback` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `factory_type` varchar(20) DEFAULT '' COMMENT '厂商类型 [juxing]',
+  `idfa_md5` varchar(100) NOT NULL DEFAULT '',
+  `imei_md5` varchar(100) NOT NULL DEFAULT '',
+  `callback_url` varchar(500) NOT NULL DEFAULT '' COMMENT '回调地址',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0未成功 1已成功',
+  `response` varchar(255) NOT NULL DEFAULT '' COMMENT '返回信息',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '时间unix',
+  `str_date` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串日期',
+  `event_type` mediumint(5) NOT NULL DEFAULT '0' COMMENT '上报行为类型，0激活1注册',
+  PRIMARY KEY (`id`),
+  KEY `str_date_factoryType` (`str_date`,`factory_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='第三方厂商推广的回调记录表';
+
+
+rediskey :weshine_search_filter_text
+type: set
+data:[约 加]
+select: 0 db
+
+
+CREATE TABLE `zb_complaints_new` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `from_uid` bigint(12) unsigned NOT NULL DEFAULT '0' COMMENT '发起投诉人id',
+  `to_uid` bigint(12) unsigned NOT NULL DEFAULT '0' COMMENT 'touid',
+  `contents` varchar(100) NOT NULL DEFAULT '' COMMENT '投诉消息',
+  `description` text COMMENT '投诉的描述',
+  `images` varchar(500) NOT NULL DEFAULT '' COMMENT '图片内容',
+  `videos` varchar(500) NOT NULL DEFAULT '' COMMENT '视频内容',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) NOT NULL COMMENT '修改时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态：0待处理，1跟进中，2已完结',
+  `admin_id` int(10) DEFAULT '0' COMMENT '后台操作人id',
+  PRIMARY KEY (`id`),
+  KEY `fromuid_touid_status_key` (`from_uid`,`to_uid`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE `zb_complaints_new_follow` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` int(10) NOT NULL DEFAULT '0' COMMENT 'zb_complaints_new id',
+  `content` text COMMENT '跟进的内容',
+  `admin_id` int(10) NOT NULL DEFAULT '0' COMMENT '后台用户id',
+  `create_time` int(10) DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `cid_key` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+alter table zb_promote_callback add COLUMN `user_id` int(11) unsigned NOT NULL DEFAULT 0  COMMENT '注册的用户id';
+
+清理 zb_promote_callback 表的所有字段缓存
+
+
+
+---
+接口加密相关配置
+config/config.php
+
+
+```
+    'EncryptDriver' => "enable",   // enbale:"enable"  close:"off"
+    'EncryptKey' => "na2wtspma4BtZ4XLb1ThQA==",   //encryptKey  打乱后的假值：下发假值，逆向为真值用
+    'apiSignAuthKey' => "sichuanrongqisign20200223",   //api auth sign key
+    'apiSignEnable' => "enable",   //api sign auth "enable"// "enable": "off"
+    'apiAuthTimestamp'=>'off', // enbale:"enable"  close:"off"
+    'apiSignSalt' => "sichuanrongqisign20200223",
+```
+清理 zb_promote_callback 表的所有字段缓存
+
+
+用户提现相关：
+
+
+CREATE TABLE `zb_user_withdraw_info` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `sns_user_id` varchar(120) NOT NULL DEFAULT '0' COMMENT '第三方用户id',
+  `identity_card_front` varchar(300) NOT NULL DEFAULT '' COMMENT '用户身份证正面',
+  `identity_card_opposite` varchar(300) NOT NULL DEFAULT '' COMMENT '用户身份证反面',
+  `real_phone` varchar(20) NOT NULL DEFAULT '' COMMENT '真实手机号',
+  `real_name` varchar(20) NOT NULL DEFAULT '' COMMENT '真实姓名',
+  `identity_number` varchar(30) NOT NULL DEFAULT '' COMMENT '身份证号码',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态0审核中 1成功 2 失败 default:0',
+  `message_detail` varchar(200) NOT NULL DEFAULT '' COMMENT '审核失败的说明',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id_key` (`user_id`),
+  KEY `identity_number_key` (`identity_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户提现认证信息表';
+
+
+
+
+CREATE TABLE `zb_user_withdraw_bank_information` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `bank_name` varchar(20) NOT NULL DEFAULT '' COMMENT '银行预留姓名',
+  `bank_phone` varchar(20) DEFAULT '' COMMENT '银行预留手机号',
+  `bank_card_number` varchar(50) NOT NULL DEFAULT '' COMMENT '银行账号id或支付宝账号id',
+  `pay_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '打款类型 [1支付宝，2银行卡]',
+  `default_hover` tinyint(1) NOT NULL DEFAULT '0' COMMENT ' 默认选中状态 default:0 [0假,1真]',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户提现账号信息表';
+
+
+
+
+CREATE TABLE `zb_user_withdraw_detail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order_number` varchar(50) NOT NULL DEFAULT '0' COMMENT '订单号',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `sns_order_number` varchar(50) NOT NULL DEFAULT '' COMMENT '第三方订单号',
+  `order_price` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '订单金额',
+  `bank_name` varchar(20) NOT NULL DEFAULT '' COMMENT '银行预留姓名',
+  `bank_phone` varchar(20) DEFAULT '' COMMENT '银行预留手机号',
+  `bank_card_number` varchar(30) NOT NULL DEFAULT '' COMMENT '银行卡号或支付宝账号',
+  `pay_type` tinyint(1) NOT NULL COMMENT '支付类型 1:支付宝 2银行卡',
+  `sns_agent_name` varchar(20) NOT NULL DEFAULT '' COMMENT '支付代理商名称 [dalong]',
+  `sns_agent_response` varchar(255) NOT NULL DEFAULT '' COMMENT '代理商response',
+  `order_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单状态（1:订单审核中，2:订单拒绝，3:订单成功，4:订单退单，5:订单结算）',
+  `message_detail` varchar(200) NOT NULL DEFAULT '' COMMENT '打款提示消息',
+  `create_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `reject_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '订单拒绝时间',
+  `refund_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '订单退单时间',
+  `success_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '订单成功时间',
+  `settle_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '订单结算时间',
+  `date_str_month` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串月份索引字段',
+  `ext_1` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段1',
+  `ext_2` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段2',
+  `ext_3` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段3',
+  `ext_4` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段4',
+  `ext_5` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段5',
+  PRIMARY KEY (`id`),
+  KEY `order_number_key` (`order_number`),
+  KEY `userId_dateStrMonth_key` (`user_id`,`date_str_month`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户提现申请订单表';
+
+头条用户归因：
+
+db：
+```
+alter table zb_member_detail  ADD COLUMN `oaid` varchar(150) NOT NULL DEFAULT ''  COMMENT '设备oaid（安卓）';
+
+alter table zb_member_detail  ADD COLUMN `ext_1` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段1';
+alter table zb_member_detail  ADD COLUMN `ext_2` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段2';
+alter table zb_member_detail  ADD COLUMN `ext_3` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段3';
+alter table zb_member_detail  ADD COLUMN `ext_4` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段4';
+alter table zb_member_detail  ADD COLUMN `ext_5` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段5';
+alter table zb_member_detail  ADD COLUMN `ext_6` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段6';
+alter table zb_member_detail  ADD COLUMN `ext_7` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段7';
+alter table zb_member_detail  ADD COLUMN `ext_8` varchar(150) NOT NULL DEFAULT ''  COMMENT '拓展字段8';
+
+```
+
+清理代码中 zb_member_detail 表字段缓存
+
+
+华为归因0331
+
+alter table bi_channel_huawei add oaid varchar(150) not null default "" COMMENT "安卓设备oaid";
+alter table bi_channel_huawei add callback varchar(150) not null default "" COMMENT "回传参数，用于oCPD对接";
+alter table bi_channel_huawei add rtaid varchar(150) not null default "" COMMENT "RTAID";
+alter table bi_channel_huawei add sub_task_id varchar(150) not null default "" COMMENT "子任务ID";
+
+
+清理bi_channel_huawei 表所有代码字段缓存
+
+扭蛋机在config里加配置
+'niudanji' => 'https://newmapi2.muayuyin.com/niudanji?mtoken=',
+
+
+
+# 4-12上线 首充相关：
+# mysql 首充奖励记录表
+CREATE TABLE `zb_first_charge_reward` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `current_day` tinyint(2) NOT NULL DEFAULT '0' COMMENT '第几天领取（每天都会有单独的记录）',
+  `rewards` text COMMENT '领取奖品列表',
+  `created_time` int(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='首充奖励领取记录表';
+
+
+# mysql 修改备注：action注释新增voice
+ALTER TABLE `zb_member_detail_audit`
+MODIFY COLUMN `action` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '行为(avatar,nickname,intro,wall,voice)' AFTER `status`;
+
+ALTER TABLE `zb_member_detail_audit_log`
+MODIFY COLUMN `action` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '行为(avatar,nickname,intro,wall,voice)' AFTER `status`;
+
+
+# redis 3库新增  key: first_charge_reward_conf (首充奖励配置)
+{"rewards":[{"id":1,"name":"第一天","current_day":1,"count":1,"cycle":"day","rewards":[{"assetId":"user:svip","count":1,"name":"SVIP体验卡*1天","img":"/20220323/2a83626df3bf2edf7b9886032192ad79.png"},{"assetId":"gift:563","count":1,"name":"扬帆起航*1个","img":"/20220406/9b8beb5ea6c3b4687a0c5feb0e1304c7.png"},{"assetId":"user:coin","count":300,"name":"金币*300","img":"/gold.png"}]},{"id":2,"name":"第二天","current_day":2,"count":1,"cycle":"day","rewards":[{"assetId":"gift:564","count":1,"name":"风铃*1个","img":"/20220406/28e6e9d9cee88c6da91893d0a14ac350.png"},{"assetId":"prop:263","count":1,"name":"绑新挚爱*1个","img":"/20220323/13f568479bc2f24a6e07b1a846c4b3f5.png"},{"assetId":"user:coin","count":500,"name":"金币*500","img":"/gold.png"}]},{"id":3,"name":"第三天","current_day":3,"count":1,"cycle":"day","rewards":[{"assetId":"user:vip","count":1,"name":"VIP体验卡*1天","img":"/20220326/af965a62e671ffb80ba351910f1d42fd.png"},{"assetId":"gift:565","count":1,"name":"萌新气球*1个","img":"/20220406/44e428d1d3f64c79c028e3685b4c7da5.png"},{"assetId":"user:coin","count":600,"name":"金币*600","img":"/gold.png"}]}]}
+
+
+# redis 3库修改  key: charge_conf (只修改104和209配置)
+{
+    "productId":104,
+    "price":30,
+    "bean":0,
+    "present":60,
+    "image":"/image/md.png",
+    "status":0,
+    "appStoreProductId":"com.party.fq.30",
+    "chargeMsg":"就是这么任性，不服来辩。",
+    "deliveryItems":[
+        {
+            "assetId":"user:bean",
+            "count":210
+        }
+    ]
+}
+
+{
+    "productId":209,
+    "price":30,
+    "bean":0,
+    "present":60,
+    "image":"/image/md.png",
+    "status":0,
+    "chargeMsg":"就是这么任性，不服来辩。",
+    "deliveryItems":[
+        {
+            "assetId":"user:bean",
+            "count":300
+        }
+    ]
+}
+
+# config.php的配置 (首充跳转h5地址)
+'firstChargeUrlIndex' => "https://activity.muayuyin.com/activity/shouchong2/index.html",
+
+# 4-13上线 消息接入es
+# 上线需要执行composer命令
+composer install
+
+# config.php
+    // im - mq
+    'ampq_im_message' => [
+        'host' => '172.17.213.49',
+        'vhost' => '/',
+        'queue_name' => 'q_im_message',
+        'exchange' => 'ex_im_message',
+        'port' => 5672,
+        'user' => 'game',
+        'pass' => 'game123',
+    ],
+
+    // es
+    'es_host' => env('ES_HOST', '172.17.130.28:9200'),
+
+# console.php
+'ImMessagePushEsCommand' => 'app\api\script\ImMessagePushEsCommand', // mysql push to es
+
+# 执行命令  4个进程  1个进程1000W
+sudo php think ImMessagePushEsCommand handler
+sudo php think ImMessagePushEsCommand handler 10000000
+sudo php think ImMessagePushEsCommand handler 20000000
+sudo php think ImMessagePushEsCommand handler 30000000
+
+# 05-12 接入第三方支付
+  一、config/config.php
+
+    // 三方支付 - 银联商务
+    'chinaaums' => [
+        'msgSrc' => 'WWW.SCRQKJI.COM',            //消息来源(msgSrc)
+        'msgSrcId' => '7266',        // 来源编号（msgSrcId）
+        'mdKey' => 'JjeryZKTzMAtXdXNybBTTHTd724MdpjRmA2XjCsNX2FX2p8w',            // 通讯密钥
+        'mid' => '89844014816ABEN',            //商户编号
+        'tid' => 'K4SLDX6A',    //终端号
+        'appid' => 'wx7c1049096711ca12',  // 微信小程序 appid
+        'appSecret' => 'b0974fe842e7f4e0b3dc9a5361f3b3e8',  // 微信小程序 秘钥
+        'notify_url' => 'https://newmapi2.fqparty.com/api/v1/chinaumsNotify', // 支付成功回调地址
+        'return_web_url' => 'https://landing.rongqii.cn/gw/#/topup',            // web支付成功同步跳转地址
+        'return_gzh_url' => 'https://landing.rongqii.cn/gw/#/topup',            // 公众号支付成功同步跳转地址
+        'mid_list' => [
+            ['mid' => '89844014816ABFD', 'tid' => 'HDB3ML42'],  //商户编号  //终端号
+            ['mid' => '89844014816ABFC', 'tid' => 'YJ6HBGYE'],
+            ['mid' => '89844014816ABFB', 'tid' => 'DH6E23C3'],
+            ['mid' => '89844014816ABEZ', 'tid' => 'C4HW6LN3'],
+            ['mid' => '89844014816ABFA', 'tid' => 'J0GVZYD9'],
+            ['mid' => '89844014816ABEY', 'tid' => 'THTRNG2S'],
+            ['mid' => '89844014816ABEN', 'tid' => 'K4SLDX6A'],
+            ['mid' => '89844014816ABFH', 'tid' => 'UH16JQUL'],
+        ],
+    ],
+
+    'wechat_pay_channel_way' => 2,  // 微信支付接入使用方式  1:使用原生   2:使用银联商务
+    'ali_pay_channel_way' => 1,      // 阿里支付接入使用方式  1:使用原生   2:使用银联商务
+
+
+  二、 config/log.php
+    // 其它日志通道配置
+    'pay' => [  // 支付部分相关
+        // 日志记录方式
+        'type' => 'File',
+        // 日志保存目录
+        'path' => '../runtime/api/pay_log',
+        // 单文件日志写入
+        'single' => false,
+        // 独立日志级别
+        'apart_level' => ['error'],
+        //'apart_level'=>[],
+        // 最大日志文件数量
+        'max_files' => 0,
+        // 使用JSON格式记录
+        'json' => false,
+        // 日志处理
+        'processor' => null,
+        // 关闭通道日志写入
+        'close' => false,
+        // 日志输出格式化
+        'format' => '[%s][%s] %s',
+        // 是否实时写入
+        'realtime_write' => true,
+        'file_size' => 1024 * 1024 * 200,
+    ],
+
+  三、sql 添加SQL
+  INSERT INTO `mua`.`zb_paychannel` (`id`, `pid`, `content`, `check`, `type`) VALUES (31, 1, '支付宝app支付银联商务', 1, 3);
+  INSERT INTO `mua`.`zb_paychannel` (`id`, `pid`, `content`, `check`, `type`) VALUES (32, 2, '微信小程序支付银联商务', 1, 3);
+  INSERT INTO `mua`.`zb_paychannel` (`id`, `pid`, `content`, `check`, `type`) VALUES (33, 2, '微信公众号支付银联商务', 1, 3);
+  INSERT INTO `mua`.`zb_paychannel` (`id`, `pid`, `content`, `check`, `type`) VALUES (34, 1, '支付宝H5支付银联商务', 1, 3);
+  INSERT INTO `mua`.`zb_paychannel` (`id`, `pid`, `content`, `check`, `type`) VALUES (35, 3, 'C扫B聚合码银联商务', 1, 3);
+
+
+订阅消息模块配置config.php
+
+    'ampq_elastic_room' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'queue_name' => 'q_message_bus_elastic_room',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+    'ampq_elastic_user' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'queue_name' => 'q_message_bus_elastic_user',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+
+    'ampq_message_bus' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'routing_key'=>"ex_message_bus",
+        'queue_name' => '',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+
+
+CREATE TABLE `zb_room_info_map` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'pk',
+  `type` varchar(11) NOT NULL DEFAULT '0' COMMENT '类型 如工会id：guild_id 用户id：user_id',
+  `value` varchar(60) NOT NULL DEFAULT '0' COMMENT '类型的值',
+  `room_id` int(11) NOT NULL DEFAULT '0' COMMENT '房间id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `room_id_type` (`room_id`,`type`),
+  KEY `idx_type_value` (`type`,`value`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='房间信息相关账号映射表';
+
+
+
+
+
+
+    启动es消息同步任务消费者
+
+ php think ElasticQueueCommand consumerUser
+ php think ElasticQueueCommand consumerRoom
+
+
+
+
+    'ampq_elastic_room' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'queue_name' => 'q_message_bus_elastic_room',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+    'ampq_elastic_user' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'queue_name' => 'q_message_bus_elastic_user',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+
+    'ampq_message_bus' => [
+        'host' => '123.56.11.53',
+//        'host' => '172.17.30.106',
+        'vhost' => '/',
+        'routing_key'=>"ex_message_bus",
+        'queue_name' => '',
+        'exchange' => 'ex_message_bus',
+        'port' => 5672,
+        'user' => 'fanqie',
+        'pass' => 'fanqie123',
+    ],
+
+
+# 生成userId脚本
+'MakeUserIDsCommand'=>'app\api\script\MakeUserIDsCommand'
+$jobby->add('MakeUserIDsCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think MakeUserIDsCommand exceed",
+    'schedule' => '10 0 * * *',
+    'output' => 'runtime/joblog/MakeUserIDsCommand.log',
+    'enabled' => true,
+));
+
+# 06-23 vip改版
+    一、config/config.php文件下
+
+        'apple_subscription_password' => 'cc32a26d451240cc89bc51d88415547f', // 苹果密钥
+
+        // 特别关心
+        'ampq_user_special_care' => [
+            'host' => '172.17.213.49',
+            'vhost' => '/',
+            'queue_name' => 'q_user_special_care',
+            'exchange' => 'ex_user_special_care',
+            'port' => 5672,
+            'user' => 'game',
+            'pass' => 'game123',
+        ],
+
+        // 'alipay_yuansheng' key键下新增
+        'alipay_yuansheng' => [
+             'sign_notify_url'=>'https://newmapi2.fqparty.com/api/v1/autoSignAliNotify',
+        ],
+
+    二、config/ccpconfig.php | lianyinconfig.php |  （有几个配置几个）
+        // 'alipay_yuansheng' key键下新增
+        'alipay_yuansheng' => [
+             'sign_notify_url'=>'https://newmapi2.fqparty.com/api/v1/autoSignAliNotify',
+        ],
+
+    三、console.php
+        'UserSpecialCareCommand' => 'app\api\script\UserSpecialCareCommand', // 用户特别关心推送
+        'VipAutoPayCommand' => 'app\api\script\VipAutoPayCommand', // 支付宝vip自动续费后续扣款
+        'VipIsPayTempCommand' => 'app\api\script\VipIsPayTempCommand', // 获取之前充值过的vip
+        'VipHandleExpireCommand' => 'app\api\script\VipHandleExpireCommand', // 处理vip过期
+
+    四、redis 三库
+        vip_conf
+        charge_conf
+        chargemall_conf
+
+    五、MySQL 新增sql
+
+        ALTER TABLE `zb_forum`
+        ADD COLUMN `is_top` tinyint(2) NOT NULL DEFAULT 0 COMMENT '是否置顶  0:不置顶   1:置顶' AFTER `share_num`;
+
+        // 自动续费  commonMaster库
+        CREATE TABLE `zb_auto_renewal_agreement` (
+          `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+          `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+          `agreement_no` varchar(100) NOT NULL DEFAULT '' COMMENT '签约后的 用户签约号、苹果原始原始交易ID',
+          `external_agreement_no` varchar(100) NOT NULL DEFAULT '' COMMENT '商户签约号，代扣协议中标示用户的唯一签约号（确保在商户系统中唯一）',
+          `transaction_ids` varchar(4000) NOT NULL DEFAULT '' COMMENT '每一期的订单id，用,分割',
+          `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '订阅状态 1 签约中; 2 关闭签约;  3 签约过期',
+          `sign_time` timestamp NULL DEFAULT NULL COMMENT '签约时间',
+          `execute_time` date DEFAULT '0000-00-00' COMMENT '下次扣款时间',
+          `sign_type` tinyint(4) NOT NULL DEFAULT '2' COMMENT '签约类型  2:vip   3:svip',
+          `first_product_id` int(10) NOT NULL DEFAULT '0' COMMENT '开始订阅的商品',
+          `product_id` int(10) NOT NULL DEFAULT '0' COMMENT '后续扣款的商品',
+          `renew_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '续费状态.   1: 等待扣费;  2: 扣费失败',
+          `outparam` text COMMENT '返回签约信息',
+          `contract_source` varchar(50) NOT NULL DEFAULT '' COMMENT '签约来源  (alipay  apple)',
+          `config_source` varchar(50) NOT NULL DEFAULT 'config' COMMENT '配置文件来源',
+          `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+          `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+          PRIMARY KEY (`id`),
+          KEY `user_id` (`user_id`),
+          KEY `agreement_no` (`agreement_no`),
+          KEY `execute_time` (`execute_time`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='自动续费签约表';
+
+
+    六、jobby.php
+        $jobby->add('VipAutoPayCommand', array(
+            'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think VipAutoPayCommand",
+            'schedule' => '*/1 * * * *',
+            'output' => 'runtime/joblog/VipAutoPayCommand.log',
+            'enabled' => true,
+        ));
+
+        $jobby->add('SvipHandleExpireCommand', array(
+            'command' => "//www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think VipHandleExpireCommand handler svip",
+            'schedule' => '*/1 * * * *',
+            'output' => 'runtime/joblog/SvipHandleExpireCommand.log',
+            'enabled' => true,
+        ));
+
+        $jobby->add('VipHandleExpireCommand', array(
+            'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think VipHandleExpireCommand handler vip",
+            'schedule' => '*/1 * * * *',
+            'output' => 'runtime/joblog/VipHandleExpireCommand.log',
+            'enabled' => true,
+        ));
+
+    七、新增 supervisord 配置
+        // 新增消费者
+        cd /etc/supervisord.d
+
+        sudo vi special_care_push_consumer.ini
+
+        [program:special_care_push_consumer]
+        command = /www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think UserSpecialCareCommand
+        priority=6
+        autorestart = true
+        numprocs = 3
+        process_name = %(program_name)s_%(process_num)02d
+        startretries = 3
+        stderr_logfile = /tmp/special_care_push_consumer.err
+        stdout_logfile = /tmp/special_care_push_consumer.log
+        stdout_logfile_maxbytes = 10MB
+        stdout_logfile_backups = 10
+
+        sudo supervisorctl update
+
+    八、上线完成后执行命令
+        // 统计充值过的用户  统计充值过vip的用户
+        /www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think VipIsPayTempCommand handlerPay
+        /www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think VipIsPayTempCommand
+
+
+
+新增加 config/console.php 配置
+        'InitializeCommand' => 'app\api\script\InitializeCommand',    //数据初始化命令行
+
+
+        上线后执行：
+        php think InitializeCommand cleanGuildUserCache
+
+
+# config.php
+    'ampq_login_detail_message' => [
+        'host' => '172.17.213.49',
+        'vhost' => '/',
+        'queue_name' => 'q_login_detail_message',
+        'exchange' => 'ex_login_detail_message',
+        'port' => 5672,
+        'user' => 'game',
+        'pass' => 'game123',
+    ],
+
+    alter table yyht_member_withdrawal add COLUMN  `username` varchar(100) NOT NULL DEFAULT '' COMMENT '银行预留姓名';
+    alter table yyht_member_withdrawal add COLUMN  `sns_order_number` varchar(50) NOT NULL DEFAULT '' COMMENT '第三方订单号';
+    alter table yyht_member_withdrawal add COLUMN `user_role` bigint(10) NOT NULL DEFAULT '0' COMMENT '是否是白名单 1白名单用户， 2普通用户';
+    alter table yyht_member_withdrawal add COLUMN  `bank_name` varchar(20) NOT NULL DEFAULT '' COMMENT '银行名称';
+    alter table yyht_member_withdrawal add COLUMN  `sns_agent_name` varchar(20) NOT NULL DEFAULT '' COMMENT '支付代理商名称 [dalong]';
+    alter table yyht_member_withdrawal add COLUMN  `sns_agent_response` varchar(255) NOT NULL DEFAULT '' COMMENT '代理商response';
+    alter table yyht_member_withdrawal add COLUMN `callback_time` bigint(10) NOT NULL DEFAULT '0' COMMENT '订单成功时间';
+    alter table yyht_member_withdrawal add COLUMN  `message_detail` varchar(200) NOT NULL DEFAULT '' COMMENT '打款提示消息';
+    alter table yyht_member_withdrawal add COLUMN  `date_str_month` varchar(20) NOT NULL DEFAULT '' COMMENT '字符串月份索引字段';
+    alter table yyht_member_withdrawal add COLUMN  `ext_1` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段1';
+    alter table yyht_member_withdrawal add COLUMN  `ext_2` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段2';
+    alter table yyht_member_withdrawal add COLUMN  `ext_3` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段3';
+    alter table yyht_member_withdrawal add COLUMN  `ext_4` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段4';
+    alter table yyht_member_withdrawal add COLUMN  `ext_5` varchar(200) NOT NULL DEFAULT '' COMMENT '拓展字段5';
+
+    alter table zb_user_withdraw_bank_information add COLUMN  `md5_hash` varchar(32) NOT NULL DEFAULT '' COMMENT 'md5hash userId+bankCardNumber+payType';
+
+    alter table zb_user_withdraw_bank_information add unique  md5_hash_key(md5_hash);
+
+    alter table zb_user_withdraw_bank_information add COLUMN `verify_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'e融验证状态,1真，2假';
+    alter table zb_user_withdraw_bank_information add COLUMN `verify_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '请求e融验证的次数';
+    alter table zb_user_withdraw_bank_information add COLUMN `username` varchar(100) NOT NULL DEFAULT '' COMMENT '银行预留姓名';
+
+    修改 yyht_member_withdrawal 表type字段comment 0：支付宝；1：微信 2:银行卡
+    修改 zb_user_withdraw_bank_information 表 pay_type 字段comment '打款类型 [0支付宝，2银行卡]'
+    修改 zb_user_withdraw_bank_information 表bank_name字段comment '银行名'
+
+CREATE TABLE `zb_withdraw_white_list` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) DEFAULT '0' COMMENT '用户id',
+  `enable` tinyint(1) DEFAULT '0' COMMENT '是否有效，1真，2假',
+  `create_time` int(10) DEFAULT '0' COMMENT '创建时间',
+  `admin_id` int(10) DEFAULT '0' COMMENT 'admin_id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id_key` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+注意公众号提现上线之前需要替换esign密钥：
+esgin需要提前3天做上线申请:
+
+    'esign' => [
+        'project_id' => '5111739203',
+        'project_scert' => 'ca305119bde1e65d8b543f24b807a5fb',
+    ],
+
+
+清理php所有服务器runtime schema 表结构缓存字段
+
+zb_user_withdraw_bank_information
+yyht_member_withdrawal
+
+config/console.php 新增配置
+        'InitializeCommand' => 'app\api\script\InitializeCommand',    //生成金流表的分表任务
+
+-----------------------------------------------------------------------------------------------
+
+公众号提现：
+
+清理 zb_user_card 表的 schema 表字段缓存
+
+
+07-05 苹果回调添加补偿机制
+console.php
+'AutoSubscriptionCompensateCommand' => 'app\api\script\AutoSubscriptionCompensateCommand', // 苹果回调添加补偿机制
+
+jobby.php
+$jobby->add('AutoSubscriptionCompensateCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think AutoSubscriptionCompensateCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/AutoSubscriptionCompensateCommand.log',
+    'enabled' => true,
+));
+
+
+
+# 07-06 兼容qingqing语音
+    redis 3库新增
+    qingqing_charge_conf
+    qingqing_chargemall_conf
+    qingqing_vip_conf
+    qingqing_duke_conf
+
+    新增qingqingconfig.php文件
+
+
+执行php 公众号提现历史订单数据校准脚本
+php think InitializeCommand syncWithdrawData
+
+
+# 07-07 新增 qingqing语音 数美审核配置
+
+1、  qingqingconfig.php 中新增
+
+    'shumei' => [
+        'AccessKey' => 'F1J4MA4kLYJae7HMR4y8',
+        'AppId' => 'qingqingvoice',
+    ],
+2、  redis三库更新： qingqing_vip_conf   qingqing_duke_conf
+
+
+alter table yyht_member_withdrawal add column `identity_number` varchar(30) NOT NULL DEFAULT '' COMMENT '身份证号码';
+alter table yyht_member_withdrawal add column  `real_phone` varchar(20) NOT NULL DEFAULT '' COMMENT '真实手机号';
+
+清理 yyht_member_withdrawal 表 schema 字段缓存
+修改 zb_user_withdraw_info 表注释  审核状态0审核中 1成功 2 失败 3已废弃 default:0
+
+CREATE TABLE `zb_user_withdraw_info_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `sns_user_id` varchar(120) NOT NULL DEFAULT '0' COMMENT '第三方用户id',
+  `identity_card_front` varchar(300) NOT NULL DEFAULT '' COMMENT '用户身份证正面',
+  `identity_card_opposite` varchar(300) NOT NULL DEFAULT '' COMMENT '用户身份证反面',
+  `real_phone` varchar(20) NOT NULL DEFAULT '' COMMENT '真实手机号',
+  `real_name` varchar(20) NOT NULL DEFAULT '' COMMENT '真实姓名',
+  `identity_number` varchar(30) NOT NULL DEFAULT '' COMMENT '身份证号码',
+  `create_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '审核状态0审核中 1成功 2 失败 default:0',
+  `message_detail` varchar(200) NOT NULL DEFAULT '' COMMENT '审核失败的说明',
+  PRIMARY KEY (`id`),
+  KEY `identity_number_key` (`identity_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户提现认证信息记录表';
+
+
+闪萌表情黑名单:
+把redis中的黑名单数据同步到db中： weshine_search_filter_text
+
+
+    CREATE TABLE `zb_shine_black_keyword` (
+      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+      `keyword` varchar(32) NOT NULL DEFAULT '' COMMENT '关键词',
+      `keyword_hash` varchar(32) NOT NULL DEFAULT '' COMMENT '关键词md5',
+      `create_time` bigint(10) NOT NULL COMMENT '创建时间',
+      `admin_id` int(10) NOT NULL COMMENT '后台id',
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `keyword_hash_key` (`keyword_hash`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+万圣节活动：
+代码上线后执行 脚本，清理历史使用过的活动物料数据
+php think HalloweenClearCommond handler

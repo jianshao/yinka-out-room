@@ -1,0 +1,478 @@
+v2-08-28版本更新日志 (已上线)
+sql：
+alter table zb_chargedetail  ADD COLUMN `paid_time` int(20) NOT NULL DEFAULT '0'  COMMENT '支付成功时间';
+alter table zb_chargedetail MODIFY COLUMN `finish_time` int(20) NOT NULL DEFAULT '0'  COMMENT '发货时间';
+
+alter table zb_user_last_info add edition varchar(20) not null default "" COMMENT "client version";
+
+alter table zb_member modify vip_exp bigint(20) default 0;
+alter table zb_member modify svip_exp bigint(20) default 0;
+
+crontab:
+1.config/console.log 新增
+'UserCancellationCheckCommand'=>'app\api\script\UserCancellationCheckCommand', //注销用户15天过滤
+2.jobby.php          新增
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think UserCancellationCheckCommand",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/UserCancellationCheckCommand.log',
+    'enabled' => true,
+));
+
+
+//TODO: 每次新增的sql和crontab 按照上面的格式写
+v1-09-08版本更新日志 (已上线)
+CREATE TABLE `zb_delivery_address` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '填些单子的人',
+    `name` varchar(255) NOT NULL DEFAULT '' COMMENT '收货人',
+    `mobile` varchar(255) NOT NULL DEFAULT '' COMMENT '手机号',
+    `reward` varchar(255) NOT NULL DEFAULT '' COMMENT '奖品kindId或者是奖品描述',
+    `count` varchar(255) NOT NULL DEFAULT '' COMMENT '奖品数量',
+    `region` varchar(255) NOT NULL DEFAULT '' COMMENT '地区',
+    `address` varchar(255) NOT NULL DEFAULT '' COMMENT '详细地址',
+    `activity_type` varchar(255) NOT NULL DEFAULT '' COMMENT '活动类型:哪个活动得的',
+    `create_time` int(20) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`) USING BTREE,
+    KEY `create_time` (`create_time`) USING BTREE,
+    KEY `activity_type` (`activity_type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='收货地址表';
+
+
+
+
+
+v1-09-13(已上线)
+'ZhongQiuPKCommand'=>'app\api\script\ZhongQiuPKCommand', //中秋pk
+$jobby->add('ZhongQiuPKCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think ZhongQiuPKCommand",
+    'schedule' => '01 0 * * *',
+    'output' => 'runtime/joblog/ZhongQiuPKCommand.log',
+    'enabled' => true,
+));
+
+'GuoQingCommand'=>'app\api\script\GuoQingCommand'
+$jobby->add('GuoQingCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think GuoQingCommand",
+    'schedule' => '01 0 * * *',
+    'output' => 'runtime/joblog/GuoQingCommand.log',
+    'enabled' => true,
+));
+
+
+CREATE TABLE `zb_channel_data` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) not null COMMENT '用户id',
+  `device_id` varchar(60) not null default '' comment '设备id',
+  `data` text NOT NULL COMMENT '渠道数据',
+  `channel` varchar(20) NOT NULL DEFAULT '' COMMENT '渠道类型',
+  `ctime` int(20) NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`) USING BTREE,
+  KEY `idx_channel` (`channel`) USING BTREE,
+  KEY `idx_device_id` (`device_id`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+
+## 用户注销功能模块上线说明
+
+sql：
+
+CREATE TABLE `zb_cancel_detail` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `qopenid` varchar(32) NOT NULL DEFAULT '' COMMENT 'qq',
+  `wxopenid` varchar(32) NOT NULL DEFAULT '' COMMENT 'wechat',
+  `appleid` varchar(255) NOT NULL DEFAULT '' COMMENT '苹果id',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT 'username',
+  `userid` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `cancel_user_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '⽤户注销账户状态 0：⽆操作 1：已通过 2：审核中 (default:2)',
+  `cancellation_time` int(11) NOT NULL DEFAULT '0' COMMENT '申请注销的时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '通过注销的时间',
+  PRIMARY KEY (`id`),
+  KEY `userid_key` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='注销申请记录表';
+
+alter table zb_member MODIFY COLUMN `qopenid` varchar(50) NOT NULL DEFAULT '';
+
+alter table zb_member MODIFY COLUMN `wxopenid` varchar(50) NOT NULL DEFAULT '';
+
+
+crontab:
+        'UserCancellationCheckCommand' => 'app\api\script\UserCancellationCheckCommand',   // 注销超过15天则修改为注销成功状态
+
+jobby:
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think UserCancellationCheckCommand exceed",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/UserCancellationCheckCommand.log',
+    'enabled' => true,
+));
+
+
+## 用户短信召回活动
+
+sql:
+CREATE TABLE `zb_recall_sms_detail`
+(
+    `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`           int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `origin_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '召回前的登陆时间',
+    `sms_status`        tinyint(1) NOT NULL DEFAULT '0' COMMENT '短信发送是否成功 0失败 1 成功',
+    `sms_detail`        varchar(255) NOT NULL DEFAULT '' COMMENT '短信发送response',
+    `login_time`        int(10) NOT NULL DEFAULT '0' COMMENT '回归登陆的时间',
+    `send_gift`         tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发送头像框0没有1已送',
+    `create_time`       int(10) NOT NULL DEFAULT '0' COMMENT 'create_time',
+    `update_time`       int(10) NOT NULL DEFAULT '0' COMMENT 'update_time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='短信召回活动的用户数据详情';
+
+
+
+CREATE TABLE `zb_recall_sms_info`
+(
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`     int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+    `platform`    varchar(60) NOT NULL DEFAULT '' COMMENT '平台',
+    `action`      varchar(60) NOT NULL DEFAULT '' COMMENT '行为 click：点击 download：下载',
+    `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    KEY           `userid_key` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='用户短信召回行为上报表';
+
+
+
+crontab:
+        'RecallSmsCommand' => 'app\api\script\RecallSmsCommand',   // 用户召回短信活动
+
+
+# 国庆节上跑马灯
+redis 3库
+led_jump_conf
+{
+	"taojing": {
+		"linkUrl": "https://newmapi2.fqparty.com/tjzl",
+		"title": "淘金之旅",
+		"showType": 1
+	},
+	"box": {
+		"linkUrl": "https://newmapi2.fqparty.com/baoxiang",
+		"title": "宝箱",
+		"showType": 0
+	},
+	"turntable": {
+		"linkUrl": "https://newmapi2.fqparty.com/zhuanpan/",
+		"title": "转盘",
+		"showType": 0
+	}
+}
+led_conf
+{
+	"giftTop": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"giftMiddle": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableTop": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableMiddle": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxTop": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxMiddle": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"taojing": {
+		"imgTop": "resource/images/djs/fxq.png",
+		"imgEnd": "",
+		"color": "#B1811F",
+		"borderColor": "#66FFFFFF"
+	},
+	"duke": {
+		"imgTop": "resource/images/djs/gj.png",
+		"imgEnd": "",
+		"color": "#1F5ACF",
+		"borderColor": "#66FFFFFF"
+	},
+	"dukeKing": {
+		"imgTop": "resource/images/djs/gw.png",
+		"imgEnd": "",
+		"color": "#9C37A4",
+		"borderColor": "#66FFFFFF"
+	},
+	"svip": {
+		"imgTop": "resource/images/djs/svip.png",
+		"imgEnd": "",
+		"color": "#353535",
+		"borderColor": "#66FFFFFF"
+	},
+	"hongbao": {
+		"imgTop": "resource/images/djs/hb.png",
+		"imgEnd": "",
+		"color": "#FB3D5E",
+		"borderColor": "#66FFFFFF"
+	},
+	"common": {
+		"imgTop": "resource/images/djs/tx.png",
+		"imgEnd": "",
+		"color": "#FF537D",
+		"borderColor": "#66FFFFFF"
+	}
+}
+
+
+
+
+
+### 用户信息修改审核功能
+
+
+
+
+
+db sql:
+CREATE TABLE `zb_member_detail_audit`
+(
+    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`     int(11) unsigned NOT NULL COMMENT '用户id',
+    `content`     varchar(255) NOT NULL DEFAULT '' COMMENT '数据内容',
+    `status`      tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态:0未审核,1审核通过,2未通过',
+    `action`      varchar(30)  NOT NULL DEFAULT '' COMMENT '行为(avatar,nickname,intro,wall)',
+    `update_time` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
+    `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `useridaction_key` (`user_id`,`action`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户信息详情审核记录表';
+
+# 10月19号上打地鼠
+redis 3库
+led_jump_conf
+{
+	"taojing": {
+		"linkUrl": "https://newmapi2.fqparty.com/tjzl",
+		"title": "淘金之旅",
+		"showType": 1
+	},
+	"box": {
+		"linkUrl": "https://newmapi2.fqparty.com/baoxiang",
+		"title": "宝箱",
+		"showType": 0
+	},
+	"turntable": {
+		"linkUrl": "https://newmapi2.fqparty.com/zhuanpan/",
+		"title": "转盘",
+		"showType": 0
+	},
+    "gopher": {
+        "linkUrl": "https://newmapi2.fqparty.com/dadishu/",
+        "title": "打地鼠",
+        "showType": 0
+    }
+}
+led_conf
+{
+	"giftTop": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"giftMiddle": {
+		"imgTop": "resource/images/djs/lw.png",
+		"imgEnd": "",
+		"color": "#FE5DAE",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableTop": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"turntableMiddle": {
+		"imgTop": "resource/images/djs/zhuanpan.png",
+		"imgEnd": "",
+		"color": "#843CE9",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxTop": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"boxMiddle": {
+		"imgTop": "resource/images/djs/pdl.png",
+		"imgEnd": "",
+		"color": "#CC67F0",
+		"borderColor": "#66FFFFFF"
+	},
+	"taojing": {
+		"imgTop": "resource/images/djs/fxq.png",
+		"imgEnd": "",
+		"color": "#B1811F",
+		"borderColor": "#66FFFFFF"
+	},
+	"duke": {
+		"imgTop": "resource/images/djs/gj.png",
+		"imgEnd": "",
+		"color": "#1F5ACF",
+		"borderColor": "#66FFFFFF"
+	},
+	"dukeKing": {
+		"imgTop": "resource/images/djs/gw.png",
+		"imgEnd": "",
+		"color": "#9C37A4",
+		"borderColor": "#66FFFFFF"
+	},
+	"svip": {
+		"imgTop": "resource/images/djs/svip.png",
+		"imgEnd": "",
+		"color": "#353535",
+		"borderColor": "#66FFFFFF"
+	},
+	"hongbao": {
+		"imgTop": "resource/images/djs/hb.png",
+		"imgEnd": "",
+		"color": "#FB3D5E",
+		"borderColor": "#66FFFFFF"
+	},
+	"gopherKing": {
+		"imgTop": "resource/images/dds/dswll.png",
+		"imgEnd": "",
+		"color": "#FFAF00",
+		"borderColor": "#66FFFFFF"
+	},
+	"koGopherKing": {
+		"imgTop": "resource/images/dds/dswsw.png",
+		"imgEnd": "",
+		"color": "#FFAF00",
+		"borderColor": "#66FFFFFF"
+	},
+	"common": {
+		"imgTop": "resource/images/djs/tx.png",
+		"imgEnd": "",
+		"color": "#FF537D",
+		"borderColor": "#66FFFFFF"
+	}
+}
+
+
+alter table zb_member_detail_audit MODIFY COLUMN `content` varchar(1000) NOT NULL DEFAULT ''  COMMENT '数据内容';
+
+
+db:
+CREATE TABLE `zb_halloween_award` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT '0' COMMENT '用户id',
+  `type` tinyint(1) DEFAULT '0' COMMENT '已领取1 满足领取条件0',
+  `level` tinyint(2) unsigned DEFAULT '0' COMMENT '礼物等级 总等级数1-10',
+  `str_date` varchar(80) DEFAULT '' COMMENT '文本的日期时间',
+  `create_time` int(10) DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='万圣节活动大魔王礼包数据统计表';
+
+
+crontab:
+        'HalloweenClearCommon' => 'app\api\script\HalloweenClearCommond', //万圣节活动物料回收脚本
+
+jobby:
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think HalloweenClearCommond handler",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/HalloweenClearCommond.log',
+    'enabled' => true,
+));
+
+alter table zb_languageroom add COLUMN `is_show` tinyint(1) NOT NULL DEFAULT 1 COMMENT '首页是否展示1展示 2不展示';
+
+
+
+
+
+
+配置用户的默认头像库
+
+DROP TABLE IF EXISTS `zb_avatar_library`;
+
+CREATE TABLE `zb_avatar_library` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `href` varchar(255) DEFAULT '""' COMMENT '图片地址',
+  `sex` tinyint(1) DEFAULT '0' COMMENT '性别1 男 2女',
+  `create_time` int(10) DEFAULT '0' COMMENT '创建时间',
+  `status` tinyint(1) DEFAULT '0' COMMENT '0禁用1启用',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='完善资料的用户默认头像库';
+
+LOCK TABLES `zb_avatar_library` WRITE;
+/*!40000 ALTER TABLE `zb_avatar_library` DISABLE KEYS */;
+
+INSERT INTO `zb_avatar_library` (`id`, `href`, `sex`, `create_time`, `status`)
+VALUES
+	(1,'images/manhead/5m3x.jpg',1,1628581904,1),
+	(2,'images/manhead/9m3x.jpg',1,1628581904,1),
+	(3,'images/manhead/10m3x.jpg',1,1628581904,1),
+	(4,'images/manhead/12m3x.jpg',1,1628581904,1),
+	(5,'images/manhead/7m3x.jpg',1,1628581904,1),
+	(6,'images/manhead/20m3x.jpg',1,1628581904,1),
+	(7,'images/manhead/16m3x.jpg',1,1628581904,1),
+	(8,'images/manhead/3m3x.jpg',1,1628581904,1),
+	(9,'images/manhead/1m3x.jpg',1,1628581904,1),
+	(10,'images/manhead/14m3x.jpg',1,1628581904,1),
+	(11,'images/manhead/18m3x.jpg',1,1628581904,1),
+	(12,'images/manhead/11m3x.jpg',1,1628581904,1),
+	(13,'images/manhead/4m3x.jpg',1,1628581904,1),
+	(14,'images/manhead/8m3x.jpg',1,1628581904,1),
+	(15,'images/manhead/6m3x.jpg',1,1628581904,1),
+	(16,'images/manhead/13m3x.jpg',1,1628581904,1),
+	(17,'images/manhead/2m3x.jpg',1,1628581904,1),
+	(18,'images/manhead/17m3x.jpg',1,1628581904,1),
+	(19,'images/manhead/15m3x.jpg',1,1628581904,1),
+	(20,'images/manhead/19m3x.jpg',1,1628581904,1),
+	(21,'images/head/5m3x.jpg',2,1628581904,1),
+	(22,'images/head/9m3x.jpg',2,1628581904,1),
+	(23,'images/head/10m3x.jpg',2,1628581904,1),
+	(24,'images/head/12m3x.jpg',2,1628581904,1),
+	(25,'images/head/7m3x.jpg',2,1628581904,1),
+	(26,'images/head/20m3x.jpg',2,1628581904,1),
+	(27,'images/head/16m3x.jpg',2,1628581904,1),
+	(28,'images/head/3m3x.jpg',2,1628581904,1),
+	(29,'images/head/1m3x.jpg',2,1628581904,1),
+	(30,'images/head/14m3x.jpg',2,1628581904,1),
+	(31,'images/head/18m3x.jpg',2,1628581904,1),
+	(32,'images/head/11m3x.jpg',2,1628581904,1),
+	(33,'images/head/4m3x.jpg',2,1628581904,1),
+	(34,'images/head/8m3x.jpg',2,1628581904,1),
+	(35,'images/head/6m3x.jpg',2,1628581904,1),
+	(36,'images/head/13m3x.jpg',2,1628581904,1),
+	(37,'images/head/2m3x.jpg',2,1628581904,1),
+	(38,'images/head/17m3x.jpg',2,1628581904,1),
+	(39,'images/head/15m3x.jpg',2,1628581904,1),
+	(40,'images/head/19m3x.jpg',2,1628581904,1);
+
+/*!40000 ALTER TABLE `zb_avatar_library` ENABLE KEYS */;
+UNLOCK TABLES;
+

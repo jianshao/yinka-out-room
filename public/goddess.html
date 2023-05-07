@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>音恋女神驾到</title>
+		<script src="./huodong11/js/mui.min.js"></script>
+		<script src="./huodong11/js/svga.min.js"></script>
+		<!-- <link href="css/mui.min.css" rel="stylesheet" /> -->
+		<link href="./huodong11/css/new_file.css" rel="stylesheet" type="text/css" />
+		<!-- <script src="lottie.js"></script> -->
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+		<style type="text/css">
+			.flex-container {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 89%;
+				margin: 0 auto;
+			}
+
+			.flex-container .flex-item {
+				width: 30%;
+				margin: 10px 0;
+				margin-left: 10vw;
+				/* background-color:lightsalmon; */
+			}
+
+			img {
+				display: block;
+			}
+
+			.text-p {
+				width: 80%;
+				margin-left: 10%;
+				color: rgba(255, 255, 255, 0.75);
+				padding-top: 1.6vw;
+				font-size: 3.5vw;
+				line-height: 1.8;
+			}
+
+			.text-t {
+				width: 80%;
+				margin-left: 10%;
+				color: #FFFFFF;
+				padding-top: 8vw;
+				padding-bottom: 2vw;
+				font-size: 3.8vw;
+				font-weight: 400;
+			}
+			
+			/*除了输入框其他都禁止点透，部分设备不支持这种写法*/
+			*:not(input, textarea) {
+				-webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+				-webkit-user-select:none; /*webkit浏览器*/
+				-khtml-user-select:none; /*早期浏览器*/
+				-moz-user-select:none;/*火狐*/
+				-ms-user-select:none; /*IE10*/
+				user-select:none;
+			}
+	
+			/*部分浏览器必须放这才支持*/
+			div, img, button, label {
+				-webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+				-webkit-user-select:none; /*webkit浏览器*/
+				-khtml-user-select:none; /*早期浏览器*/
+				-moz-user-select:none;/*火狐*/
+				-ms-user-select:none; /*IE10*/
+				user-select:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="banner">
+			<img class="bannerbg" src="./huodong11/images/banner.jpg" />
+		</div>
+		<!-- 活动内容 -->
+		<div class="toggleBtn">
+			<div class="toggleBtnPanel">
+				<div class="toggleBtn1" id="toggleBtn1">
+					团宠女神榜
+				</div>
+				<div class="toggleBtn2" id="toggleBtn2">
+					挚爱贡献榜
+				</div>
+			</div>
+		</div>
+		<div class="taskRules" >
+			<div class="taskList" id="list">
+			</div>
+			<div class="myRanking" >
+				<div class="task4">
+					<div class="task-list-number" id="myrank" style="display: none;">1</div>
+					<div class="task-list-weishangbang" id="weishangbang" style="display: block;">未上榜</div>
+					<div class="task-list-avatar">
+						<img class="task-list-img" id="avatar" alt="" />
+						<div class="task-list-img-frame" id="avatarFrame"></div>
+						<script>
+						</script>
+					</div>
+				    <div class="task4-container" id="container1" style="display: none;">
+						<img class="task-list-gift" src="./huodong11/images/gift.png" alt="" />
+						<div class="task-list-name0" id="num0">0</div>
+						<div class="task-list-name1" id="num1">0</div>
+						<div class="task-list-name2" id="num2">0</div>
+						<div class="task-list-name" id="name"></div>
+						<div class="task-list-integral" id="num">0套</div>
+					</div>
+					<div class="task4-container" id="container2" style="display: block;">
+						<div class="task-list-name22" id="name2"></div>
+						<div class="task-list-integral2" id="num">挚爱值0</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<img class="bordertop" src="./huodong11/images/gz.jpg" />
+		<div style="margin-top:8vw;"></div>
+		<div style="font-size: 3vw;text-align: center;padding-bottom: 2vw;color: rgba(255,255,255,0.8);">本活动与苹果公司无关</div>
+	</body>
+
+
+	<script>
+		//需求：当用户点击某个模块的时候，给该模块添加样式，对应的内容显示出来
+		//获取所有的a标签
+		// var navs = document.querySelectorAll("nav a");
+		// //先显示一部分内容（H5标签选择器默认选每一类标签的第一个）
+		// document.querySelector("section").style.display = "block";
+		// //遍历该数组
+		// for (var i = 0; i < navs.length; i++) {
+		// 	navs[i].onclick = function() {
+		// 		//每次点击前都先清除原来的内容
+		// 		var beforeNav = document.querySelector(".active")
+		// 		var beforeId = beforeNav.dataset["cont"];
+		// 		document.querySelector("#" + beforeId).style.display = "none";
+		// 		//排他思想
+		// 		for (var j = 0; j < navs.length; j++) {
+		// 			//先去除所有的active标签
+		// 			navs[j].classList.remove("active");
+		// 		}
+		// 		//对应的a加样式
+		// 		this.classList.add("active");
+		// 		//获取对应的内容标签并添加样式
+		// 		var secId = this.dataset["cont"];
+		// 		document.querySelector("#" + secId).style.display = "block";
+		// 	}
+		// }
+
+		// var test = {"list1":{"user":{"avatar":"http:\/\/image2.fqparty.com\/1178493\/20201013172327.gif","nickname":"lx123","rank":"未上榜","num":0,"nums":[]},"list":[{"avatar":"http:\/\/image2.fqparty.com\/Album\/1308164\/1604656980076.jpg","nickname":"Ms.茶梨","rank":1,"num":"12","nums":{"392":3,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1094795\/1604886768001.jpg","nickname":"Ya.简爱\/聘+","rank":2,"num":"11","nums":{"392":17,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1048886\/20201109033726.gif","nickname":"出🎒刷房主v喊","rank":3,"num":"10","nums":{"392":31,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1298428\/1604497277255.jpg","nickname":"猫小朵.H","rank":4,"num":"5","nums":{"392":25,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1027193\/1604824395276.jpg","nickname":"好宝宝","rank":5,"num":"2","nums":{"392":5,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1324877\/20201107184958.gif","nickname":"ya.叶诗","rank":6,"num":"2","nums":{"392":9,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1317597\/1604802389650.jpg","nickname":"Ya.楠楠","rank":7,"num":"2","nums":{"392":28,"393":1,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1358384\/20201105232809.gif","nickname":"Y.佳妍","rank":8,"num":"1","nums":{"392":2,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1344060\/1604217420913.jpg","nickname":"H.☆小西西☆","rank":9,"num":"1","nums":{"392":4,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1343400\/20201109075305.gif","nickname":"听闻、","rank":10,"num":"1","nums":{"392":11,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1335540\/20201106134342.gif","nickname":"H.北京柳岩","rank":11,"num":"1","nums":{"392":9,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1334705\/20201108181305.gif","nickname":"Ya.失眠","rank":12,"num":"1","nums":{"392":8,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1326948\/1604593549423.jpg","nickname":"Ya.林煜","rank":13,"num":"1","nums":{"392":32,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1323060\/1604417988257.jpg","nickname":"Ya.奈奈","rank":14,"num":"1","nums":{"392":22,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1309645\/1602408075722.jpg","nickname":"小二💞女神套装","rank":15,"num":"1","nums":{"392":10,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1302366\/20201105150411.gif","nickname":"欢呀欢","rank":16,"num":"1","nums":{"392":2,"393":1,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1304453\/1604278857039.jpg","nickname":"H·情欲੭要温柔","rank":17,"num":"1","nums":{"392":6,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1252565\/1604214204474.jpg","nickname":"H.乐儿","rank":18,"num":"1","nums":{"392":0,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1249860\/1604497545728.jpg","nickname":"H.风月\/擅接问","rank":19,"num":"1","nums":{"392":24,"393":1,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1181895\/20201003225426.gif","nickname":"可乐A","rank":20,"num":"1","nums":{"392":2,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1142539\/20200929165526.gif","nickname":"斯斯斯","rank":21,"num":"1","nums":{"392":3,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1121548\/20200818094249.gif","nickname":"陶子没有快乐💞","rank":22,"num":"1","nums":{"392":2,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1112110\/1603610658279.jpg","nickname":"颜颜💞小可爱丫","rank":23,"num":"1","nums":{"392":12,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1095109\/1600826339961.jpg","nickname":"H.珂珂\/刺激","rank":24,"num":"1","nums":{"392":1,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1089091\/1598555759286.jpg","nickname":"没见过大件","rank":25,"num":"1","nums":{"392":3,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1061814\/20200831141626.gif","nickname":"奈斯收背包","rank":26,"num":"1","nums":{"392":26,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/1061786\/20201109121857.gif","nickname":"辰辰辰","rank":27,"num":"1","nums":{"392":3,"393":0,"394":0}},{"avatar":"http:\/\/image2.fqparty.com\/Album\/1359051\/1604666776289.jpg","nickname":"Y.驚鴻","rank":28,"num":"1","nums":{"392":0,"393":0,"394":0}}]},"list2":{"list":[{"uid":1350962,"coin":26658,"nickname":"Ms.茶梨秘书","avatar":"http:\/\/image2.fqparty.com\/Album\/1350962\/1604469369269.jpg","num":1},{"uid":1344823,"coin":22944,"nickname":"简爱的宝贝","avatar":"http:\/\/image2.fqparty.com\/Album\/1344823\/1603552508668.jpg","num":2},{"uid":1061814,"coin":14298,"nickname":"奈斯收背包","avatar":"http:\/\/image2.fqparty.com\/1061814\/20200831141626.gif","num":3},{"uid":1298427,"coin":11736,"nickname":"抽抽更健康","avatar":"http:\/\/image2.fqparty.com\/1298427\/20201103101146.gif","num":4},{"uid":1343400,"coin":9510,"nickname":"听闻、","avatar":"http:\/\/image2.fqparty.com\/1343400\/20201109075305.gif","num":5},{"uid":1186155,"coin":6678,"nickname":"江湖故人","avatar":"http:\/\/image2.fqparty.com\/1186155\/20200918103225.gif","num":6},{"uid":1048886,"coin":5856,"nickname":"出🎒刷房主v喊","avatar":"http:\/\/image2.fqparty.com\/1048886\/20201109033726.gif","num":7},{"uid":1304216,"coin":4734,"nickname":"仙女朵🧚‍♀️","avatar":"http:\/\/image2.fqparty.com\/1304216\/20201107110430.gif","num":8},{"uid":1089091,"coin":4602,"nickname":"没见过大件","avatar":"http:\/\/image2.fqparty.com\/Album\/1089091\/1598555759286.jpg","num":9},{"uid":1358656,"coin":4536,"nickname":"    .","avatar":"http:\/\/thirdqq.qlogo.cn\/g?b=oidb&k=6YnnnqFvlPsK1tsHHzicaxQ&s=100&t=1593679190","num":10},{"uid":1347845,"coin":4440,"nickname":"唯爱","avatar":"http:\/\/image2.fqparty.com\/Album\/1347845\/1604665405287.jpg","num":11},{"uid":1323395,"coin":4026,"nickname":"放屁带点汁儿","avatar":"http:\/\/image2.fqparty.com\/Album\/1323395\/1604636031738.jpg","num":12},{"uid":1342763,"coin":3354,"nickname":"没有楠的爱","avatar":"http:\/\/image2.fqparty.com\/Album\/1342763\/1604888113299.jpg","num":13},{"uid":1339787,"coin":3126,"nickname":"小熙啊","avatar":"http:\/\/image2.fqparty.com\/1339787\/20201107005114.gif","num":14},{"uid":1000130,"coin":2994,"nickname":"66🎈","avatar":"http:\/\/image2.fqparty.com\/Album\/1000130\/1602247390613.jpg","num":15},{"uid":1358952,"coin":2862,"nickname":"入海","avatar":"http:\/\/image2.fqparty.com\/Album\/1358952\/1604663593089.jpg","num":16},{"uid":1337633,"coin":2730,"nickname":"Ms.茶梨助理","avatar":"http:\/\/image2.fqparty.com\/Album\/1337633\/1604582526255.jpg","num":17},{"uid":1321894,"coin":2598,"nickname":"发der","avatar":"http:\/\/image2.fqparty.com\/Album\/1321894\/1603862481540.jpg","num":18},{"uid":1142326,"coin":2532,"nickname":"玖⁠生⁣","avatar":"http:\/\/image2.fqparty.com\/\/Album\/1142326\/1591097839969.jpg","num":19},{"uid":1142539,"coin":2400,"nickname":"斯斯斯","avatar":"http:\/\/image2.fqparty.com\/1142539\/20200929165526.gif","num":20},{"uid":1040085,"coin":2400,"nickname":"简爱呢","avatar":"http:\/\/image2.fqparty.com\/Album\/1040085\/1604228320630.jpg","num":21},{"uid":1346062,"coin":2334,"nickname":"我爱你2020","avatar":"http:\/\/image2.fqparty.com\/1346062\/20201102122727.gif","num":22},{"uid":1338348,"coin":2334,"nickname":"-阿星","avatar":"http:\/\/image2.fqparty.com\/1338348\/20201014180909.jpg","num":23},{"uid":1361858,"coin":2268,"nickname":"陶子是个憨憨","avatar":"http:\/\/image2.fqparty.com\/Album\/1361858\/1604899075799.jpg","num":24},{"uid":1359087,"coin":2268,"nickname":"嗯咯","avatar":"http:\/\/image2.fqparty.com\/Album\/1359087\/1604715518411.jpg","num":25},{"uid":1345437,"coin":2268,"nickname":"八戒很时尚","avatar":"http:\/\/image2.fqparty.com\/Album\/1345437\/1604899065747.jpg","num":26},{"uid":1299526,"coin":2268,"nickname":"♥养乐多","avatar":"http:\/\/image2.fqparty.com\/Album\/1299526\/1598893690891.jpg","num":27},{"uid":1115169,"coin":2268,"nickname":"杀阡陌。","avatar":"http:\/\/image2.fqparty.com\/1115169\/20201107074915.gif","num":28},{"uid":1071671,"coin":2268,"nickname":"温老师","avatar":"http:\/\/image2.fqparty.com\/Album\/1071671\/1604860610006.jpg","num":29},{"uid":1359182,"coin":2202,"nickname":"佳妍陪档场控","avatar":"http:\/\/image2.fqparty.com\/Album\/1359182\/1604659619135.jpg","num":30},{"uid":1154719,"coin":2202,"nickname":"XiaoC","avatar":"http:\/\/image2.fqparty.com\/Album\/1154719\/1603035766232.jpg","num":31},{"uid":1234566,"coin":1914,"nickname":"天天熬夜秃死你们","avatar":"http:\/\/image2.fqparty.com\/1234566\/20201102203548.gif","num":32},{"uid":1304863,"coin":1584,"nickname":"好大一只狗","avatar":"http:\/\/image2.fqparty.com\/Album\/1304863\/1604895096306.jpg","num":33},{"uid":1358063,"coin":1350,"nickname":"极致温柔","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/fgC761et8xq9kcZnibymEBkMicqL7trQaUqibJFEibicoI5vfh2JGnyJsmE83kJGhrgKRlHEyrGXdsT2Gia5sgtkffVA\/0","num":34},{"uid":1336878,"coin":1350,"nickname":"皮卡丘♥不配","avatar":"http:\/\/image2.fqparty.com\/Album\/1336878\/1604806474498.jpg","num":35},{"uid":1099995,"coin":1350,"nickname":"阿花","avatar":"http:\/\/image2.fqparty.com\/\/gifttx\/1099995.gif","num":36},{"uid":1129446,"coin":1284,"nickname":"芒果超可爱❤️","avatar":"http:\/\/image2.fqparty.com\/1129446\/20201108235909.gif","num":37},{"uid":1027193,"coin":1254,"nickname":"好宝宝","avatar":"http:\/\/image2.fqparty.com\/Album\/1027193\/1604824395276.jpg","num":38},{"uid":1359628,"coin":1056,"nickname":"iloveuuu","avatar":"http:\/\/image2.fqparty.com\/\/Public\/Uploads\/image\/logo.png","num":39},{"uid":1328217,"coin":1020,"nickname":"婷儿专业陪档","avatar":"http:\/\/image2.fqparty.com\/Album\/1328217\/1603995424021.jpg","num":40},{"uid":1326948,"coin":924,"nickname":"Ya.林煜","avatar":"http:\/\/image2.fqparty.com\/Album\/1326948\/1604593549423.jpg","num":41},{"uid":1115656,"coin":888,"nickname":"柠檬薄荷糖","avatar":"http:\/\/image2.fqparty.com\/Album\/1115656\/1604769467517.jpg","num":42},{"uid":1329092,"coin":858,"nickname":" 听闻余生","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/2QV6cLNmDT3h7I2KMjPCwnWElicQYnQASwNvogs7CCXIgNByzd63GRcrTyhibiaianZ7xqruPekDktyHua1xS47Cgg\/0","num":43},{"uid":1181895,"coin":792,"nickname":"可乐A","avatar":"http:\/\/image2.fqparty.com\/1181895\/20201003225426.gif","num":44},{"uid":1094795,"coin":792,"nickname":"Ya.简爱\/聘+","avatar":"http:\/\/image2.fqparty.com\/Album\/1094795\/1604886768001.jpg","num":45},{"uid":1291454,"coin":660,"nickname":"贵妇狗","avatar":"http:\/\/image2.fqparty.com\/\/Public\/Uploads\/image\/logo.png","num":46},{"uid":1361671,"coin":594,"nickname":"城南以北","avatar":"http:\/\/image2.fqparty.com\/Album\/1361671\/1604856665553.jpg","num":47},{"uid":1308164,"coin":594,"nickname":"Ms.茶梨","avatar":"http:\/\/image2.fqparty.com\/Album\/1308164\/1604656980076.jpg","num":48},{"uid":1106203,"coin":594,"nickname":"番茄小王子","avatar":"http:\/\/image2.fqparty.com\/1106203\/20200711130103.jpg","num":49},{"uid":1358414,"coin":528,"nickname":"卡奇男友","avatar":"http:\/\/image2.fqparty.com\/Album\/1358414\/1604665300103.jpg","num":50},{"uid":1334705,"coin":396,"nickname":"Ya.失眠","avatar":"http:\/\/image2.fqparty.com\/1334705\/20201108181305.gif","num":51},{"uid":1323060,"coin":396,"nickname":"Ya.奈奈","avatar":"http:\/\/image2.fqparty.com\/Album\/1323060\/1604417988257.jpg","num":52},{"uid":1359243,"coin":264,"nickname":"三岁哥哥","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/bMMZRFtrhzvKYMmfC0ZbCCdJx3TPD7kh9ofLLBCExQia6NHApZTI33kibTGGDLH0l9KKDyDltqbriblibKdoUvW8FQ\/0","num":53},{"uid":1324777,"coin":264,"nickname":"奶爸-凉音他大哥","avatar":"http:\/\/image2.fqparty.com\/Album\/1324777\/1603862800584.jpg","num":54},{"uid":1361584,"coin":198,"nickname":"尚且","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJdic50nGmb0a4Acf9YdtuicO9IPlz09Nzf8xcCAsOoAD4aAbbIl5ib52Oy91NwkaChOT8EWHOmYN1Nw\/0","num":55},{"uid":1359666,"coin":198,"nickname":"酒馆常客_","avatar":"http:\/\/image2.fqparty.com\/Album\/1359666\/1604750361641.jpg","num":56},{"uid":1337532,"coin":198,"nickname":"Ya.小哈 🎡","avatar":"http:\/\/image2.fqparty.com\/Album\/1337532\/1604897316664.jpg","num":57},{"uid":1331538,"coin":198,"nickname":"A啊嘟跟","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTL5MXC3fNrjBQ8WAGZEMGgeo2a5OwErLhno10Kaa3nqFu0on4ABTQTK3eRxEDMNzLasoUTTMMVBVg\/0","num":58},{"uid":1303444,"coin":198,"nickname":"稳定发挥","avatar":"http:\/\/image2.fqparty.com\/\/Public\/Uploads\/image\/logo.png","num":59},{"uid":1203407,"coin":198,"nickname":"大明湖","avatar":"http:\/\/image2.fqparty.com\/Album\/1203407\/1604507611577.jpg","num":60},{"uid":1035895,"coin":198,"nickname":"杀杀杀","avatar":"http:\/\/image2.fqparty.com\/1035895\/20201029154420.gif","num":61},{"uid":1016590,"coin":198,"nickname":"余生？！？！","avatar":"http:\/\/image2.fqparty.com\/\/dir1\/1016590_5d4962b333788.jpg","num":62},{"uid":1361386,"coin":132,"nickname":"心上人","avatar":"http:\/\/image2.fqparty.com\/Album\/1361386\/1604843226028.jpg","num":63},{"uid":1360374,"coin":132,"nickname":"心醉","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTKf0riaiaiaWcQIYDnd2sL2Lt9VhdkammmJbYQLuM0R3agXrxQpGiaYopvoiclvz5iamSCBwQNM8ZVNiaQicA\/0","num":64},{"uid":1359742,"coin":132,"nickname":"ka.小智\/团子","avatar":"http:\/\/image2.fqparty.com\/Album\/1359742\/1604823849301.jpg","num":65},{"uid":1357119,"coin":132,"nickname":"Go.嗑","avatar":"http:\/\/image2.fqparty.com\/1357119\/20201109021324.gif","num":66},{"uid":1353463,"coin":132,"nickname":"爱吃糖的小Q","avatar":"http:\/\/image2.fqparty.com\/Album\/1353463\/1604194475574.jpg","num":67},{"uid":1345963,"coin":132,"nickname":"Ms.婷儿","avatar":"http:\/\/image2.fqparty.com\/Album\/1345963\/1604809829434.jpg","num":68},{"uid":1344060,"coin":132,"nickname":"H.☆小西西☆","avatar":"http:\/\/image2.fqparty.com\/Album\/1344060\/1604217420913.jpg","num":69},{"uid":1343798,"coin":132,"nickname":"江浩","avatar":"http:\/\/image2.fqparty.com\/Album\/1343798\/1603405002786.jpg","num":70},{"uid":1339161,"coin":132,"nickname":"高博大魔王","avatar":"http:\/\/image2.fqparty.com\/Album\/1339161\/1604319004844.jpg","num":71},{"uid":1338618,"coin":132,"nickname":"歆酱💞水晶鞋","avatar":"http:\/\/image2.fqparty.com\/Album\/1338618\/1604895215458.jpg","num":72},{"uid":1334623,"coin":132,"nickname":"Ya.凉音","avatar":"http:\/\/image2.fqparty.com\/Album\/1334623\/1602321543031.jpg","num":73},{"uid":1333450,"coin":132,"nickname":"天津赵露思","avatar":"http:\/\/image2.fqparty.com\/Album\/1333450\/1604831229106.jpg","num":74},{"uid":1313177,"coin":132,"nickname":"电神","avatar":"http:\/\/image2.fqparty.com\/Album\/1313177\/1601308286887.jpg","num":75},{"uid":1304453,"coin":132,"nickname":"H·情欲੭要温柔","avatar":"http:\/\/image2.fqparty.com\/Album\/1304453\/1604278857039.jpg","num":76},{"uid":1294833,"coin":132,"nickname":"真烦人","avatar":"http:\/\/image2.fqparty.com\/Album\/1294833\/1604036704135.jpg","num":77},{"uid":1249860,"coin":132,"nickname":"H.风月\/擅接问","avatar":"http:\/\/image2.fqparty.com\/Album\/1249860\/1604497545728.jpg","num":78},{"uid":1086812,"coin":132,"nickname":"奕辰","avatar":"http:\/\/image2.fqparty.com\/Album\/1086812\/1604212404048.jpg","num":79},{"uid":1361730,"coin":66,"nickname":"北北","avatar":"http:\/\/image2.fqparty.com\/Album\/1361730\/1604870542245.jpg","num":80},{"uid":1361475,"coin":66,"nickname":"Y.团子","avatar":"http:\/\/image2.fqparty.com\/Album\/1361475\/1604894772594.jpg","num":81},{"uid":1360791,"coin":66,"nickname":"凉薄","avatar":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Uol7Rvt3IjkLa5eUGLOUEkOjNznnKxgszOjjk5PN2bNiatZmYaCSuSNtoxDSnlhANWlPAMFPbQSypCp4CrW0R1A\/0","num":82},{"uid":1359106,"coin":66,"nickname":"一溪风月.","avatar":"http:\/\/thirdqq.qlogo.cn\/g?b=oidb&k=ibh0fAPSq9jQNLLAZBjtmiag&s=100&t=1552875823","num":83},{"uid":1359071,"coin":66,"nickname":"Y.夏天\/歌","avatar":"http:\/\/image2.fqparty.com\/Album\/1359071\/1604720538467.jpg","num":84},{"uid":1357652,"coin":66,"nickname":"L小泽-😐-","avatar":"http:\/\/image2.fqparty.com\/1357652\/20201105042439.jpg","num":85},{"uid":1357464,"coin":66,"nickname":"南瞻部洲","avatar":"http:\/\/thirdqq.qlogo.cn\/g?b=oidb&k=3FyPINmcYXNfX3aF6Lic6UA&s=100&t=1590424054","num":86},{"uid":1356369,"coin":66,"nickname":"Black St","avatar":"http:\/\/image2.fqparty.com\/Album\/1356369\/1604580649923.jpg","num":87},{"uid":1355847,"coin":66,"nickname":"H.妹妹","avatar":"http:\/\/image2.fqparty.com\/Album\/1355847\/1604664615772.jpg","num":88},{"uid":1354358,"coin":66,"nickname":"咖","avatar":"http:\/\/image2.fqparty.com\/Album\/1354358\/1604896014604.jpg","num":89},{"uid":1353326,"coin":66,"nickname":"17","avatar":"http:\/\/image2.fqparty.com\/Album\/1353326\/1604375054352.jpg","num":90},{"uid":1352959,"coin":66,"nickname":"佬贡","avatar":"http:\/\/image2.fqparty.com\/\/Public\/Uploads\/image\/logo.png","num":91},{"uid":1349674,"coin":66,"nickname":"心宣","avatar":"http:\/\/image2.fqparty.com\/1349674\/20201102011550.gif","num":92},{"uid":1344962,"coin":66,"nickname":".🚬.","avatar":"http:\/\/image2.fqparty.com\/1344962\/20201030231623.gif","num":93},{"uid":1342536,"coin":66,"nickname":"崽.","avatar":"http:\/\/thirdqq.qlogo.cn\/g?b=oidb&k=wNayCNyAUvBB8MZicXjj7lw&s=100&t=1601652460","num":94},{"uid":1339215,"coin":66,"nickname":"快乐难的要死","avatar":"http:\/\/image2.fqparty.com\/1339215\/20201015201604.jpg","num":95},{"uid":1337721,"coin":66,"nickname":"所念皆星河.","avatar":"http:\/\/image2.fqparty.com\/Album\/1337721\/1604833414961.jpg","num":96},{"uid":1335540,"coin":66,"nickname":"H.北京柳岩","avatar":"http:\/\/image2.fqparty.com\/1335540\/20201106134342.gif","num":97},{"uid":1326879,"coin":66,"nickname":"☔☔☔☔","avatar":"http:\/\/image2.fqparty.com\/Album\/1326879\/1604770661503.jpg","num":98},{"uid":1322591,"coin":66,"nickname":"02💞二次元","avatar":"http:\/\/image2.fqparty.com\/1322591\/20201107212342.gif","num":99},{"uid":1314574,"coin":66,"nickname":"◎☆👿◎","avatar":"http:\/\/image2.fqparty.com\/Album\/1314574\/1601182638303.jpg","num":100},{"uid":1300558,"coin":66,"nickname":"君已归韶华却不在","avatar":"http:\/\/image2.fqparty.com\/Album\/1300558\/1604475208444.jpg","num":101},{"uid":1288838,"coin":66,"nickname":"Ms.冷御小号","avatar":"http:\/\/image2.fqparty.com\/Album\/1288838\/1604426928516.jpg","num":102},{"uid":1281711,"coin":66,"nickname":"猪猪🐷🐷","avatar":"http:\/\/image2.fqparty.com\/Album\/1281711\/1604247653895.jpg","num":103},{"uid":1256804,"coin":66,"nickname":"君莫笑已上线","avatar":"http:\/\/image2.fqparty.com\/Album\/1256804\/1598412569674.jpg","num":104},{"uid":1127212,"coin":66,"nickname":"吴亦凡.","avatar":"http:\/\/image2.fqparty.com\/Album\/1127212\/1603024193639.jpg","num":105},{"uid":1123554,"coin":66,"nickname":"33333333","avatar":"http:\/\/image2.fqparty.com\/1123554\/20201108163200.gif","num":106},{"uid":1121548,"coin":66,"nickname":"陶子没有快乐💞","avatar":"http:\/\/image2.fqparty.com\/1121548\/20200818094249.gif","num":107},{"uid":1116816,"coin":66,"nickname":"妍三岁","avatar":"http:\/\/image2.fqparty.com\/Album\/1116816\/1601735225822.jpg","num":108},{"uid":1101756,"coin":66,"nickname":"老王助理 小兔子","avatar":"http:\/\/image2.fqparty.com\/Album\/1101756\/1604419209142.jpg","num":109},{"uid":1095109,"coin":66,"nickname":"H.珂珂\/刺激","avatar":"http:\/\/image2.fqparty.com\/Album\/1095109\/1600826339961.jpg","num":110},{"uid":1061786,"coin":66,"nickname":"辰辰辰","avatar":"http:\/\/image2.fqparty.com\/1061786\/20201109121857.gif","num":111},{"uid":1054501,"coin":66,"nickname":"✨ོꦿ戒砸এ᭄","avatar":"http:\/\/image2.fqparty.com\/Album\/1054501\/1595964926289.jpg","num":112}],
+		// "user":{"rank":"未上榜","num":0,"avatar":"http:\/\/image2.fqparty.com\/1178493\/20201013172327.gif","nickname":"lx123","coin":0}}}
+		var index = 0;
+		var datalist = null;
+		document.getElementById('toggleBtn1').onclick = function(){
+			if(index == 0) return;
+			document.getElementById('toggleBtn1').style.backgroundImage = 'url(../huodong11/images/tab1.png)';
+			document.getElementById('toggleBtn2').style.backgroundImage = 'url(../huodong11/images/tab2.png)';
+			index = listfunc(datalist, 0);
+		}
+		
+		document.getElementById('toggleBtn2').onclick = function(){
+			if(index == 1) return;
+			document.getElementById('toggleBtn2').style.backgroundImage = 'url(../huodong11/images/tab1.png)';
+			document.getElementById('toggleBtn1').style.backgroundImage = 'url(../huodong11/images/tab2.png)';
+			index = listfunc(datalist, 1);
+		}
+
+		var getQueryString = function(name){
+		        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		        var r = window.location.search.substr(1).match(reg);
+		        if(r!=null)return  unescape(r[2]); return null;
+		}
+
+		var listfunc = function(_data, _index){
+			var data = _data[`list${[1,2][_index]}`];
+			if(null == data){
+				return;
+			}
+			var str = "";
+			var list = data.list;
+			var avatars = _index == 0 ? [
+				'./huodong11/images/女神.svga',
+				'./huodong11/images/公主.svga',
+				'./huodong11/images/少女.svga',
+				'./huodong11/images/灰姑娘.svga',
+				'./huodong11/images/灰姑娘.svga'
+				] : [
+				'./huodong11/images/总裁.svga',
+				'./huodong11/images/男神.svga',
+				'./huodong11/images/暖男.svga'
+				];
+			var count = list.length > 20 ? 20 : list.length;
+			for(var i = 0; i < count; ++i){
+				if(_index == 0){
+					str += `<div class="task4">
+							<div class="task-list-number">${i+1}</div>
+							<div class="task-list-avatar">
+								<img class="task-list-img" src="${list[i].avatar}" alt="" />
+								<div class="task-list-img-frame" id="avatarFrame${i}"></div>
+							</div>
+							<div class="task4-container">
+								<img class="task-list-gift" src="./huodong11/images/gift.png" alt="" />
+								<div class="task-list-name0">${list[i].nums[392]||0}</div>
+								<div class="task-list-name1">${list[i].nums[393]||0}</div>
+								<div class="task-list-name2">${list[i].nums[394]||0}</div>
+								<div class="task-list-name">${list[i].nickname}</div>
+								<div class="task-list-integral">${list[i].num}套</div>
+							</div>
+						</div>`;
+				}else{
+					str += `<div class="task4">
+							<div class="task-list-number">${i+1}</div>
+							<div class="task-list-avatar">
+								<img class="task-list-img" src="${list[i].avatar}" alt="" />
+								<div class="task-list-img-frame" id="avatarFrame${i}"></div>
+							</div>
+							<div class="task4-container">
+								<div class="task-list-name22">${list[i].nickname}</div>
+								<div class="task-list-integral2">挚爱值${list[i].coin}</div>
+							</div>
+						</div>`;
+				}
+			}
+			document.getElementById('list').innerHTML = str;
+			
+			for(var i = 0; i < list.length; ++i){
+				if(avatars[i]){
+					var player = new SVGA.Player('#avatarFrame'+i);
+					var parser = new SVGA.Parser('#avatarFrame'+i); // 如果你需要支持 IE6+，那么必须把同样的选择器传给 Parser。
+					parser.load(avatars[i], (function(_player) {
+						return function(videoItem){
+							_player.setVideoItem(videoItem);
+							_player.startAnimation();
+						}
+					})(player))
+					
+				}
+				
+			}
+			
+			if(_index == 0){
+				document.getElementById('container1').style.display = "block";
+				document.getElementById('container2').style.display = "none";
+			}else{
+				document.getElementById('container1').style.display = "none";
+				document.getElementById('container2').style.display = "block";
+			}
+			
+			if(data.user.rank == 0){
+				document.getElementById('myrank').style.display = "none";
+				document.getElementById('weishangbang').style.display = "block";
+				document.getElementById('myrank').innerHTML = "未上榜";
+				document.getElementById('weishangbang').innerHTML = "未上榜";
+				// document.getElementById('frame').setAttribute("src", "");
+			}else{
+				document.getElementById('myrank').style.display = "block";
+				document.getElementById('weishangbang').style.display = "none";
+				document.getElementById('myrank').innerHTML = data.user.rank;
+				document.getElementById('weishangbang').innerHTML = data.user.rank;
+				// document.getElementById('frame').setAttribute("src", `${avatars[data.user.rank]}`);
+				
+				var myrank = parseInt(data.user.rank);
+				if(avatars[myrank-1]){
+					var player = new SVGA.Player('#avatarFrame');
+					var parser = new SVGA.Parser('#avatarFrame'); // 如果你需要支持 IE6+，那么必须把同样的选择器传给 Parser。
+					parser.load(avatars[myrank-1], function(videoItem) {
+					    player.setVideoItem(videoItem);
+					    player.startAnimation();
+					    player.onFinished(function(){
+					    });
+					})
+				}
+			}
+			
+			
+			document.getElementById('avatar').setAttribute("src", data.user.avatar);
+			if(_index == 0){
+				document.getElementById('name').innerHTML = data.user.nickname;
+				document.getElementById('num').innerHTML = `${data.user.num}套`;
+				document.getElementById('num0').innerHTML = `${data.user.nums[392]||0}`;
+				document.getElementById('num1').innerHTML = `${data.user.nums[393]||0}`;
+				document.getElementById('num2').innerHTML = `${data.user.nums[394]||0}`;
+			}else{
+				document.getElementById('name2').innerHTML = data.user.nickname;
+				document.getElementById('num').innerHTML = `挚爱值${data.user.coin}`;
+			}
+			return _index;
+		}
+		
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState == 4) {
+				if(xhr.status >= 200 && xhr.status < 400){
+					var response = xhr.responseText;
+					var data = JSON.parse(response);
+					if(data.code == 200 && data.data != null){
+						// _callback.apply(_object, [data.data]);
+						datalist = data.data;
+						listfunc(datalist, 0);
+					}
+				}else{
+				}   
+			}
+		};
+		
+		var host = "";
+		if(window.location.origin.indexOf("localhost")!=-1){
+			// host = "http://newmtestapi.fqparty.com";
+			host = "http://newmapi2.fqparty.com";
+		}else{
+			host = window.location.origin;
+		}
+		
+		xhr.open("GET", `${host}/api/v1/huodong111?mtoken=${getQueryString("mtoken")}`, true);
+		xhr.setRequestHeader("token", getQueryString("mtoken"));
+		xhr.send();
+	</script>
+
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0042)https://www.heyheytalk.com/Music/SaveMusic -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>音恋 - 上传音乐</title>
+	<link rel="stylesheet" href="/web/index/css/musicstyle.css">
+	<link rel="stylesheet" href="/web/toastr/toastr.min.css">
+	<script type="text/javascript" src="/web/index/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/web/toastr/toastr.min.js"></script>
+	<style>
+		.headeres a {
+			vertical-align: top;
+			display: inline-block;
+			font-size: 1.6rem;
+			color: #FFFFFF;
+			line-height: 10%;
+			margin-right: 50%;
+		}
+		html, body {
+			width: 100%;
+			height: 100%;
+			font-size: 10px;
+		}
+		.user {
+			display: none;
+			font-size: 1.4rem;
+			float: right;
+			color: #FFFFFF;
+		}
+		.active {
+			color: #FFFFFF;
+			font-weight: bold;
+		}
+		.pagination li {display: inline-block;margin-right: -1%;padding: 2%;border: 1px; solid :#e2e2e2;min-width: 5%;text-align: center;}
+		.pagination li.active {background: #FF0000;color: #fff;border: 1px; solid :#FF0000;margin-top:5%;}
+		.pagination li a {display: block;text-align: center;}
+	</style>
+
+<body>
+		<div class="container">
+			<div class="headeres" >
+				<div class="box" style="background-color: #ff6860;">
+					<a href="/" class="logo"><img  src="https://image.fqparty.com/web2020428/logo1.png" style="position: relative; top:-80%;left:-50%;" alt=""></a>
+					<a href="{$web_url}/web/index.html" style="position: absolute; padding : 34px 0px 0px 0px;right:25%;">首页</a>
+					<a class="active" href="{$web_url}/web/music" style="position: absolute; padding : 34px 0px 0px 0px;right:7%;">音乐上传</a>
+					<a id="_pay" href="{$web_url}/web/wxpay"  style="position: absolute; padding : 34px 0px 0px 0%;right:-5%;">充值</a>
+<!--					&lt;!&ndash;<a href="javascript:;" class="user" style="display: inline;">登录</a>&ndash;&gt;-->
+                    {if condition="!empty($username)"}
+	                    <a id="logines" href="javascript:;"  style="position: absolute; padding : 34px 0px 0px 0px;right:-35%;">{$username}</a>
+						<a id="outLogin" href="javascript:;" style="position: absolute;  padding : 34px 0px 0px 0px;right:-45%;">退出</a>
+
+                    {/if}
+                    {if condition="empty($username)"}
+                    <a id="login" href="javascript:;"  style="position: absolute; padding : 34px 0px 0px 0px;right:-45%;">登录</a>
+
+                    {/if}
+				</div>
+			</div>
+			<div style="margin:7%;"></div><!-- 分离div -->
+			<div class="box" style="background-color: RGB(255,225,223);margin:0 auto;">
+				<div class="content-box">
+					<div class="search-box">
+						<button id="xj">下架</button>
+						<button id="sj">上架</button>
+					</div>
+					<table id="con_table" class="c-table" width="100%" >
+						<tbody>
+						<tr id="tableTitle" width="100%">
+							<th width="5%" align="left" >
+								<input class="check-all" type="checkbox" id="chk_all"><span class="zx" id="px" title="排序"></span>
+							</th>
+							<th width="15%">试听</th>
+							<th width="15%">歌名</th>
+							<th width="15%">歌手</th>
+							<th width="15%">类型</th>
+							<th width="20%">上传时间</th>
+							<th width="15%">状态</th>
+						</tr>
+						{if condition="!empty($data)"}
+						{volist name="data" id="list"}
+						<tr>
+							<input type="hidden" value="{$user_id}" name="user_id" id="user_id">
+							<!--<td width="20" style="text-align:left;"><input id="/heyhey/heyhey_music_4806654_1587625369_240.mp3" data-status="1"
+                                 class="check" type="checkbox"></td>-->
+							<td width="20" style="text-align:left;"><input type="checkbox" name="ids[]" value="{$list.id}"></td>
+							<td><i class="audio-btn icon"><audio src="{$list.song_url}" controls="controls"></audio></i></td>
+							<td width="200">{$list.song_name}</td>
+							<td style="cursor:pointer;" class="authorTd" data-type="2">{$list.songer}</td>
+							<td>{$list.type}</td>
+							<td>{$list.create_time}</td>
+							<td class="statusTd">{$list.sale}</td>
+						</tr>
+						{/volist}
+						<!--<tr>
+                            <td colspan="7">
+                                <button onclick="allSelect()">全选</button>
+                                <button onclick="notSelect()">全不选</button>
+                                <button onclick="invertSelect()">反选</button>
+                            </td>
+                        </tr>-->
+						<tr id="page-box">
+							<td colspan="9" style="">{$page|raw}</td>
+						</tr>
+						{else}
+						<tr class="no-records-found">
+							<td colspan="9" class="text-center">没有找到匹配的记录</td>
+						</tr>
+						{/if}
+						</tbody>
+					</table>
+				</div>
+				<div class="shadow" style="display: none;width:100%;height: 100%;background-color:rgba(0,0,0,0.6);position:fixed;left:0;top:0;z-index:999;">
+					<p style="font-size: 16px;color: #fff;line-height:40px;text-align: center;height: 40px;width:100%;position:absolute;top: 50%;margin-top: -20px;left:0;">
+						加载中...</p>
+				</div>
+			</div>
+
+			<!--<div id="_login-box"  class="popup-shadow" style="display: block;">
+                <div  class="login-box">
+                    <span id="close" class="close" title="关闭"></span>
+                    <p class="title">安全登录，防止被盗</p>
+                    <div class="input"><input id="phone" type="text" placeholder="请输入手机号"></div>
+                    <span class="notic tel"></span>
+                    <div class="input"><input id="ercode" style="width:200px;" type="text" placeholder="请输入验证码"><span class="yzm">获取验证码</span></div>
+                    <span class="notic yzmcode"></span>
+                    <button id="login_btn" class="login-btn">登录</button>
+                </div>
+            </div>-->
+
+			</div>
+
+		</div>
+		<div id="_login-box"  class="popup-shadow">
+			<div  class="login-box">
+				<span id="close" class="close" title="关闭" style="background:url(http://image.muayy.com/useravatar/20200515/89daa482e6a07db4e13d656e584cffb8.png)"></span>
+				<p class="title">安全登录，防止被盗</p>
+				<form id="director-form"  method="post" onsubmit="return buttons();">
+					<!--<form id="director-form"  method="post" action="/web/login">-->
+					<div class="input"><input id="phone"  name = 'phone' type="text" placeholder="请输入手机号"></div>
+					<span class="notic tel"></span>
+					<div class="input"><input id="ercode"  name = 'code' style="width:200px;" type="text" placeholder="请输入验证码"><span class="yzm">获取验证码</span></div>
+					<span class="notic yzmcode"></span>
+					<button id="login_btn" class="login-btn">登录</button>
+					<!--<input class="login-btn" type="submit" value="登录" />-->
+				</form>
+			</div>
+		</div>
+		<script>
+			$(function () {
+				$('.yzm').click(function(){
+					if ($(".yzm").text() != '获取验证码') {
+						return false;
+					}
+					var phone  = $('#phone').val();
+					$.ajax({
+						url:'/web/smsCode',
+						data:{phone:phone},
+						type:'post',
+						dataType:"json",
+						success:function(res){
+							if(res['code'] == 200){
+								clearInterval(timer); //清除计时器
+								var that = this;
+								that.disabled = true;
+								var count = 60;
+								var timer = setInterval(function(){
+									if(count>0){
+										count--;
+										$(".yzm").html("重新获取"+count +"s");
+										$(".yzm").attr('disabled',true);
+									}else{
+										$(".yzm").html("获取验证码");
+										that.disabled = false;
+										clearInterval(timer); //清除计时器
+									}
+								},1000);
+								console.log(res);
+								//window.location.href = 'http://newmtestapi.fqparty.com/web/music';
+							}else{
+								$(".yzm").html("重新发送短信");
+								that.disabled = false;
+								clearInterval(timer); //清除计时器
+							}
+						}
+					})
+				})
+			})
+			//退出
+			$(function () {
+				$('#outLogin').click(function(){
+					var status  = 1;
+					$.ajax({
+						url:'/web/loginOut',
+						data:{status:status},
+						type:'get',
+						dataType:"json",
+						success:function(res){
+							if(res['code'] == 200){
+								console.log(res);
+								window.location.href = window.location.href;
+							}
+						}
+					})
+				})
+			})
+			//登录
+			function buttons() {
+				var datas = $('form').serializeArray();
+				$.ajax({
+					async: false,    //表示请求是否异步处理
+					type: "post",    //请求类型
+					url: "/web/login",//请求的 URL地址
+					dataType: "json",//返回的数据类型
+					data: datas,
+					success: function (rs) {
+						if (rs.code !== 200) {
+							toastr.warning(rs.msg);
+							return false;
+						}
+						toastr.success(rs.msg);
+						setTimeout(location, 1000);   //延迟5秒刷新页面
+					},
+					error: function (rs) {
+						toastr.warning('请求失败');
+					}
+				});
+
+				function location() {
+					window.location.href = window.location.href;
+				}
+
+				return false;
+			}
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#close").click(function(){
+					$("#_login-box").hide();
+				});
+				$("#login").click(function(){
+					$("#_login-box").show();
+				});
+			});
+		</script>
+		<script type="text/javascript">
+			$("#chk_all").on('click', function () {
+				$("input[name='ids[]']").attr("checked", $(this).attr("checked"));
+				$("input[name='ids[]']").prop("checked", $(this).prop("checked"));
+			});
+			//下架
+			$("#xj").on('click', function () {
+				if ($("input[name='ids[]']").is(':checked')) {
+					// 获取所有选中的项并把选中项的文本组成一个字符串
+					var str = '';
+					$($("input[name='ids[]']:checked")).each(function () {
+						str += $(this).val() + ',';
+					});
+					var user_id = $("#user_id").val();
+					if (confirm("确认下架？")) {
+						$.ajax({
+							async: false,    //表示请求是否异步处理
+							type: 'get',
+							url: '/web/statusMusic',
+							data: {'ids': str, 'sale': 0, 'user_id': user_id},
+							success: function (rs) {
+								if (rs.code == 200) {
+									toastr.success(rs.msg);
+									window.location.reload();
+									//setTimeout(location, 1000);   //延迟5秒刷新页面
+								}
+								toastr.warning(rs.msg);
+								window.location.reload();
+								return false;
+							},
+							error: function (rs) {
+								toastr.warning('请求失败');
+							}
+
+						});
+					}
+				} else {
+					alert('未选中数据');
+				}
+				function location() {
+					window.location.href = window.location.href;
+				}
+				return false;
+			});
+			//上架
+			$("#sj").on('click', function () {
+				if ($("input[name='ids[]']").is(':checked')) {
+					// 获取所有选中的项并把选中项的文本组成一个字符串
+					var str = '';
+					$($("input[name='ids[]']:checked")).each(function () {
+						str += $(this).val() + ',';
+					});
+					var user_id = $("#user_id").val();
+					if (confirm("确认上架？")) {
+						$.ajax({
+							async: false,    //表示请求是否异步处理
+							type: 'get',
+							url: '/web/statusMusic',
+							data: {'ids': str, 'sale': 1, 'user_id': user_id},
+							success: function (rs) {
+								if (rs.code == 200) {
+									toastr.success(rs.msg);
+									window.location.reload();
+									//setTimeout(location, 1000);   //延迟5秒刷新页面
+								}
+								toastr.warning(rs.msg);
+								window.location.reload();
+								return false;
+							},
+							error: function (rs) {
+								toastr.warning('请求失败');
+							}
+
+						});
+					}
+				} else {
+					alert('未选中数据');
+				}
+				function location() {
+					window.location.href = window.location.href;
+				}
+				return false;
+			});
+		</script>
+</body>

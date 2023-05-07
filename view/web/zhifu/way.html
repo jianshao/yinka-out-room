@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="pixel-ratio-2 retina watch-active-state"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="robots" content="all">
+    <meta name="author" content="Tencent-TGideas">
+    <meta name="Copyright" content="YIyou">
+    <meta name="Description" content="音恋充值">
+    <meta name="Keywords" content="音恋充值">
+    <title>音恋充值</title>
+    <link rel="stylesheet" href="./zhifu/css/style.css">
+    <link rel="shortcut icon" href="https://image.fqparty.com/images/favicon.png"  type="image/x-icon">
+</head>
+
+<body>
+<div class="statusbar-overlay"></div>
+<div class="views">
+    <div class="view view-main">
+        <div class="pages">
+            <noscript>
+                <div class="no-js-tips">Javascript被系统禁用，导致无法正常访问，请检查浏览器设置！</div>
+            </noscript>
+
+            <div class="page-content">
+                <div id="wrong-account">请输入正确的账号</div>
+                <!-- 安卓界面 -->
+                <div class="main-post androd">
+                    <div id="mask"></div>
+                    <div class="title-container">
+                        <img  src="../../../public/web/images/zhifubao.png">
+                        <div class="account-box">
+                            <div class="input-box">
+                                {if condition="!empty($id)"}
+                                <input type="number" id="account" value="{$id}" name="account" class="text account-enpty" placeholder="请输入账号ID" style="width: 30rem;
+">
+                                {/if}
+                                {if condition="empty($id)"}
+                                <input type="number" id="account" name="account" class="text account-enpty" placeholder="请输入账号ID" style="width: 30rem;
+">
+                                {/if}
+
+                                <!-- <img id="clear-account" src="./zhifu/images/ic_avatar_default.png">-->
+                            </div>
+                            <div id="nick-name"></div>
+                        </div>
+                    </div>
+                    <!-- 历史记录列表 20180718 -->
+                    <div class="history">
+                        <div class="user-list">
+                            <!-- <div class="user-info" data-account="111" data-head="https://api.52tt.com/face?account=tt12094226" data-nick-name="孙策">
+                                <img class="user-icon" src="">
+                                <div class="account-box">
+                                    <div class="account">111</div>
+                                    <div class="nick-name">孙策</div>
+                                </div>
+                            </div> -->
+                        </div>
+                        <!-- <div id="clear-history" class="clear-history">清空充值记录</div> -->
+                    </div>
+                    <div class="slec-container">
+                        <h4>选择充值金额</h4>
+                        <div class="content-text">
+                            <div class="groups-list row">
+                                {volist name="data" id="result" offset="0" length='10' key="k"}
+                                <a href="#" class="col-50 groups-item {if $k == 6 }active {/if}" data-count="{$result.rmb}" rmb="{$result.rmb}">
+                                    <span>{$result.rmb}元  ({$result.diamond} 番茄豆)</span>
+                                </a>
+                                {/volist}
+                                <!-- <div href="" class="col-50 groups-item groups-inp" data-count="">
+                                    <span><input type="tel" class="text groups-enpty" placeholder="其他金额(单位:元)" maxlength="5"></span>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-contain">
+                        <a href="#" class="confirm-blcok" id="confirmBtn" data-count="6" data-type="0">确认充值</a>
+                        <!--<a href="" class="confirm-blcok" id="confirmBtn" data-count="" data-type="0" data-account="">确定金额</a>-->
+                    </div>
+                    <div class="submit-contain">
+                        <span style="color: red; text-align: center;display:block;" id="tips"></span>
+                    </div>
+                    <div class="question-box">
+                        <a href="http://fqparty.com/czsm.html" class="external question-link" id="questionBtn">
+                            <img class="question-icon" src="./zhifu/images/ic_invite_code.png">
+                            <div class="question-text">充值问题</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <script src="./js/framework.min.js"></script> -->
+<script src="http://newmtestapi.fqparty.com/web/index/js/jquery.min.js"></script>
+<script src="https://www.jq22.com/jquery/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function(){
+        var account = $("#account").val();
+        if(account.length == 7) {
+            $.ajax({
+                url : "/web/userData",
+                type:'GET',
+                data : {
+                    uid : account
+                },
+                success : function(result) {
+                    if(result.code == 200) {
+                        var nickname = result.data.nickname;
+                        var avatar = result.data.avatar;
+                        $("#user-icon").attr('src',avatar);
+                        $("#nick-name").html(nickname);
+                    } else{
+                        alert('请输入正确的账号id')
+                    }
+
+                }
+            });
+        }
+    })
+    var rmb = 100;
+    // 选中充值
+    $('.groups-list').on('click', '.groups-item', function(e){
+        $('.groups-item').removeClass('active');
+        $(this).addClass('active');
+        rmb = $(this).attr('rmb');
+    });
+
+    // $("#account").blur(function() {
+    //     var uid = $("#uid").val();
+    //     $.ajax({
+    //         url : "/web/gzhindex",
+    //         type:'GET',
+    //         data : {
+    //             uid : uid,rmb : rmb,channel : 3
+    //         },
+    //         success : function(result) {
+    //             console.log(result)
+    //         }
+    //     });
+    // });
+
+    $("#confirmBtn").click(function() {
+        var uid = $("#account").val();
+        var url = "{$web_url}web/gzhindex";
+        url = url + "?uid=" + uid + "&rmb=" + rmb;
+        window.location.href = url;
+
+
+        // $.ajax({
+        //
+        //     url : "/web/gzhindex",
+        //     type:'GET',
+        //     data : {
+        //         uid : uid,rmb : rmb
+        //     },
+        //     success : function(result) {
+        //
+        //     },
+        //     error: function(e) {
+        //         alert(JSON.stringify(e));
+        //     }
+        // });
+
+        // var xmld=new XMLHttpRequest();
+        // xmld.open("GET", url, true); //打开页面
+        // xmld.withCredentials = true;
+        // xmld.setRequestHeader("dh","donghhhh");//设置请求头
+        // xmld.send(null); //发送数据需要手动在url添加
+        // xmld.onreadystatechange=function(){
+        //     if(xmld.readyState == 4){
+        //         //获取返回数据
+        //         // alert(xmld.getResponseHeader("Server"));//获取响应头
+        //         alert(xmld.status+"--"+xmld.statusText);//得到如200：ok、404：Not Found 等等
+        //         alert(xmld.responseText); //得到字符串
+        //         //var xx=xmld.responseXML //得到HTML对象
+        //     }
+        // };
+
+    })
+
+    //$("#account").keypress(function() {
+    $("#account").click(function() {
+        var account = $("#account").val();
+        if(account.length == 7) {
+            $.ajax({
+                url : "/api/v1/userData",
+                type:'GET',
+                data : {
+                    uid : account
+                },
+                success : function(result) {
+                    if(result.code == 200) {
+                        var nickname = result.data.nickname;
+                        var avatar = result.data.avatar;
+                        $("#user-icon").attr('src',avatar);
+                        $("#nick-name").html(nickname);
+                    } else{
+                        alert('请输入正确的账号id')
+                    }
+
+                }
+            });
+        }
+    })
+    // $("#account").blur(function() {
+    //     var account = $("#account").val();
+    //     $.ajax({
+    //
+    //         url : "/web/userData",
+    //         type:'GET',
+    //         data : {
+    //             uid : account
+    //         },
+    //         success : function(result) {
+    //             if(result.code == 200) {
+    //                 var nickname = result.data.nickname;
+    //                 var avatar = result.data.avatar;
+    //                 $("#user-icon").attr('src',avatar);
+    //                 $("#nick-name").html(nickname);
+    //             } else{
+    //                 alert('请输入正确的账号id')
+    //             }
+    //
+    //         }
+    //     });
+    // })
+
+
+
+</script>
+
+
+</body></html>

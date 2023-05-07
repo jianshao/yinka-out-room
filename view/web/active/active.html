@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>七夕仙侣榜</title>
+		<script src="./active/js/mui.min.js"></script>
+		<link href="./active/css/new_file.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+		</script>
+		<style>
+
+			#login_click{ margin-top:32px; height:40px; margin : -10% 0% 0% 0%;}
+			#login_click a
+			{
+
+				text-decoration:none;
+				background-image: url(/web/images/button1.png);
+				background-size:contain;
+				background-repeat:no-repeat;
+				text-align: center;
+				color:#f2f2f2;
+				float: left;
+				position: relative;
+				padding: 2vw 8vw 2vw 6.5vw;
+				font-size:16px;
+				font-family: 微软雅黑,宋体,Arial,Helvetica,Verdana,sans-serif;
+				font-weight:bold;
+				border-radius:3px;
+			    margin : -3% 3% 5% 6%;
+				-webkit-transition:all linear 0.30s;
+				-moz-transition:all linear 0.30s;
+				transition:all linear 0.30s;
+
+			}
+			#h2{
+				margin : 5% 3% 5% 6%;
+				color:#f2f2f2;
+			}
+			#login_click a:hover {
+				background-image: url(/web/images/button2.png);
+				background-size:contain;
+				background-repeat:no-repeat;
+			}
+			.zi{
+				color:#f2f2f2;
+			}
+			.banner{
+				background-color: #201c54;
+				background-image:url(/web/images/border_around1.png);
+				-moz-background-size:100% 140vw;
+				background-size:100.7% auto;
+				background-repeat:repeat-y;
+			}
+			body {
+				color: #3a4660;
+				 background-color: #201c54;
+				background-size: 100% 100%;
+				background-position: bottom;
+				list-style: none;
+				font-size: 0.75rem;
+				font-family: "Microsoft YaHei";
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- banner -->
+
+		<div class="banner">
+		<div class="mui-media-body itemul">
+			<div class="banner">
+				<img class="bannerbg" src="/web/images/banner2.png" />
+				<div id="login_click">
+					<a class="btlogin button1" href="#">8.25</a>
+					<a class="btlogin button2" href="#">8.26</a>
+					<a class="btlogin button3" href="#">8.27</a>
+					<a class="btlogin button4" href="#">8.28</a>
+					<a class="btlogin button5" href="#">8.29</a>
+					<a class="btlogin button6" href="#">8.30</a>
+				</div>
+			</div>
+			<div class="banner">
+				<img class="bannerbg" style="padding-bottom: 4vw;" src="/web/images/title1.png" />
+			</div>
+
+			<!-- 排行榜 -->
+			{if condition="!empty($data)"}
+			{volist name="data" id="list"}
+			<div class="flex-container div1">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			{if condition="!empty($data2)"}
+			{volist name="data2" id="list"}
+			<div class="flex-container div2">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p flex-item-id zi">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			{if condition="!empty($data3)"}
+			{volist name="data3" id="list"}
+			<div class="flex-container div3">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			{if condition="!empty($data4)"}
+			{volist name="data4" id="list"}
+			<div class="flex-container div4">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			{if condition="!empty($data5)"}
+			{volist name="data5" id="list"}
+			<div class="flex-container div5">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			{if condition="!empty($data6)"}
+			{volist name="data6" id="list"}
+			<div class="flex-container div6">
+				<h4 class="zi">{$list.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$list.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$list.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$list.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$list.touid}</p>
+				</div>
+			</div>
+
+			{/volist}
+			{/if}
+			<!--			个人数据-->
+			<h3 id="h2">本人数据</h3>
+			{if condition="!empty($selfdata)"}
+			<div class="flex-container div7">
+				<h4 class="zi">{$selfdata.num}</h4>
+				<!-- 女用户 -->
+				<div style="">
+					<div class="flex-item">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$selfdata.avatar}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$selfdata.nickname}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$selfdata.uid}</p>
+				</div>
+				<!-- 爱心 -->
+				<div>
+					<img class="love" src="/web/images/xin.png" >
+					<p class="zi">心动值：{$selfdata.totailcoin}</p>
+				</div>
+				<!-- 男用户 -->
+				<div>
+					<div class="flex-item1">
+						<div style="padding-top: 3vw;">
+							<img class="flex-item-img" src="{$selfdata.avatar2}" />
+						</div>
+					</div>
+					<p class="flex-item-p zi">{$selfdata.nickname2}</p>
+					<p class="flex-item-p zi flex-item-id zi">ID:{$selfdata.touid}</p>
+				</div>
+			</div>
+			{/if}
+			</div>
+		</div>
+
+		<div class="banner">
+			<img class="" src="/web/images/introduce2.png" style="width: 80%;padding-left: 10%;padding-top: 8vw;"/>
+		</div>
+		<img class="" src="/web/images/die.png"  style="width: 100.7%;padding-left: 0%;margin : 0% 0% 0% 0%;"/>
+		<!-- 苹果规则 -->
+	</body>
+</html>
+<script type="text/javascript" src="/web/index/js/jquery.min.js"></script>
+<script type="text/javascript" src="/web/toastr/toastr.min.js"></script>
+<script>
+	$('.div1').show();
+	$('.div2').hide();
+	$('.div3').hide();
+	$('.div4').hide();
+	$('.div5').hide();
+	$('.div6').hide();
+	$('.button1').click(function () {
+		console.log(1)
+		$('.div1').show();
+		$('.div2').hide();
+		$('.div3').hide();
+		$('.div4').hide();
+		$('.div5').hide();
+		$('.div6').hide();
+	})
+	$('.button2').click(function () {
+		console.log(2)
+		$('.div1').hide();
+		$('.div2').show();
+		$('.div3').hide();
+		$('.div4').hide();
+		$('.div5').hide();
+		$('.div6').hide();
+	})
+	$('.button3').click(function () {
+		console.log(3)
+		$('.div1').hide();
+		$('.div2').hide();
+		$('.div3').show();
+		$('.div4').hide();
+		$('.div5').hide();
+		$('.div6').hide();
+	})
+	$('.button4').click(function () {
+		console.log(4)
+		$('.div1').hide();
+		$('.div2').hide();
+		$('.div3').hide();
+		$('.div4').show();
+		$('.div5').hide();
+		$('.div6').hide();
+	})
+	$('.button5').click(function () {
+		console.log(5)
+		$('.div1').hide();
+		$('.div2').hide();
+		$('.div3').hide();
+		$('.div4').hide();
+		$('.div5').show();
+		$('.div6').hide();
+	})
+	$('.button6').click(function () {
+		console.log(6)
+		$('.div1').hide();
+		$('.div2').hide();
+		$('.div3').hide();
+		$('.div4').hide();
+		$('.div5').hide();
+		$('.div6').show();
+	})
+</script>

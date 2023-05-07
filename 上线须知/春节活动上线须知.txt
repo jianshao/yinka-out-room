@@ -1,0 +1,11 @@
+config/console:
+'BlessingPoolPartitionCommand' => 'app\api\script\BlessingPoolPartitionCommand',         //定时瓜分
+
+jobby:
+
+$jobby->add('BlessingPoolPartitionCommand', array(
+    'command' => "/www/server/php/73/bin/php /www/wwwroot/muamaster/fqnewapi/mua/think BlessingPoolPartitionCommand",
+    'schedule' => '0 0 8 2 *',
+    'output' => 'runtime/joblog/recallQueueCommandtouchUsersMore.log',
+    'enabled' => true,
+));

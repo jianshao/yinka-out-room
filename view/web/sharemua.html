@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!-- <link rel="icon" href="%PUBLIC_URL%/favicon.ico" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+            name="description"
+            content="Web site created using create-react-app"
+    />
+    <!-- <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" /> -->
+    <!--
+    manifest.json provides metadata used when your web app is installed on a
+    user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <!--        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
+    <!--
+    Notice the use of %PUBLIC_URL% in the tags above.
+    It will be replaced with the URL of the `public` folder during the build.
+    Only files inside the `public` folder can be referenced from the HTML.
+
+    Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+    work correctly both with client-side routing and a non-root public URL.
+    Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>音咖语音</title>
+    <style type="text/css">
+        html {
+
+        }
+        body {
+            width:100%;
+            height:100%;
+            background-color: #000;
+            touch-action:none;
+            touch-action:none;
+            overflow: hidden;
+            background-image: url(http://resource.ddyuyin.com/activity/bg.jpg);
+            background-size: 11.25rem 21.72rem;
+            background-repeat: no-repeat;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            /* background-color: red; */
+        }
+        /*除了输入框其他都禁止点透，部分设备不支持这种写法*/
+        *:not(input, textarea) {
+            -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+            -webkit-user-select:none; /*webkit浏览器*/
+            -khtml-user-select:none; /*早期浏览器*/
+            -moz-user-select:none;/*火狐*/
+            -ms-user-select:none; /*IE10*/
+            user-select:none;
+        }
+
+        /*部分浏览器必须放这才支持*/
+        div, img, button, label {
+            -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+            -webkit-user-select:none; /*webkit浏览器*/
+            -khtml-user-select:none; /*早期浏览器*/
+            -moz-user-select:none;/*火狐*/
+            -ms-user-select:none; /*IE10*/
+            user-select:none;
+        }
+
+        img {
+            position: inherit;
+            pointer-events: none; /*不响应点击事件 */
+            width: inherit;
+            height: auto; /*inherit*/
+        }
+
+        .root {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .center {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .round {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 6rem;
+            height: 6rem;
+            /* background-image: url(); */
+            background-size: 6rem 6rem;
+            background-repeat: no-repeat;
+        }
+        .avatar {
+            position: relative;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .btn {
+            position: relative;
+            width: 5.55rem;
+            height: 1.86rem;
+            background-image: url(http://resource.ddyuyin.com/activity/button.png);
+            background-size: 5.55rem 1.86rem;
+            background-repeat: no-repeat;
+            font-size: .48rem;
+            color:#ffff;
+            font-weight: bold;
+            line-height: 1.86rem;
+            text-align: center;
+        }
+        .btn1 {
+            position: absolute;
+            width: 4rem;
+            height: 1.5rem;
+            top:0;
+            right:0;
+            /* border: .01rem solid black; */
+        }
+        .name {
+            position: relative;
+            font-size: .54rem;
+            color:#ffff;
+            font-weight: bold;
+            line-height: .54rem;
+            height: .54rem;
+            text-align: center;
+            margin-bottom: .6rem;
+        }
+    </style>
+</head>
+<body>
+<script>
+    //获取系统默认字体大小
+    //designWidth 设计稿的宽度
+    //rem2px 设计稿宽度下，1rem的宽度
+    //https://blog.csdn.net/u013778905/article/details/77972841
+    var ua = navigator.userAgent, isAndroid = /android/ig.test(ua), isIos = /iphone|ipod|ipad/ig.test(ua);
+    var designWidth = 1125, rem2px = 100;
+    if(isAndroid){
+        function adapt(designWidth, rem2px){
+            var d = window.document.createElement('div');
+            d.style.width = '1rem';
+            d.style.display = "none";
+            var head = window.document.getElementsByTagName('head')[0];
+            head.appendChild(d);
+            var defaultFontSize = parseFloat(window.getComputedStyle(d, null).getPropertyValue('width'));
+            return defaultFontSize
+        };
+
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                defaultFontSize = adapt(designWidth, rem2px),
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function() {
+                    var clientWidth = win.innerWidth
+                        || doc.documentElement.clientWidth
+                        || doc.body.clientWidth;
+
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = clientWidth / designWidth * rem2px / defaultFontSize * 100 + '%';
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+            window.onresize = function(){
+                recalc();
+            }
+            recalc();
+        })(document, window);
+    }else{
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'onorientationchange' in window ? 'onorientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = rem2px * (clientWidth / designWidth) + 'px';
+                };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+            recalc();
+        })(document, window);
+    }
+</script>
+<div class="root">
+    <div class="btn1" id="open">
+    </div>
+    <div class="center">
+        <div class="round" id="round">
+            <img class="avatar" id="avatar" src="{$avatar}" alt="    ">
+        </div>
+        <div class="name" id="name">{$room_name}</div>
+        <div class="btn" id="enter">
+            进入派对互动
+        </div>
+    </div>
+    <input type="hidden" id="room_id" value="{$room_id}">
+</div>
+<script type="text/javascript">
+    var ua = navigator.userAgent;
+    var t;
+    var room_id = document.getElementById('room_id').value;
+    var config = {            /*scheme:必须*/
+        scheme_IOS: 'fqparty://fanqie/',
+        timeout: 5000
+    };
+
+    function isIosOrAndroid() {
+        var isAndroid = ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1; //android终端
+        if (isAndroid) {
+            return 1
+        }
+        var isiOS = !!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if (isiOS) {
+            return 2
+        }
+        return 0
+    }
+
+    function openclient() {
+        var room_id = document.getElementById('room_id').value;
+        var system = isIosOrAndroid();
+        if(system == 1){
+            // 通过iframe的方式试图打开APP，如果能正常打开，会直接切换到APP，并自动阻止js其他行为
+            var ifr = document.createElement('iframe');
+            ifr.src = "yinka://yinkayuyin/"+"?room_id="+room_id;  //打开app的协议，由app同事提供
+            ifr.style.display = 'none';
+            document.body.appendChild(ifr);
+            window.setTimeout(function () {
+                document.body.removeChild(ifr);
+                window.location.href = "http://image.muayuyin.com/download/GW/FQ_GW.apk";  //打开app下载地址，由app同事提供
+            }, 3000)
+        }else if(system == 2){
+            // console.log(1);
+            // alert(1)
+            window.location.href = config.scheme_IOS+'?room_id='+room_id;
+            setTimeout(() => {
+                // alert(2)
+                window.location.href = "https://apps.apple.com/cn/app/id1519244375";
+            }, 5000);
+        }
+    }
+
+    document.getElementById('open').onclick = function(){
+        openclient();
+    }
+
+    document.getElementById('enter').onclick = function(){
+        openclient();
+    }
+
+    var system = isIosOrAndroid();
+    if(system == 2){
+        document.getElementById('round').style.backgroundImage = 'url(http://resource.ddyuyin.com/activity/ispt.png)';
+    }else if(system == 1){
+        document.getElementById('round').style.backgroundImage = 'url(http://resource.ddyuyin.com/activity/round.webp)';
+    }
+    document.getElementById('round').style.pointerEvents = 'none';
+
+</script>
+<!--
+This HTML file is a template.
+If you open it directly in the browser, you will see an empty page.
+
+You can add webfonts, meta tags, or analytics to this file.
+The build step will place the bundled scripts into the <body> tag.
+
+To begin the development, run `npm start` or `yarn start`.
+To create a production bundle, use `npm run build` or `yarn build`.
+-->
+</body>
+</html>

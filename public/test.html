@@ -1,0 +1,229 @@
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>测试</title>
+</head>
+<body>
+<form name="爆率测试" action="/api/test/publishBaolvTask">
+    <table>
+        <tr>
+            <td>爆率测试</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户数量:</td>
+            <td><input type="text" name="userCount" /></td>
+        </tr>
+        <tr>
+            <td>次数类型:</td>
+            <td>
+                <select name="isUserBreakCount">
+                    <option value ="0">总次数</option>
+                    <option value ="1">每人次数</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>总次数/每人次数</td>
+            <td><input type="text" name="breakCountPerLoop" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="执行" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="获取宝箱爆率" action="/api/test/box2/getBoxBaolv">
+    <table>
+        <tr>
+            <td>获取宝箱配置爆率</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="获取宝箱爆率" action="/api/test/box2/getAllRunningPool">
+    <table>
+        <tr>
+            <td>获取宝箱运行池</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="刷新奖池配置" action="/api/test/box2/refreshAllPool">
+    <table>
+        <tr>
+            <td>刷新奖池配置</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="刷新" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+<form name="获取用户入池数据" action="/api/test/box2/getUser">
+    <table>
+        <tr>
+            <td>获取用户入池数据</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <input type="text" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="清除用户入池数据" action="/api/test/box2/clearUser">
+    <table>
+        <tr>
+            <td>清除用户入池数据</td>
+        </tr>
+        <tr>
+            <td>盒子</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">莫提斯</option>
+                    <option value ="2">宙斯</option>
+                    <option value ="3">盖亚</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <input type="text" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="清除" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="修改礼物返利用户数据" action="/api/test/giftReturn/setUser">
+    <table>
+        <tr>
+            <td>设置礼物返利用户数据</td>
+        </tr>
+        <tr>
+            <td>用户id:</td>
+            <td><input type="text" name="userId" /></td>
+        </tr>
+        <tr>
+            <td>更新时间（YYYY-mm-dd HH:MM:SS）:</td>
+            <td><input type="text" name="updateTime" /></td>
+        </tr>
+        <tr>
+            <td>设置按钮领取(1是可领取)</td>
+            <td><input type="text" name="gotReward" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="清除礼物返利用户数据" action="/api/test/giftReturn/clearUser">
+    <table>
+        <tr>
+            <td>清除礼物返利入池数据</td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <input type="text" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="清除" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+</body>
+</html>

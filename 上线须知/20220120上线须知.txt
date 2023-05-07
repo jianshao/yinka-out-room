@@ -1,0 +1,69 @@
+1、alter table zb_member_socity  ADD COLUMN `apply_quit_time` bigint(20) NOT NULL DEFAULT 0  COMMENT '申请退出时间';
+
+2、config/console.php 新增
+
+   'AutoQuitGuildCommand' => 'app\api\script\AutoQuitGuildCommand', //申请退出公会 15日管理员未处理 自动退出
+
+   'RoomProfileShuMeiCheckCommand' => 'app\api\script\RoomProfileShuMeiCheckCommand' //留存房间信息数美检测
+
+3、jobby.php
+
+    //新增 申请退出公会 超过15日会长未处理 自动会退出公会脚本
+    $jobby->add('AutoQuitGuildCommand', array(
+        'command' => "/usr/bin/php /www/wwwroot/mua/think AutoQuitGuildCommand",
+        'schedule' => '12 0 * * *',
+        'output' => 'runtime/joblog/AutoQuitGuildCommand.log',
+        'enabled' => true,
+    ));
+
+    //新增 房间数美检测脚本
+    $jobby->add('RoomProfileShuMeiCheckCommand', array(
+        'command' => "/usr/bin/php /www/wwwroot/mua/think RoomProfileShuMeiCheckCommand",
+        'schedule' => '* * * * *',
+        'output' => 'runtime/joblog/RoomProfileShuMeiCheckCommand.log',
+        'enabled' => true,
+    ));
+    
+
+
+4、
+   留存用户信息 数美检测记录表
+
+   CREATE TABLE `zb_profile_check_log` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户uid',
+     `nickname` varchar(30) NOT NULL DEFAULT '' COMMENT '昵称',
+     `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+     `album` varchar(1000) NOT NULL DEFAULT '' COMMENT '相册 多个逗号隔开',
+     `intro` varchar(255) NOT NULL DEFAULT '' COMMENT '签名',
+     `avatar_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '头像检测结果',
+     `nickname_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '昵称检测结果',
+     `album_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '相册检测结果',
+     `intro_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '签名检测结果',
+     `add_time` int(11) NOT NULL DEFAULT '0' COMMENT '检测时间',
+     `avatar_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '头像检测结果 1成功 2失败',
+     `nickname_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '昵称检测结果 1成功 2失败',
+     `intro_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '简介检测结果 1成功 2失败',
+     `album_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '相册检测结果 1成功 2失败',
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COMMENT='数美检测用户信息日志表';
+
+
+   留存房间信息 数美检测记录表
+
+   CREATE TABLE `zb_room_profile_check_log` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户uid',
+     `room_id` int(11) NOT NULL DEFAULT '0' COMMENT '房间id',
+     `room_name` varchar(50) NOT NULL DEFAULT '' COMMENT '房间名称',
+     `room_welcomes` varchar(255) NOT NULL DEFAULT '' COMMENT '房间欢迎语',
+     `room_desc` text NOT NULL COMMENT '房间介绍',
+     `name_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '房间名称检测结果',
+     `welcomes_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '房间欢迎语检测结果',
+     `desc_json` varchar(1000) NOT NULL DEFAULT '' COMMENT '房间介绍检测结果',
+     `add_time` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
+     `name_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '房间名称检测结果 1成功 2失败',
+     `welcomes_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '房间欢迎语检测结果 1成功 2失败',
+     `desc_check_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '房间简介检测结果 1成功 2 失败',
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='数美检测房间信息日志表';

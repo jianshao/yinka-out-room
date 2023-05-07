@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>音恋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            text-align: center;
+        }
+        .box{
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+        }
+        .top-box {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            margin: 0 auto;
+            background-color: #ff9a00;
+        }
+        .bom-box{
+            width: 100%;
+            height: 100%;
+            margin-top: 70px;
+        }
+        .img{
+            height: 100%;
+            float: left;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="box">
+    <div class="top-box">
+        <img class="img open-app" src="/web/images/shareIosApp.png">
+        <a id="call-app" href="javascript:;">
+            <button id="download-app" type="button" name="storeurl" value="http://image.muayuyin.com/download/GW/FQ_GW.apk" style="border: 0;
+    background-color: transparent;
+    outline: none;
+    color: #ffffff;
+    line-height: 70px;
+    font-size: 4.5vw;
+">立即打开</button>
+        </a>
+    </div>
+    <div class="bom-box">
+        <img class="img" style="width: 100%;" src="/web/images/shareAndroidBody.png">
+    </div>
+    <input type="hidden" id="room_id" value="{$room_id}">
+</div>
+
+<!--<a href="" id="openBtn">点击打开Mua</a>-->
+<!--<a href="https://apps.apple.com/cn/app/id1460085317" id="downBtn">点击下载Mua</a>-->
+
+<!--<p style="color: blue;">努力加载中</p>-->
+<script type="text/javascript" src="https://fqparty.com/web/js/jquery-3.5.1.js"></script>
+
+<!--<script>-->
+<!--    var ua = navigator.userAgent.toLowerCase();-->
+<!--    var t;-->
+<!--    var room_id = document.getElementById('room_id').value;-->
+<!--    var config = {            /*scheme:必须*/-->
+<!--        scheme_Adr: 'yinka://yinkayuyin/',-->
+<!--        download_url: document.getElementById('download-app').value,-->
+<!--        timeout: 2000-->
+<!--    };-->
+
+<!--    function openclient() {-->
+<!--        var startTime = Date.now();-->
+<!--        var ifr = document.createElement('iframe');-->
+<!--        var room_id = $("#room_id").val();-->
+<!--        ifr.src = config.scheme_Adr+"?room_id="+room_id;-->
+<!--        ifr.style.display = 'none';-->
+<!--        document.body.appendChild(ifr);-->
+<!--        var t = setTimeout(function () {-->
+<!--            var endTime = Date.now();-->
+<!--            if (!startTime || endTime - startTime > config.timeout) {-->
+<!--                window.location = config.download_url;-->
+<!--            } else {-->
+<!--            }-->
+<!--        }, config.timeout);-->
+<!--        window.onblur = function () {-->
+<!--            clearTimeout(t);-->
+<!--        }-->
+<!--    }-->
+
+<!--    window.addEventListener("DOMContentLoaded", function () {-->
+<!--        document.getElementById("call-app").addEventListener('click', openclient, false);-->
+<!--    }, false);-->
+<!--</script>-->
+
+
+<script type="text/javascript">
+    var room_id = document.getElementById('room_id').value;
+    document.getElementById('call-app').onclick = function (e) {
+        // 通过iframe的方式试图打开APP，如果能正常打开，会直接切换到APP，并自动阻止js其他行为
+        var ifr = document.createElement('iframe');
+        ifr.src = "yinka://yinkayuyin/"+"?room_id="+room_id;  //打开app的协议，由app同事提供
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+        window.setTimeout(function () {
+            document.body.removeChild(ifr);
+            window.location.href = "http://image.muayuyin.com/download/GW/FQ_GW.apk";  //打开app下载地址，由app同事提供
+        }, 3000)
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+1. 版本检查
+    /api/v2/version/checkUpdate?clientVersion=1.0.0
+
+回应
+    {
+        "code":3000,
+        "desc":"该用户不是最新版本",
+        "data":{
+            "require":1, # 1 强制更新，其他值提示更新
+            "version":"1.0.0",
+            "url":"http://xxx.apk"
+        }
+    }
+
+登录
+
+{
+    "code":0,
+    "desc":"",
+    "data":{
+        "userId":111, $用户ID
+        "nickname":"昵称", # 昵称
+        "username":"18618278123", # 用户名
+        "sex":1, # 性别 null未设置 1 男 2女 3保密
+        "avatar":"http://xxx.com/avatar.png", # 头像
+        "intro":"自我介绍", #  简介
+        "status":1, # 1 未封禁 2 封禁
+        "birthday":"2000-07-05", # 出生日期
+        "token":"xxxxxxxxx", # token
+        "roomId":0, # 自己的房间ID
+        "mobile":"18618278123",
+        "loginTime":1614755359, # 登录时间戳
+        "attestation":"" # 0 未提交 1认证 2未通过 3审核中,
+        "pwdLayer":0, # 0不展示，1展示
+        "vip":{
+            "level":1, # 0没有vip 1 vip 2 svip
+            "vipExpiresTime":1614755359, # VIP到期时间 0表示没有获取过VIP,
+            "svipExpiresTime":1614755359 # SVIP到期时间 0表示没有获取过SVIP,
+        },
+        "yunxin":{
+            "accId":111, # 网易云的账号ID,
+            "token":"" # 网易云信token
+        },
+        "huaban":{ # 画板
+            "token":"eJwtzE8LgjAcxvH3smsh*68JHXbpEMKQIqFbbSt*SG7MFUb03jP1*Hwe*H7QsTpkLxdRiWiG0XraYF2X4AYTEybzDePL1dv2EgJYVBKOMSsk5WJ*3BAgutGFEBRjPGuCx98k4XJ0ki8VuI-lZmX4cNVSvevcG982Maq93Zmon30tTl0668o7WajUb9H3B-pUMXM_"
+        },
+        "photoWall":{
+            "uploadNum":3 # 照片墙照片上传数量
+        }
+    }
+}
+
+2. 广告
+    /api/v2/advert/list
+
+回应:
+    {
+        "code":200,
+        "desc":"",
+        "data":{
+            "adverts":[
+                {
+                    "id":1,
+                    "name":"名称",
+                    "image":"http://img.57xun.com/advert/20200403/800ae7dc6a402b23358700b193a73b36.png",
+                    "linkUrl":"http://img.57xun.com/banner/20200403/9ea375735ebccef7e436005811edaf22.png",
+                    "startTime":1614755359,
+                    "endTime":1614755359,
+                    "displayTime":5
+                },
+                {
+                    "id":1,
+                    "name":"名称",
+                    "image":"http://img.57xun.com/advert/20200403/800ae7dc6a402b23358700b193a73b36.png",
+                    "linkUrl":"http://img.57xun.com/banner/20200403/9ea375735ebccef7e436005811edaf22.png",
+                    "startTime":1614755359,
+                    "endTime":1614755359,
+                    "displayTime":5
+                }
+            ]
+        }
+    }
+
+配置检查
+请求:
+    /api/v2/client/config
+
+回应:
+    {
+        "code":0,
+        "desc":"",
+        "data": {
+            "version":"xxxxxx",
+            "checksum":"xxxxx",
+            "url":"http://xxx/xxx.zip"
+        }
+    }
+

@@ -1,0 +1,130 @@
+
+background 背景图
+richTexts 富文本
+type 类型
+action 跳转
+loction 位置 # top是顶部 middle中部
+
+{
+	"background": {
+		"startImg":"http:\\/\\/image2.fqparty.com\\/Album\\/1775243\\/1630475087970.jpg", #头图
+		"endImg":"http:\\/\\/image2.fqparty.com\\/Album\\/1775243\\/1630475087970.jpg", #尾图
+		"color": "#FFC0CB", #中间图颜色
+    	"borderColor": "#FFFFFF", #边框颜色
+	},
+	"richTexts": [
+		[{
+			"type": "text",
+			"content": "恭喜",
+			"font": "normal",
+			"color": "#FFFFFF"
+		}, {
+			"type": "image",
+			"content": "http:\\/\\/image2.fqparty.com\\/Album\\/1775243\\/1630475087970.jpg"
+		}, {
+			"type": "text",
+			"content": "用_115118311",
+			"font": "bold",
+			"color": "#FFFFFF"
+		}, {
+			"type": "text",
+			"content": "在高级转盘中获得了",
+			"font": "normal",
+			"color": "#FFC0CB"
+		}, {
+			"type": "image",
+			"content": "http:\\/\\/image2.fqparty.com\\/gift\\/20201026\\/24d6d1c35dd87bc54dd7e4eb9c86a5a3.png"
+		}, {
+			"type": "text",
+			"content": "[爱的泡泡]*4",
+			"font": "bold",
+			"color": "#FFC0CB"
+		}, {
+			"type": "image",
+			"content": "http:\\/\\/image2.fqparty.com\\/gift\\/20200813\\/99e06cae32f1fc4bbe1e54beb38b83f6.png"
+		}, {
+			"type": "text",
+			"content": "[爱的背包]*1",
+			"font": "bold",
+			"color": "#FFC0CB"
+		}, {
+			"type": "image",
+			"content": "http:\\/\\/image2.fqparty.com\\/gift\\/20210203\\/91fa7f061c2557ec8cd42a043cca85ba.png"
+		}, {
+			"type": "text",
+			"content": "[心心相印]*4",
+			"font": "bold",
+			"color": "#FFC0CB"
+		}, {
+			"type": "image",
+			"content": "http:\\/\\/image2.fqparty.com\\/gift\\/20201007\\/ddf82bb375e5bdce25b46b50681aa432.png"
+		}, {
+			"type": "text",
+			"content": "[爱的巨轮]*1",
+			"font": "bold",
+			"color": "#FFC0CB"
+		}, {
+			"type": "text",
+			"content": "快来围观吧～",
+			"font": "normal",
+			"color": "#FFC0CB"
+		}]
+	],
+	"type": "turntable",
+	"action": {
+		"type": "h5",
+		"name": "turntable"  
+	},
+	"loction": "top" 
+}
+
+action的各种类型
+跳转盘
+"action": {
+	"type": "h5",
+	"name": "turntable"  
+}
+
+跳宝箱
+"action": {
+	"type": "h5",
+	"name": "box"  
+}
+
+跳淘金之旅
+"action": {
+	"type": "h5",
+	"name": "taojing"   
+}
+
+跳打地鼠
+"action": {
+	"type": "h5",
+	"name": "gopher"   
+}
+
+跳房间
+"action": {
+	"type": "room",
+	"roomId": 123456
+}
+
+跳个人信息
+"action": {
+	"type": "user",
+	"userId": 123456
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

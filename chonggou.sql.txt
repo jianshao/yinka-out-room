@@ -1,0 +1,141 @@
+CREATE TABLE `zb_ids` (
+  `type` varchar(20) NOT NULL COMMENT 'id类型 user prop',
+  `next_id` BIGINT NOT NULL DEFAULT 0 COMMENT '下一个ID',
+  PRIMARY KEY (`type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='id类型表，记录最大id';
+
+INSERT INTO zb_ids (`type`, `next_id`) VALUES ('user',1366878);
+INSERT INTO zb_ids (`type`, `next_id`) VALUES ('room',19892);
+
+CREATE TABLE `zb_user_props` (
+  `id` int(11) NOT NULL DEFAULT 0 COMMENT '道具ID',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `kind_id` int(11) DEFAULT 0 COMMENT '道具类型ID',
+  `create_time` bigint(20) DEFAULT 0 COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT 0 COMMENT '更新时间',
+  `expires_time` bigint(20) DEFAULT 0 COMMENT '到期时间',
+  `count` int(11) DEFAULT 0 COMMENT '数量',
+  `is_wore` int(2) DEFAULT 0 COMMENT '是否佩戴0没佩戴1佩戴',
+  `wore_time` int(11) DEFAULT 0 COMMENT '佩戴/卸下时间',
+  KEY (`id`) USING BTREE,
+  UNIQUE KEY `uid_kindid` (`uid`,`kind_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户道具表';
+
+CREATE TABLE `zb_user_prop_bag` (
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `next_id` int(11) NOT NULL COMMENT '当前道具ID',
+  `create_time` bigint(20) DEFAULT 0 COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT 0 COMMENT '更新时间',
+  PRIMARY KEY (`uid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户道具背包表';
+
+
+CREATE TABLE `zb_user_charge_statics` (
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `charge_amount` int(11) DEFAULT 0 COMMENT '充值总金额,单位分',
+  `charge_times` int(11) DEFAULT 0 COMMENT '充值次数',
+  PRIMARY KEY (`uid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户充值统计表';
+
+CREATE TABLE `zb_user_bank` (
+    `uid` int(11) NOT NULL COMMENT '用户ID',
+    `account` char(32) NOT NULL COMMENT '账户ID',
+    `count` int(11) NOT NULL COMMENT '剩余数量',
+    UNIQUE KEY `uid_account` (`uid`,`account`) USING BTREE,
+    KEY `uid` (`uid`) USING BTREE,
+    KEY `account` (`account`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户银行';
+
+CREATE TABLE `zb_reward_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '获得人id',
+  `rewardId` varchar(255) NOT NULL COMMENT '奖品资产id',
+  `consumeId` varchar(255) NOT NULL COMMENT '消耗资产id',
+  `createTime` int(20) NOT NULL DEFAULT '0',
+  `price` int(11) NOT NULL DEFAULT '0' COMMENT '花费的金币数',
+  `count` int(11) NOT NULL DEFAULT '0' COMMENT '获得礼物个数',
+  `mallId` varchar(255) NOT NULL DEFAULT '' COMMENT '从哪个商城来的',
+  `from` varchar(255) NOT NULL DEFAULT '' COMMENT '来源',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COMMENT='商城兑换记录';
+
+ALTER TABLE `zb_chargedetail` ADD COLUMN `product_id` int(11) NOT NULL DEFAULT 0 COMMENT '购买的商品ID';
+ALTER TABLE `zb_chargedetail` ADD INDEX `idx_product_id` (`product_id`) USING BTREE;
+
+ALTER TABLE `zb_chargedetail` ADD INDEX `idx_status` (`status`) USING BTREE;
+ALTER TABLE `zb_chargedetail` ADD INDEX `idx_orderno` (`orderno`) USING BTREE;
+
+ALTER TABLE `zb_member` ADD COLUMN `duke_value` int(11) NOT NULL DEFAULT 0 COMMENT '爵位剩余经验值';
+ALTER TABLE `zb_register_data` ADD COLUMN `source` varchar(32) NOT NULL DEFAULT 'fanqie' COMMENT '应用ID';
+
+ALTER TABLE `zb_register_data` ALTER COLUMN `source` SET DEFAULT 'fanqie';
+alter table users_info alter column role_id set default 1;
+
+CREATE TABLE `zb_today_earnings` (
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `diamond` int(11) NOT NULL DEFAULT 0 COMMENT '今日钻石收益',
+  `update_time` int(11) DEFAULT 0 COMMENT '更新时间',
+  PRIMARY KEY (`uid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户今日收益表';
+
+
+CREATE TABLE `zb_user_gift_wall` (
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `giftid` int(11) NOT NULL COMMENT '礼物ID',
+  `count` int(11) NOT NULL COMMENT '收到的礼物数量',
+  UNIQUE KEY `uid_giftid` (`uid`,`giftid`) USING BTREE,
+  KEY `giftid` (`giftid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='礼物墙'  
+
+
+alter table `zb_member` alter column `exchange_diamond` set default 0.00;
+alter table `zb_member` alter column `vip_buytime` set default 0;
+alter table `zb_member` alter column `charge_time` set default 0;
+alter table `zb_member` alter column `socity` set default 0.0;
+alter table `zb_member` alter column `pop_time` set default 0;
+alter table `zb_member` alter column `constraint_time` set default 0;
+alter table `zb_member` alter column `hammers` set default 0;
+alter table `zb_member` alter column `chargecoin` set default 0;
+
+alter table `zb_languageroom` alter column `is_live` set default 1;
+alter table `zb_languageroom` alter column `visitor_number` set default 0;
+alter table `zb_languageroom` alter column `socitay_id` set default 0;
+
+
+ALTER TABLE `zb_redpackets` ADD INDEX `idx_redpackets_num` (`redpackets_num`) USING BTREE;
+
+
+
+CREATE TABLE `zb_user_bank` (
+    `uid` int(11) NOT NULL COMMENT '用户ID',
+    `account` char(32) NOT NULL COMMENT '账户ID',
+    `count` int(11) NOT NULL COMMENT '剩余数量',
+    UNIQUE KEY `uid_account` (`uid`,`account`) USING BTREE,
+    KEY `uid` (`uid`) USING BTREE,
+    KEY `account` (`account`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户银行';
+
+CREATE TABLE `zb_box2_pools` (
+  `box_id` char(32) NOT NULL COMMENT '蛋ID',
+  `pool_id` int(11) NOT NULL COMMENT '池子ID',
+  `gifts` varchar(512) NOT NULL DEFAULT '' COMMENT '礼物权重json',
+  `refresh_time` bigint(20) NOT NULL DEFAULT 0 COMMENT '最后刷新时间',
+  `refresh_count` int(11) NOT NULL DEFAULT 0 COMMENT '刷新次数',
+  UNIQUE KEY `box_id_pool_id` (`box_id`,`pool_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='礼物池子数据';
+
+
+CREATE TABLE `yyht_box2_re_user_gift` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
+  `box_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '宝箱id',
+  `gift_id` int(11) NOT NULL DEFAULT '0' COMMENT '礼物ID',
+  `created` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `create_user` varchar(30) CHARACTER SET utf8 NOT NULL COMMENT '创建用户',
+  `updated` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `update_user` varchar(30) CHARACTER SET utf8 NOT NULL COMMENT '更新用户',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1正常，2处理中，3已发出',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_user_id` (`user_id`) USING BTREE,
+  KEY `idx_box_id` (`box_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=385 DEFAULT CHARSET=utf8mb4 COMMENT='指定用户砸中指定礼物';

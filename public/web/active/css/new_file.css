@@ -1,0 +1,152 @@
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div{margin:0;padding:0;border:0;}
+body{color:#3a4660;background-color: #ffeff3;background-size: 100% 100%;background-position: bottom; list-style:none;font-size:0.75rem;font-family:"Microsoft YaHei"}
+a{ 
+text-decoration:none; 
+
+}
+.banner .bannerbg{width: 100%;}
+.taskRules {
+	position: relative;
+	width: 100%;
+	padding-top: 1vw;
+	
+	background-size:contain;
+	background-repeat: repeat-x;
+}
+
+.mui-table-view:before {
+				position: absolute;
+				right: 0;
+				left: 0;
+				height: 0px !important;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #fbd4e6;
+				top: -1px;
+			}
+
+			.mui-col-sm-4 {
+				height: 38vw;
+			}
+
+			.mui-table-view:after {
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				height: 0px !important;
+				content: '';
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+				background-color: #fbd4e6;
+			}
+
+			img {
+				display: block;
+			}
+
+			.mui-table-view-cell:after {
+				height: 0
+			}
+
+			.text-p {
+			    width: 90%;
+			    margin-left:6%;
+			    color: #3a4660;
+			    padding-top: 2vw;
+			    font-size: 3.2vw;
+			    line-height: 1.7;
+			}
+			.flex-container{
+				display: flex; align-items: center;width: 88%; margin: 0 auto;justify-content: space-around;
+			}
+			.flex-item-img
+			{
+				width: 14vw;height: 14vw;border-radius: 50%;border: #FFFFFF 0.125rem solid ;margin: 0 auto;
+			}
+			.flex-item-p
+			{
+				text-align: center;
+				width:22vw;/*要显知示道文字的宽度*/
+				overflow:hidden; /*超出的内部分隐藏起来。*/ 
+				white-space:nowrap;/*不显示的地方用省略号...代替容*/
+				text-overflow:ellipsis;/* 支持 IE */
+				
+			}
+			.flex-item-id{
+				color: rgba(25,70,96,0.5);
+				font-size: 0.5rem;
+			}
+			.border-line
+			{
+				width: 100%;height:0.06rem; margin: 0 auto;padding:4vw 0;
+			}
+			.love{
+				width: 15vw;height:auto; margin: 0 auto;margin-bottom:0.25rem;
+			}
+/* 本周礼物 */
+.bordertop{
+	width: 100%;
+}
+.mgtop{
+	margin-top: 1.5rem;
+}
+.itemli{
+	width: 11vw;
+	height: 11vw;
+	border-width: 0.125rem;
+	border-color: rgb(255 , 206, 0);
+	border-radius: 50%;
+	margin-left: 5%;
+	margin-top: 3%;
+}
+/* ===== 排行榜前三结束 ===== */
+		.task-list-img{
+			float: left;
+			border-style: solid;
+			width: 11vw;
+			height: 11vw;
+			border-width: 0.125rem;
+			border-color: rgb(255 , 206, 0);
+			border-radius: 50%;
+			margin-left: 3%;
+			margin-top: 3%;
+		}
+		.task-list-img2{
+			width: 20vw;
+			height: 20vw;
+			margin: 0 auto;
+		}
+	.task-list-img1{
+		float: left;
+		border-style: solid;
+		width: 16vw;
+		height: 16vw;
+		border-width: 0.125rem;
+		border-color: rgb(255 , 206, 0);
+		border-radius: 50%;
+		margin: 0 auto;
+	}
+		
+.text-t {
+    margin-left: 4%;
+    color: 3a4660;
+    padding-top: 8vw;
+    padding-bottom: 2vw;
+    font-size: 3.8vw;
+    font-weight: 400;
+}
+.imgift{
+		width:100%;
+		padding: 3vw 0;
+			
+		}
+		
+
+		/** 动画 **/
+@keyframes action_translateY{  
+  0%{transform: scale(.5);opacity: 0;}  
+  50%{ transform: scale(.8);opacity: .6;}
+  100%{ transform: scale(1);opacity: 1;}   
+}

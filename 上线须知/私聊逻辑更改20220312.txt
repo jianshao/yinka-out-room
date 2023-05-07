@@ -1,0 +1,12 @@
+CREATE TABLE `zb_im_point` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '发送人id',
+    `code` tinyint(1) NOT NULL DEFAULT 0 COMMENT '埋点id',
+    `user_level` tinyint(3) NOT NULL DEFAULT 1 COMMENT '用户等级',
+    `charge_coin` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '虚拟币总收入',
+    `register_time` int(20) NOT NULL DEFAULT 0 COMMENT '注册时间',
+    `create_time` int(20) NOT NULL DEFAULT 0 COMMENT '记录时间',
+    PRIMARY KEY (`id`),
+    KEY `code` (`code`) USING BTREE,
+    KEY `create_time` (`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='私聊策略埋点表';

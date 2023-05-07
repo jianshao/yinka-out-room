@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>规则说明</title>
+    <style>
+        html, body {
+            -webkit-touch-callout: none;
+            -ms-touch-action: none;
+            /* height: 100%; */
+            padding: 0;
+            border: 0;
+            margin: 0.1rem, 0, 0.1rem, 0;
+        }
+
+        .title {
+            position: relative;
+            height: 0.44rem;
+            left: 0.33rem;
+            font-size: 0.32rem;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #717171;
+            line-height: 0.44rem;
+        }
+
+        .content {
+            position: relative;
+            left: 0.33rem;
+            width: 6.9rem;
+            /* height: 1.60rem; */
+            font-size: 0.28rem;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #666666;
+            line-height: 0.40rem;
+        }
+
+        input, textarea {
+            -webkit-user-select:auto;
+        }
+
+        /*除了输入框其他都禁止点透，部分设备不支持这种写法*/
+        *:not(input, textarea) {
+            -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+            -webkit-user-select:none; /*webkit浏览器*/
+            -khtml-user-select:none; /*早期浏览器*/
+            -moz-user-select:none;/*火狐*/
+            -ms-user-select:none; /*IE10*/
+            user-select:none;
+        }
+
+        /*部分浏览器必须放这才支持*/
+        div, img, button, label {
+            -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+            -webkit-user-select:none; /*webkit浏览器*/
+            -khtml-user-select:none; /*早期浏览器*/
+            -moz-user-select:none;/*火狐*/
+            -ms-user-select:none; /*IE10*/
+            user-select:none;
+        }
+    </style>
+</head>
+<body>
+<script>
+    //获取系统默认字体大小
+    //designWidth 设计稿的宽度
+    //rem2px 设计稿宽度下，1rem的宽度
+    //https://blog.csdn.net/u013778905/article/details/77972841
+
+    var ua = navigator.userAgent, isAndroid = /android/ig.test(ua), isIos = /iphone|ipod|ipad/ig.test(ua);
+    if(isAndroid){
+        function adapt(designWidth, rem2px){
+            var d = window.document.createElement('div');
+            d.style.width = '1rem';
+            d.style.display = "none";
+            var head = window.document.getElementsByTagName('head')[0];
+            head.appendChild(d);
+            var defaultFontSize = parseFloat(window.getComputedStyle(d, null).getPropertyValue('width'));
+            return defaultFontSize
+        };
+
+        (function (doc, win) {
+            var designWidth = 750;
+            var rem2px = 100;
+            var docEl = doc.documentElement,
+                defaultFontSize = adapt(designWidth, rem2px),
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function() {
+                    var clientWidth = win.innerWidth
+                        || doc.documentElement.clientWidth
+                        || doc.body.clientWidth;
+
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = clientWidth / designWidth * rem2px / defaultFontSize * 100 + '%';
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+            //auto fixed
+            window.onresize = function(){
+                recalc();
+            }
+            recalc();
+        })(document, window);
+    }else{
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'onorientationchange' in window ? 'onorientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+            recalc();
+        })(document, window);
+    }
+</script>
+<div style="position: relative; width:100%; height:100%">
+    <p class="title">活动介绍</p>
+    <p class="content">淘金之旅是一款消耗积分赢奖励的飞行棋游戏。游戏的中奖率为100%，本游戏共设多个地图，每个地图内包含的奖励不同，单次游戏所需消耗的积分值也不同。玩家可通过消耗积分在各个城市中行走，投掷骰子得到的数字决定前进的步数，最终停留的格子会决定玩家本轮获得的奖励。</p>
+    <p class="title">活动时间</p>
+    <p class="content">淘金之旅活动为非长期活动，游戏将会不定期上线，用户可关注平台内的公告。活动结束时，积分不会清空，所获得的矿石会自动清空，请一定记得在活动时间内完成兑换。</p>
+    <p class="title">如何参加活动？</p>
+    <p class="content">消耗积分可参与活动，玩家玩每个地图所需的积分值不同，对应的奖励不同。消耗积分值大的地图奖励更加丰厚。活动获得的豆直接放入玩家账户中，获得的矿石可兑换为特殊礼物，兑换成功后直接放入背包中。</p>
+    <p class="title">如何获得积分值？</p>
+    <p class="content">积分值可通过购买徽章获得，获得方式：点击积分后的“+”。积分值用于平台内多个游戏消耗（选择“允许游戏中积分不足时自动购买”则默认为所有游戏都可以在体验时自动为您购买积分）。</p>
+    <p class="title">矿石的用途：</p>
+    <p class="content">矿石累积后可以在城市地图内兑换成特殊礼物。</p>
+    <p class="title">排行榜：</p>
+    <p class="content">排行榜为最终通过各个地图获得的豆的总数量为结算单位。日榜单即每日排名情况；周榜单即排名情况；月榜单即月度排名情况（不含获得的矿石）。</p>
+    <p class="title">特殊说明：</p>
+    <p class="content">1.“淘金之旅”玩法仅供娱乐,任何人不得利用该玩法开展任何形式的违法违规活动；</p>
+    <p class="content">2.该玩法所获得的奖励道具仅可在平台内进行正常的娱乐性消耗,无法兑换成现金或其他有价值的财物，不可反向兑换成现金或价值商品，如有任何人就该道具违规开展线下交易行为,平台有权终止向违规账号提供服务,对违规账户中的虚拟产品进行清空,并对账号进行永久封停,因此造成的损失,由账号所属人自行承担；</p>
+    <p class="content">3.如平台认为任何人在活动过程中的任何行为超出合理范畴或出现数据异常的情况,平台将有权进行调查,并视情况采取相应的整改措施,包括不限于警告、禁言、强制下线、限制登录、封停账号、清空奖励、追究法律责任等；</p>
+    <p class="content">4.消费中请注意保管好账号、密码、短信验证是码等登录操作凭证,谨防上当受骗；</p>
+    <p class="title">本活动与苹果公司无关</p>
+</div>
+</body></html>

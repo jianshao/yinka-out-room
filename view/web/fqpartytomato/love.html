@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="description" content="番茄派对语音语音是一款语音交友软件，通过声音传递心声，听你所想，享你所爱。&quot;">
+    <meta name="keywords" content="muayuyin.com，语音，交流，社交，搞笑，游戏，声优，萝莉音">
+    <title>番茄派对语音语音</title>
+    <!-- Stylesheets -->
+    <link href="/web/index/css/bootstrap.css" rel="stylesheet">
+    <link href="/web/index/css/style.css" rel="stylesheet">
+    <link href="/web/index/css/responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/web/toastr/toastr.min.css">
+    <!--Favicon-->
+    <link rel="shortcut icon" href="https://image.fqparty.com/images/favicon.png"  type="image/x-icon">
+    <link rel="icon"  href="https://image.fqparty.com/images/favicon.png" type="image/x-icon">
+    <!-- Responsive -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script><![endif]-->
+    <!--[if lt IE 9]><script src="js/respond.js"></script><![endif]-->
+    <style>
+        .login-box{width: 60%;height: 350px;padding: 75px 55px;background-color: #fff;position: absolute;left: -20%;top: 10%;margin-top: 0%;margin-left: 20%;}
+        .login-box .title{font-size: 1.6rem;color: #3a3a3a;margin-bottom: 30px;text-align: center;line-height: 40px;}
+        .login-box .input{width: 100%;height: 39px;line-height: 39px;font-size: 1.4rem;color: #000;border-bottom: 1px solid #ddd;display: block;position: relative;}
+        .login-box .input {width: 100%;height: 37px;}
+        .login-box .input :focus{border:0;}
+        .login-box .input .yzm{cursor: pointer;color: #000;position:absolute;right: 0;bottom: 0;line-height: 40px;}
+        .login-box .input .yzm{color: #999;}
+        .login-box .login-btn{display: block;margin-top: 30px;width: 100%;height: 60px;font-size: 1.6rem;color: #FFFFFF;scursor:pointer;background-color: #ff6860;}
+        .login-box .notic{display: block;height: 20px;line-height: 20px;font-size: 1.2rem;color: #f8587b;text-align:left;}
+        .popup-shadow{display: none;width: 100%;height: 100%;background-color: rgba(0,0,0,0.6);position:fixed;left:0;top: 0;z-index:99;}
+        .popup-shadow .close{position: absolute;right: 20px;top: 20px;width: 15px;height: 15px;background:url(__PUBLIC__/web/image/close.png) no-repeat center center;cursor: pointer;}
+        .row .notic{margin-left:0;white-space:nowrap;line-height: 40px;font-size: 1.4rem;color: #000;position:absolute;top: 0;left:105%;display:none;height: 40px;}
+        .row .notic{color: #f8587b;}
+        .headeres a {
+            vertical-align: top;
+            display: inline-block;
+            font-size: 1.6rem;
+            color: #FFFFFF;
+            line-height: 10%;
+            margin-right: 50%;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-size: 10px;
+        }
+        .active {
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page-wrapper">
+
+    <!-- Preloader -->
+    <div class="preloader"></div>
+
+    <!-- Main Header-->
+    <header class="main-header header-style-one">
+        <div class="headeres" style="position: relative; left:0%; right:0%; top: 0%; background-color: #ff6860;height:20%;width: 100%;margin: 0 auto;height: auto;">
+            <div class="box" >
+                <a href="/" class="logo">
+                    <img  src="http://image.muayuyin.com//banner/20200824/a690601933c349c01f5c8b8bf15a4ea4.png" style="position: relative; top:10%;left:-20%;" alt="">
+                </a>
+                <a href="{$web_url}/web/index.html" style="position: absolute; padding : 34px 0px 0px 0px;right:-18%;">首页</a>
+                {if condition="!empty($username)"}
+                <a  href="{$web_url}/web/wxpay"  style="position: absolute; padding : 27px 0px 0px 0px;top:10%;right:-28%;">充值</a>
+                <a  class="active" href="{$web_url}/web/music"  style="position: absolute; padding : 27px 0px 0px 0px;top:10%;right:-45%;">音乐上传</a>
+                {/if}
+                {if condition="empty($username)"}
+                <a class="login" id="c" href="javascript:;"  style="position: absolute; padding : 27px 0px 0px 0px;top:10%;right:-28%;">充值</a>
+                <a class="login" id="y" href="javascript:;" style="position: absolute; padding : 27px 0px 0px 0px;top:10%;right:-45%;">音乐上传</a>
+                {/if}
+            </div>
+        </div>
+</div>
+<!--End Header Upper-->
+
+</header>
+<!--End Main Header -->
+<!--Form Back Drop-->
+<div class="form-back-drop"></div>
+
+<!--Appointment Box-->
+<section class="appointment-box">
+    <div class="inner-box">
+        <div class="cross-icon"><span class="flaticon-cancel-1"></span></div>
+        <div class="title">
+            <h2>Get Appointment</h2>
+            <div class="separator"></div>
+        </div>
+
+        <!--Appointment Form-->
+        <div class="appointment-form">
+            <form method="post" action="contact.html">
+
+                <div class="form-group">
+                    <input type="text" name="text" value="" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" value="" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="phone" value="" placeholder="Phone no." required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Message"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="theme-btn btn-style-one">Submit now</button>
+                </div>
+
+            </form>
+        </div>
+
+        <!--Contact Info Box-->
+        <div class="contact-info-box">
+            <ul class="info-list">
+                <li>2145402948@qq.com</li>
+                <li>+(000) 000 0000</li>
+            </ul>
+            <ul class="social-list clearfix">
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Linkedin</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">Google +</a></li>
+                <li><a href="#">Instagram</a></li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+<!--End Consulting Form-->
+
+<!--Main Banner-->
+<section class="main-banner">
+    <div class="bg-round-layer"></div>
+
+    <div class="auto-container" style="margin: 0% 0% 0% 0%;">
+        <div class="row clearfix">
+
+            <!--Content Column-->
+            <div class="content-column col-lg-6 col-md-12 col-sm-12">
+                <div class="inner-column wow slideInLeft">
+                    <h2 class="h2-button" style="padding: 0% 0% 0% 35%;">番茄派对语音<br> 轻松  交友</h2>
+                    <div class="text">专为年轻群体量身订做的语音互动平台。在这里，你可以找到心仪的soulmate实时聊天，游戏开黑，连麦交友，音乐娱乐。你能想到的全都有！ .</div>
+                    <a href="#download" class="theme-btn btn-style-two" class="h2-button" style="width: 100%">
+                        <span style="padding: 3% 0% 0% 40%;font-size:50%;" >立即下载</span>
+                        <!-- <span class="icon flaticon-next-3"></span> -->
+                    </a>
+                </div>
+            </div>
+            <!--Image Column-->
+            <div class="image-column col-lg-6 col-md-12 col-sm-12">
+                <div class="inner-column">
+                    <div class="image paroller" data-paroller-factor="-0.15" data-paroller-factor-lg="-0.15" data-paroller-factor-md="-0.15" data-paroller-factor-sm="-0.15" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                        <img src="https://image.fqparty.com/web2020428/1.png" width="100%" alt="" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!--End Main Banner-->
+
+
+<!-- App Section -->
+<section class="app-section">
+    <div class="auto-container">
+        <div class="row clearfix">
+
+            <!-- Image Column -->
+            <div class="image-column col-lg-6 col-md-6 col-md-12">
+                <div class="inner-column">
+                    <!-- Message Box -->
+                    <div class="message-box  paroller" data-paroller-factor="0.15" data-paroller-factor-lg="0.15" data-paroller-factor-md="0.15" data-paroller-factor-sm="0.15" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                    </div>
+
+                    <!-- Play Box -->
+                    <div class="play-box  paroller" data-paroller-factor="-0.15" data-paroller-factor-lg="-0.15" data-paroller-factor-md="-0.15" data-paroller-factor-sm="-0.15" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                    </div>
+
+                    <!-- Chat Icon -->
+                    <div class="chat-icon  paroller" data-paroller-factor="-0.15" data-paroller-factor-lg="-0.15" data-paroller-factor-md="-0.15" data-paroller-factor-sm="-0.15" data-paroller-type="foreground" data-paroller-direction="vertical"><img src="https://image.fqparty.com/images/icons/chat-icon.png" width="100%" alt="" /></div>
+
+                    <div class="image">
+                        <img src="https://image.fqparty.com/images/resource/app-1.png" width="100%" alt="" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Column -->
+            <div class="content-column col-lg-6 col-md-6 col-md-12">
+                <div class="inner-column">
+                    <h2  style="padding: 0% 0% 0% 35%;">关于我们</h2>
+                    <div class="text">番茄派对语音语音是四川融企科技有限公司精心打造的一款语音交友软件，通过声音让彼此相识，相知，多种玩法应有尽有.K歌，聊天，游戏，真心话大冒险，相亲，交友，欢乐狼人杀，真人故事秀，pia戏，喊麦</div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- End App Section -->
+
+<!-- Services Section -->
+<section class="services-section-two">
+    <div class="auto-container">
+        <!-- Sec Title -->
+        <div class="sec-title centered">
+            <h2>玩 转 番茄派对语音</h2>
+        </div>
+
+        <!-- Services Block Two -->
+        <div class="services-block-two">
+            <div class="inner-box">
+                <div class="row clearfix">
+
+                    <!-- Content Column -->
+                    <div class="content-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <h3  style="padding: 0% 0% 0% 40%;">匿名社交</h3>
+                            <div class="text"> 拒绝社交恐惧，发布匿名树洞信息，等待那个懂你的有趣的灵魂。. </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Column -->
+                    <div class="image-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInRight" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <div class="image paroller" data-paroller-factor="0.1" data-paroller-factor-lg="0.1" data-paroller-factor-md="0.1" data-paroller-factor-sm="0.1" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                                <img src="https://image.fqparty.com/web2020428/2.png" width="100%" alt="" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Block Three -->
+        <div class="services-block-three">
+            <div class="inner-box">
+                <div class="row clearfix">
+
+                    <!-- Image Column -->
+                    <div class="image-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <div class="image paroller" data-paroller-factor="-0.1" data-paroller-factor-lg="-0.1" data-paroller-factor-md="-0.1" data-paroller-factor-sm="-0.1" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                                <img src="https://image.fqparty.com/web2020428/3.png" width="100%" alt="" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Column -->
+                    <div class="content-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInRight" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <h3  style="padding: 0% 0% 0% 40%;">情感连麦</h3>
+                            <div class="text">在线的男神女神总有你喜欢的那一款，发现TA，点击TA，和TA开启一段新的关系.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Block Two -->
+        <div class="services-block-two">
+            <div class="inner-box">
+                <div class="row clearfix">
+
+                    <!-- Content Column -->
+                    <div class="content-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <h3  style="padding: 0% 0% 0% 40%;">连麦交友</h3>
+                            <div class="text">处CP，找好友，通宵尬聊，小游戏互动，番茄派对语音有你想要的志趣相投.</div>
+                        </div>
+                    </div>
+
+                    <!-- Image Column -->
+                    <div class="image-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInRight" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <div class="image paroller" data-paroller-factor="0.1" data-paroller-factor-lg="0.1" data-paroller-factor-md="0.1" data-paroller-factor-sm="0.1" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                                <img src="https://image.fqparty.com/web2020428/4.png" width="100%" alt="" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Block Three -->
+
+        <div class="services-block-three">
+            <div class="inner-box">
+                <div class="row clearfix">
+
+                    <!-- Image Column -->
+                    <div class="image-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <div class="image paroller" data-paroller-factor="-0.1" data-paroller-factor-lg="-0.1" data-paroller-factor-md="-0.1" data-paroller-factor-sm="-0.1" data-paroller-type="foreground" data-paroller-direction="horizontal">
+                                <img src="https://image.fqparty.com/web2020428/5.png" width="100%" alt="" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Column -->
+                    <div class="content-column col-lg-6 col-md-6 col-sm-12">
+                        <div class="inner-column wow fadeInRight" data-wow-delay="0ms" data-wow-duration="1500ms">
+                            <h3  style="padding: 0% 0% 0% 40%;">语音K歌</h3>
+                            <div class="text">展现你的少女音，御姐音，大叔音亦或者少年音！一展歌喉，你就是全场麦霸. </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- End Services Section Two -->
+<!-- Download Section -->
+<section id="download" class="download-section" style="width: 100%; background-image:url(https://image.fqparty.com/images/background/1.jpg)">
+    <div class="circle-icons paroller" data-paroller-factor="-0.05" data-paroller-factor-lg="-0.05" data-paroller-factor-md="-0.05" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="vertical">
+        <span class="icon-one paroller" data-paroller-factor="0.10" data-paroller-factor-lg="0.10" data-paroller-factor-md="0.10" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+        <span class="icon-two paroller" data-paroller-factor="-0.08" data-paroller-factor-lg="-0.08" data-paroller-factor-md="-0.08" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-three paroller" data-paroller-factor="0.15" data-paroller-factor-lg="0.15" data-paroller-factor-md="0.15" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-four paroller" data-paroller-factor="-0.05" data-paroller-factor-lg="-0.05" data-paroller-factor-md="-0.05" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-five paroller" data-paroller-factor="0.08" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+        <span class="icon-six paroller" data-paroller-factor="-0.05" data-paroller-factor-lg="-0.08" data-paroller-factor-md="-0.08" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-seven paroller" data-paroller-factor="0.10" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-eight paroller" data-paroller-factor="-0.07" data-paroller-factor-lg="-0.08" data-paroller-factor-md="-0.08" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+        <span class="icon-nine paroller" data-paroller-factor="0.08" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+        <span class="icon-ten paroller" data-paroller-factor="-0.15" data-paroller-factor-lg="-0.15" data-paroller-factor-md="-0.15" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-eleven paroller" data-paroller-factor="0.08" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-twelve paroller" data-paroller-factor="-0.10" data-paroller-factor-lg="-0.08" data-paroller-factor-md="-0.08" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+        <span class="icon-thirteen paroller" data-paroller-factor="0.05" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-fourten paroller" data-paroller-factor="-0.08" data-paroller-factor-lg="-0.08" data-paroller-factor-md="-0.08" data-paroller-factor-sm="-0.08" data-paroller-type="foreground" data-paroller-direction="horizontal"></span>
+        <span class="icon-fifteen paroller" data-paroller-factor="0.10" data-paroller-factor-lg="0.08" data-paroller-factor-md="0.08" data-paroller-factor-sm="0.08" data-paroller-type="foreground" data-paroller-direction="vertical"></span>
+    </div>
+    <div class="auto-container">
+        <!-- Title Box -->
+        <div class="title-box wow fadeInDown">
+            <h2>下载 番茄派对语音 语音</h2>
+            <div class="text">好听的声音，从这里开始. </div>
+        </div>
+        <!-- Buttons Box -->
+        <div class="buttons-box">
+            <a href="https://apps.apple.com/cn/app/id1519244375" id = "isIOSUrl" class="theme-btn wow slideInLeft" data-wow-delay="0ms" data-wow-duration="1500ms"><img src="https://image.fqparty.com/images/icons/playstore-btn.png" width="100%" alt="" /></a>
+            <a href="https://file.fqparty.com/download/GW/FQ_GW.apk" id = "isAndroidUrl" class="theme-btn wow slideInRight" data-wow-delay="0ms" data-wow-duration="1500ms"><img src="https://image.fqparty.com/images/icons/google-play.png" width="100%" alt="" /></a>
+        </div>
+    </div>
+</section>
+<!-- End Download Section -->
+
+
+<!-- Main Footer -->
+<footer class="main-footer">
+    <div class="auto-container h2-button" >
+        <div class="button-box wow bounce" data-wow-delay="0ms" data-wow-duration="1500ms">
+
+        </div>
+        <!--Widgets Section-->
+        <div class="widgets-section">
+            <div class="clearfix">
+
+                <!--Footer Column-->
+                <div class="footer-column">
+                    <div class="footer-widget links-widget">
+                        <h2 style="padding: 0% 0% 0% 42%;">关于我们</h2>
+                        <ul class="footer-list"  style="padding: 0% 0% 0% 32%;">
+                            <li>四川融企科技有限公司</li>
+                            <li><a href="#"></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Footer Column-->
+                <div class="footer-column">
+                    <div class="footer-widget links-widget">
+                        <h2   style="padding: 0% 0% 0% 45%;">下载</h2>
+                        <ul  >
+                            <li   style="padding: 0% 0% 0% 46%;"><a href="https://apps.apple.com/cn/app/id1460085317">iOS</a></li>
+                            <li   style="padding: 0% 0% 0% 44%;"><a href="https://file.fqparty.com/download/GW/FQ_GW.apk">Android</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Footer Column-->
+                <div class="footer-column">
+                    <div class="footer-widget links-widget">
+                        <h2   style="padding: 0% 0% 0% 42%;">快速链接</h2>
+                        <ul  >
+                            <li   style="padding: 0% 0% 0% 40%;"><a href="https://www.fqparty.com/master.html">动态发布准则</a></li>
+                            <li   style="padding: 0% 0% 0% 38%;"><a href="https://www.fqparty.com/Minor.html">未成年保护计划</a></li>
+                            <li   style="padding: 0% 0% 0% 40%;"><a href="https://www.fqparty.com/charge.html">用户充值协议</a></li>
+                            <li   style="padding: 0% 0% 0% 40%;"><a href="https://www.fqparty.com/pact.html">用户隐私协议</a></li>
+                            <li   style="padding: 0% 0% 0% 40%;"><a href="https://www.fqparty.com/registered.html">用户注册协议</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Footer Column-->
+                <div class="footer-column">
+                    <div class="footer-widget links-widget">
+                        <h2  style="padding: 0% 0% 0% 45%;">支持</h2>
+                        <ul class="footer-list">
+                            <li style="padding: 0% 0% 0% 43%;">微信公众号</li>
+                            <li style="padding: 0% 0% 0% 42%;">番茄派对语音语音</li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <!--Footer Column-->
+                <div class="footer-column">
+                    <div class="footer-widget links-widget">
+                        <h2 style="padding: 0% 0% 0% 42%;">联系我们</h2>
+                        <ul >
+                            <li style="padding: 0% 0% 0% 37%;" class="footer-list">2145402948@qq.com</li>
+                            <li style="padding: 0% 0% 0% 43%;" class="footer-list">北京朝阳</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <div class="auto-container">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="../index.html"><img src="http://image.muayuyin.com//banner/20200824/a690601933c349c01f5c8b8bf15a4ea4.png" width="45%" alt="" /></a>
+            </div>
+            <!-- Copyright -->
+            <div class="copyright">举报邮箱：2145402948@qq.com</div>
+
+
+            <div style="width:300px;margin:0 auto; padding:20px 0;">
+                <!-- <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502038430" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="http://img.muayy.com/images/beian.png" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">京公网安备 11010502038430号</p></a> -->
+                <a target="_blank" href="http://beian.miit.gov.cn" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px -5px; color:#939393;">蜀ICP备20011367号-2</p></a>
+            </div>
+
+            <div class="copyright">Copyright &copy; 2019. muayuyin.com 版权所有.</div>
+        </div>
+    </div>
+    <!-- End Footer Bottom -->
+
+</footer>
+<!-- End Main Footer -->
+
+</div>
+<!--End pagewrapper-->
+<script src="/web/index/js/jquery.js"></script>
+<script src="/web/index/js/popper.min.js"></script>
+<script src="/web/index/js/bootstrap.min.js"></script>
+<script src="/web/index/js/jquery.fancybox.js"></script>
+<script src="/web/index/js/jquery-ui.js"></script>
+<script src="/web/index/js/owl.js"></script>
+<script src="/web/index/js/appear.js"></script>
+<script src="/web/index/js/wow.js"></script>
+<script src="/web/index/js/element-in-view.js"></script>
+<script src="/web/index/js/paroller.js"></script>
+<script type="text/javascript" src="/web/toastr/toastr.min.js"></script>
+<script src="/web/index/js/script.js"></script>
+<div id="_login-box"  class="popup-shadow" style="width:100%;">
+    <div  class="login-box" style="width:80%;position: absolute;left: -10%;">
+        <span id="close" class="close" title="关闭"  style="background:url(http://image.muayy.com/useravatar/20200515/89daa482e6a07db4e13d656e584cffb8.png)"></span>
+        <p class="title">安全登录，防止被盗</p>
+        <form id="director-form"  method="post" onsubmit="return buttons();">
+            <div class="input"><input id="phone" class="input" name = 'phone' type="text" placeholder="请输入手机号"></div>
+            <span class="notic tel"></span>
+            <div class="input"><input id="ercode" class="input" name = 'code'  type="text" placeholder="请输入验证码"><span class="yzm">获取验证码</span></div>
+            <span class="notic yzmcode"></span>
+            <button id="login_btn" class="login-btn">登录</button>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#_login-box").hide();
+    });
+    $("#close").click(function(){
+        $("#_login-box").hide();
+    });
+    $(".login").click(function(){
+        var idval = $(this).prop('id');
+        var domain = document.domain;
+        if( idval == 'c' ){
+            $('.login-btn').removeAttr('url');
+            $('.login-btn').attr('url',"/web/wxpay");
+        }else if( idval == 'y' ){
+            $('.login-btn').removeAttr('url');
+            $('.login-btn').attr('url',"/web/music");
+        }
+        $("#_login-box").show();
+    });
+    $(function () {
+        $('.yzm').click(function(){
+            if ($(".yzm").text() != '获取验证码') {
+                return false;
+            }else{
+                var phone  = $('#phone').val();
+                $.ajax({
+                    url:'/web/smsCode',
+                    data:{phone:phone},
+                    type:'post',
+                    dataType:"json",
+                    success:function(res){
+                        if(res['code'] == 200){
+                            clearInterval(timer); //清除计时器
+                            var that = this;
+                            that.disabled = true;
+                            var count = 60;
+                            var timer = setInterval(function(){
+                                if(count>0){
+                                    count--;
+                                    $(".yzm").html("重新获取"+count +"s");
+                                    $(".yzm").attr('disabled',true);
+                                }else{
+                                    $(".yzm").html("获取验证码");
+                                    that.disabled = '';
+                                    that.disabled = false;
+                                    clearInterval(timer); //清除计时器
+                                }
+                            },1000);
+                            console.log(res);
+                            //window.location.href = 'http://newmtestapi.fqparty.com/web/music';
+                        }else{
+                            $(".yzm").html("重新发送短信");
+                            that.disabled = false;
+                            clearInterval(timer); //清除计时器
+                        }
+                    }
+                })
+                $(".yzm").text('')
+            }
+        })
+    })
+    //登录
+    function buttons() {
+        var datas = $('form').serializeArray();
+        var web_url = $('.login-btn').attr('url');
+        $.ajax({
+            async: false,    //表示请求是否异步处理
+            type: "post",    //请求类型
+            url: "/web/login",//请求的 URL地址
+            dataType: "json",//返回的数据类型
+            data: datas,
+            success: function (rs) {
+                if (rs.code !== 200) {
+                    toastr.success(rs.msg);
+                    return false;
+                }
+                toastr.success(rs.msg);
+                window.location.href=""+web_url+"";
+            },
+            error: function (rs) {
+                toastr.warning('请求失败');
+            }
+        });
+
+        function location() {
+            window.location.href = window.location.href;
+        }
+
+        return false;
+    }
+
+    //统计点击
+    $(function () {
+        $('#isIOSUrl').click(function(){
+            //alert('123');
+            var u = navigator.userAgent, app = navigator.appVersion;
+            var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            var deviced = 3;
+            if (isIOS) {
+                //这个是ios操作系统
+                var deviced = 2;
+                $.ajax({
+                    url:'/web/doAppCount',
+                    data:{deviced:deviced},
+                    type:'post',
+                    dataType:"json",
+                    success:function(res){
+                        if(res['code'] == 200){
+                            console.log(res);
+                        }
+                    }
+                })
+            }
+        })
+    })
+
+    $(function () {
+        $('#isAndroidUrl').click(function(){
+            //alert('123');
+            var u = navigator.userAgent, app = navigator.appVersion;
+            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+            var deviced = 3;
+            if (isAndroid) {
+                //这个是安卓操作系统
+                var deviced = 1;
+                $.ajax({
+                    url:'/web/doAppCount',
+                    data:{deviced:deviced},
+                    type:'post',
+                    dataType:"json",
+                    success:function(res){
+                        if(res['code'] == 200){
+                            console.log(res);
+                        }
+                    }
+                })
+            }
+        })
+    })
+</script>
+<script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1279182688&web_id=1279182688"></script>
+</body>
+</html>

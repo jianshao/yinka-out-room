@@ -1,0 +1,175 @@
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>测试</title>
+</head>
+<body>
+<form name="爆率测试" action="/api/test/turntable/publishBaolvTask">
+    <table>
+        <tr>
+            <td>爆率测试</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户数量:</td>
+            <td><input type="text" name="userCount" /></td>
+        </tr>
+        <tr>
+            <td>次数类型:</td>
+            <td>
+                <select name="isUserBreakCount">
+                    <option value ="0">总次数</option>
+                    <option value ="1">每人次数</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>总次数/每人次数</td>
+            <td><input type="text" name="breakCountPerLoop" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="执行" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="获取转盘爆率" action="/api/test/turntable/getBoxBaolv">
+    <table>
+        <tr>
+            <td>获取转盘配置爆率</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="获取转盘爆率" action="/api/test/turntable/getAllRunningPool">
+    <table>
+        <tr>
+            <td>获取转盘运行池</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="刷新奖池配置" action="/api/test/turntable/refreshAllPool">
+    <table>
+        <tr>
+            <td>刷新奖池配置</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="刷新" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="获取用户入池数据" action="/api/test/turntable/getUser">
+    <table>
+        <tr>
+            <td>获取用户入池数据</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <input type="text" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="获取" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<form name="清除用户入池数据" action="/api/test/turntable/clearUser">
+    <table>
+        <tr>
+            <td>清除用户入池数据</td>
+        </tr>
+        <tr>
+            <td>转盘</td>
+            <td>
+                <select name="boxId">
+                    <option value ="1">初级</option>
+                    <option value ="2">高级</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <input type="text" name="userId" />
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="清除" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

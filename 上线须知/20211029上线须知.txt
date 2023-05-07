@@ -1,0 +1,42 @@
+sql:
+
+CREATE TABLE `zb_room_wholewheat_census` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `send_uid` int(11) DEFAULT '0' COMMENT '用户id',
+  `room_id` int(11) DEFAULT '0' COMMENT '房间id',
+  `gift_id` int(11)  DEFAULT '0' COMMENT '礼物id',
+  `count` int(11) DEFAULT '0' COMMENT '礼物数量',
+  `gift_value` int(11) DEFAULT '0' COMMENT '礼物价值',
+  `create_time` varchar(20) DEFAULT '0' COMMENT '送礼时间',
+  `ext` varchar(1000) DEFAULT '' COMMENT '备用字段',
+  PRIMARY KEY (`id`),
+	KEY `idx_uid` (`send_uid`),
+	KEY `idx_room_id` (`room_id`),
+	KEY `idx_gift_id` (`gift_id`),
+	KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='房间全麦礼物统计表';
+
+
+
+#最新上线
+CREATE TABLE `zb_check_im_message` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `from_uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发送者id',
+  `to_uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '接收者id',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '消息类型 0文本消息 1图片消息  2语音消息 3视频消息 4位置消息 5文件消息 6提示消息 7自定义消息',
+  `message` text COLLATE utf8_bin COMMENT '消息内容',
+  `check_response` text COLLATE utf8_bin COMMENT '检测结果',
+  `api_response` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '接口返回信息',
+  `status` tinyint(1) DEFAULT NULL COMMENT '消息状态 1发送成功 2检测失败 3信息限制 4撤回',
+  `created_time` int(20) DEFAULT '0' COMMENT '创建时间',
+  `updated_time` int(20) DEFAULT '0' COMMENT '更改时间',
+  `ext_1` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '预留字段1',
+  `ext_2` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '预留字段2',
+  `ext_3` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '预留字段3',
+  PRIMARY KEY (`id`),
+  KEY `idx_createdtime` (`created_time`) USING BTREE,
+  KEY `idx_fromuid` (`from_uid`) USING BTREE,
+  KEY `idx_touid` (`to_uid`) USING BTREE,
+  KEY `idx_type` (`type`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='IM消息';

@@ -1,0 +1,270 @@
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: #915d44;
+	background-color: #7053C5;
+	list-style: none;
+	font-size: 12px;
+	font-family: "Microsoft YaHei"
+}
+
+a {
+	text-decoration: none;
+
+}
+
+.banner .bannerbg {
+	position: relative;
+	width: 100%;
+}
+
+.taskRules {
+	position: relative;
+	width: 88%;
+	margin-left: 1.5rem;
+	background-size: contain;
+	background-repeat: repeat-x;
+	background: #ECE6FC;
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+	margin-bottom: 1.875rem;
+}
+
+.taskList {
+	position: relative;
+	width: 100%;
+	background: #ECE6FC;
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+	/* padding-bottom: ; */
+}
+
+
+/* ===== 排行榜前三结束 ===== */
+.task4 {
+	position: relative;
+	/* margin-top: 1vw; */
+	/* width: 100%; */
+	/* height: auto; */
+	width: 94%;
+	height: 4.75rem;
+	margin-left: 0.625rem;
+	margin-bottom: 0.25rem;
+	/* border-top: 0.09375rem double; */
+	border-top-color: rgba(255, 255, 255, 0.2);
+	background: #D8D7FF;
+	margin-bottom: 0.5rem;
+}
+
+.task4-container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.myRanking {
+	position: relative;
+	width: 100%;
+	height: 4.75rem;
+	background: #D8D7FF;
+	border-bottom-left-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+}
+
+
+.task-list-number {
+	position: absolute;
+	align-content: center;
+	left: 0.5rem;
+	font-size: 1.1875rem;
+	text-align: center;
+	margin-top: 6vw;
+	color: #614BA7;
+}
+
+.task-list-weishangbang {
+	float: left;
+	width: 6%;
+	font-size: 3.5vw;
+	padding: 3.5vw;
+	text-align: center;
+	light-height: 0rem;
+	color: #614BA7;
+}
+
+.task-list-avatar {
+	position: absolute;
+	width: 3rem;
+	height: 3rem;
+	left: 2.3rem;
+	top: 0.5rem;
+}
+
+.task-list-img-frame {
+	position: absolute;
+	/* left: 1.25rem; */
+	width: 3.4rem;
+	height: 3.4rem;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.task-list-img {
+	position: absolute;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.task-list-gift {
+	position: absolute;
+	width: 40%;
+	height: auto;
+	/* border-radius: 50%; */
+	left: 53%;
+	top: 46%;
+	transform: translate(-50%, -50%);
+}
+
+.task-list-name {
+	position: absolute;
+	width: 3rem;
+	font-size: 0.625rem;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 0.7rem;
+	line-height: 0.7rem;
+	color: #614BA7;
+	left: 3.75rem;
+	bottom: 0.3rem;
+	transform: translateX(-50%);
+
+}
+
+.task-list-name22 {
+	position: absolute;
+	width: 3rem;
+	font-size: 1rem;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 1.2rem;
+	line-height: 1.2rem;
+	color: #614BA7;
+	/* left: 3.75rem; */
+	
+	right: 45%;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.task-list-name0, .task-list-name1, .task-list-name2 {
+	position: absolute;
+	width: 6.25rem;
+	font-size: 0.1;
+	text-align: center;
+	/* overflow: hidden; */
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	height: 0.5625rem;
+	line-height: 0.5625rem;
+	color: #614BA7;
+	bottom: 1rem;
+	transform: translateX(-50%);
+}
+
+.task-list-name0 {
+	left: 37%;
+}
+
+.task-list-name1 {
+	left: 53%;
+}
+
+.task-list-name2 {
+	left: 69%;
+}
+
+
+.task-list-integral, .task-list-integral2 {
+	position: absolute;
+	font-size: 1rem;
+	text-align: right;
+	color: #C66BAD;
+	line-height: 1.2rem;
+	height:1.2rem;
+	right: 1.25rem;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.task-list-integral2 {
+	/* right: 5rem; */
+}
+
+.toggleBtn {
+	positon: relative;
+	width: 100%;
+	height: 4.5rem;
+	/* left: 50%; */
+	/* transform: translateX(-50%); */
+}
+.toggleBtnPanel {
+	positon: relative;
+	width: 88%;
+	height: 100%;
+	background: linear-gradient(90deg, #9380FE 0%, #9C96FF 100%);
+	border-top-right-radius: 0.5rem;
+	border-top-left-radius: 0.5rem;
+	margin-left: 1.5rem;
+	/* left: 50%;
+	transform: translateX(-50%); */
+}
+.toggleBtn1, .toggleBtn2 {
+	position: absolute;
+	width: 37%;
+	height: 2.8125rem;
+	
+	background-size: 100% 100%;
+	margin-top: 0.875rem;
+	
+	font-size: 0.875rem;
+	font-family: PingFang SC;
+	font-weight: 500;
+	color: #FFFFFF;
+	line-height: 2.8125rem;
+	text-align: center;
+	
+}
+.toggleBtn1 {
+	background-image: url(../images/tab1.png);
+	margin-left: 0.8rem;
+}
+.toggleBtn2 {
+	background-image: url(../images/tab2.png);
+	margin-left: 11rem;
+}
+.bordertop {
+	width: 88%;
+	margin-left: 1.5rem;
+}
+
+
+
+
+
+    
+
+
+

@@ -1,0 +1,709 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0042)https://www.heyheytalk.com/Music/SaveMusic -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>音恋 - 上传音乐</title>
+		<link rel="stylesheet" href="/web/index/css/musicstyle.css">
+		<link rel="stylesheet" href="/web/toastr/toastr.min.css">
+		<style>
+	.headeres a {
+    	vertical-align: top;
+    	display: inline-block;
+    	font-size: 1.6rem;
+    	color: #FFFFFF;
+    	line-height: 80px;
+    	margin-right: 80px;
+	}
+	html, body {
+    	width: 100%;
+    	height:120%;
+    	font-size: 10px;
+    }
+    .user {
+    	display: none;
+    	font-size: 1.4rem;
+    	float: right;
+    	color: #FFFFFF;
+	}
+	.active {
+    	color: #FFFFFF;
+    	font-weight: bold;
+	}
+	#m_man , #m_name{
+		outline-style: none ;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		padding: 13px 14px;
+		width: 70%;
+		font-size: 14px;
+		font-weight: normal;
+		font-family: "Microsoft soft";
+	}
+	input:focus{
+		margin:0 auto;
+		border-color: #66afe9;
+		outline: 0;
+		-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+		box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+	}
+	.file {
+		position: relative;
+		display: inline-block;
+		background: #D0EEFF;
+		border: 1px solid #99D3F5;
+		border-radius: 4px;
+		padding: 4px 12px;
+		overflow: hidden;
+		color: #1E88C7;
+		text-decoration: none;
+		text-indent: 0;
+		line-height: 35px;
+	}
+	.file input {
+		position: absolute;
+		font-size: 100px;
+		right: 0;
+		top: 0;
+		opacity: 0;
+	}
+	.file:hover {
+		background: #AADFFD;
+		border-color: #78C3F3;
+		color: #004974;
+		text-decoration: none;
+	}
+	.zi{
+		font-variant:small-caps; //字体异体
+		font-weight:bold; //字体加粗
+		font-size:70px; //字大小为12px
+		line-height:22px;//字行高为22px
+		font-family:"黑体" //字体为黑体字
+	}
+
+	.button1 {
+		background-color: #4CAF50; /* Green */
+		border: none;
+		color: white;
+		padding: 15px 32px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	}
+
+/* 	.logo {
+    	display: inline-block;
+    	width: 100px;
+    	height: 30px;
+    	margin-top: 25px;
+} */
+</style>
+	<body>
+		<div class="container" >
+			<div class="headeres" >
+				<div class="box" style="background-color: #ff6860;">
+					<a href="/" class="logo"><img  src="https://image.fqparty.com/web2020428/logo1.png" style="position: relative; top:-80%;left:-50%;" alt=""></a>
+					<a href="{$web_url}/web/index.html" style="position: absolute; padding : -80px 0px 0px 0px;right:50%;">首页</a>
+					<a class="active" href="{$web_url}/web/music" style="position: absolute; padding : -80px 0px 0px 0px;right:35%;">音乐上传</a>
+					<a id="_pay" href="{$web_url}/web/wxpay" style="position: absolute; padding : -80px 0px 0px 0px;right:20%;">充值</a>
+					<!--<a href="javascript:;" class="user" style="display: inline;">登录</a>-->
+					{if condition="!empty($username)"}
+						<a id="logines" href="javascript:;"  style="position: absolute; padding : -80px 0px 0px 0px;right:-5%;">{$username}</a>
+						<a id="outLogin" style="position: absolute;  padding :-80px 0px 0px 0px;right:-15%;">退出</a>
+					{/if}
+					{if condition="empty($username)"}
+						<a id="login" href="javascript:;"  style="position: absolute; padding : -80px 0px 0px 0px;right:-10%;">登录</a>
+					{/if}
+				</div>
+			</div>
+			<div style="margin:7%;"></div><!-- 分离div -->
+			<div class="box" style="background-color: #fff;padding: 70px 0 50px;">
+				<div id="music_mgr" style="text-align: right;padding-right: 50px; position: relative; top:-10%; right:0%;"  >
+					<div class="search-box">
+						<a id="_music_mgr" href="{$web_url}/web/musicList"><button id="xj">音乐管理</button></a>
+					</div>
+				</div>
+				<form action="/web/music" method="post" enctype="multipart/form-data" >
+					<input type="hidden" id="size" name="size" >
+						<li>
+							<span style="padding: 0 3% 0 2%;">
+								歌名:
+							</span>
+							<label>
+								<input id="m_name" placeholder="请输入歌曲名(必填，不超过20个字)" type="text" name="song_name" required="required">
+								<i style="color: #f8587b;font-style: normal;">*</i>
+							</label>
+						</li>
+						<li style="padding: 3% 0 0 0;">
+							<span style="padding: 0 1% 0 2%;">
+								演唱者:
+							</span>
+							<label>
+								<input id="m_man" placeholder="请输入演唱者(必填，不超过20个字，该信息不准确可能导致下架)" type="text" name="songer" required="required">
+								<i style="color: #f8587b;font-style: normal;">*</i>
+							</label>
+						</li>
+						<li style="padding: 3% 0 0 0;">
+							<span  style="padding: 0% 1% 0% 2%;">
+								音乐文件:
+							</span>
+							<label>
+								<button class="chose file">
+									<input id="m_file" type="file" style="text-align:center;" accept="audio/mp3" name="song_url" required="required">点击这里上传文件
+									<span class="notic red m-file"></span>
+								</button>
+							</label>
+							<i style="color: #f8587b;font-style: normal;">(必填，仅限MP3格式，不超过20M)</i>
+						</li>
+						<li style="padding: 3% 0 0 0;">
+								<span  style="padding: 0% 1% 0% 2%;">
+									音乐类型:
+								</span>
+								<label>
+									<input  class="checkbox" type="radio" name="type" value="1" >
+									伴奏
+								</label>
+								<label style="margin-left: 3.125rem;">
+									<input  class="checkbox" type="radio" name="type" value="2" checked/>
+									原唱
+								</label>
+							<i style="color: #f8587b;font-style: normal;">(必填，若为伴奏，请选择伴奏)</i>
+						</li>
+						<li style="padding: 3% 0 0 0;">
+							<label  style="padding: 0% 1% 0% 10%;">
+								<input id="xy_input" class="checkbox" type="checkbox" checked/>
+								我已认真阅读并同意<i id="_xy" style="color: #f8587b;cursor:pointer;">《用户上传歌曲伴奏文件协议》</i>
+							</label>
+						</li>
+					<li style="position: relative;padding: 5% 0 0 35%;" >
+						<label>
+							{if condition="!empty($username)"}
+							<input class="upload_btn button1 " type="submit" value="确认上传"  />
+							{/if}
+							{if condition="empty($username)"}
+							<input class="upload_btn button1 " type="submit" value="请去登录" disabled="disabled" style="background-color:#d0d0d0"/>
+							{/if}
+						</label>
+					</li>
+				</form>
+				<p class="info" style="color:#333;bottom:-30px;">© 2017 The BigBang Studio All Rights Reserved</p>
+			</div>
+		</div>
+		<div id="_xy_box" class="popup-shadow"style="width: 90%;padding: 0px 0em 0ex 60%;">
+			<div class="xy-box"  style="padding: 0px 0em 0ex 19%;margin-bottom: 30px;white-space: nowrap;overflow-x: auto;-webkit-overflow-scrolling:touch;">
+				<input type="button"class="close" value='×'>
+					<h1>用户上传歌曲伴奏文件协议</h1>
+					欢迎您光临音恋官方网站（以下简称"本频道"）。
+					<br>在您使用本频道各项服务之前，请仔细阅读本《免责声明》。
+					<br>本频道主要是运营语音交友网站，本频道旨在为用户提供更好的分享交流平台，凡以任何方式登陆浏览本频道内容或直接、间接使用、上传、下载本频道内容者，视为同意本频道《免责声明》。
+					<br>1.本频道为用户提供作品上传渠道、信息储存空间等网络技术服务，由用户自行上传，本频道对该上传作品不做任何修改或编辑，也不收费，用户应对其上传的作品承担全部责任，本频道不承担任何责任。
+					<br>2.用户上传作品不得侵犯他人的知识产权以及其他合法权利（包括但不限于著作权、商标权、肖像权等）。若用户未经著作权人同意擅自对其作品进行全部或部分复制、修改、改编、翻译、汇编等，有可能侵害到他人的著作权时，用户不得擅自把相关内容上传发布到本频道。一旦由于用户上传的作品发生权利纠纷或侵犯了任何第三方的合法权利，对此造成的所有责任由用户承担，因此给本频道或任何第三方造成损失的，用户应负责全额赔偿。本频道有权不事先通知用户即撤消或删除上传内容，并无需向用户承担任何责任。
+					<br>3.本频道作品受到著作权法、商标法、专利法、信息网络传播权保护条例等相关法律法规的保护和约束，本频道所发布的作品版权归属原作者所有。除非获得权利人的授权，其他用户不得转载、修改、传播、制作衍生作品或者商业使用。用户或其他媒体、企业、网站、其他组织或个人如需使用本频道作品，必须先与作者、相关权利人或本频道联系。
+					<br>4.本频道有权为宣传本频道之目的使用用户上传的内容，且无需向用户支付任何费用或承担任何责任。本频道在宣传推广用户上传的作品时（包括但不限于在广告、推荐位、本站合作推广专区中推广）时，有权同时标注本频道的标识（包括但不限于相关的文字表述、本频道的名称、LOGO等）。
+					<br>5.用户上传歌曲伴奏及歌词文件不得包含以下违规内容，如违规上传，一经发现将永久删除上传文件，且上传文件的用户将被严惩永久封禁，情节极度恶劣者就追究法律责任。<br><strong>违规内容：</strong><br>1)
+					反对宪法所确定的基本原则的；
+					<br>2) 危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；
+					<br>3) 损害国家荣誉和利益的；
+					<br>4) 煽动民族仇恨、民族歧视、破坏民族团结的；
+					<br>5)破坏国家宗教政策，宣扬邪教和封建迷信的；
+					<br>6) 散布谣言，扰乱社会秩序，破坏社会稳定的；
+					<br>7) 散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；
+					<br>8) 侮辱或者诽谤他人，侵害他人合法权利的；
+					<br>9)煽动非法集会、结社、游行、示威、聚众扰乱社会秩序的；
+					<br>10) 以非法民间组织名义活动的；
+					<br>11) 含有虚假、有害、胁迫、侵害他人隐私、骚扰、侵害、中伤、粗俗、猥亵、或其它道德上令人反感的内容。
+			</div>
+		</div>
+		<div id="_loading_box" class="popup-shadow">
+			<div class="load-box">
+				<span id="loading"><i class="line"></i></span>
+				<p>上传中...</p>
+				<button id="_know">知道了</button>
+			</div>
+		</div>
+
+		<!--<div id="_login-box"  class="popup-shadow" style="display: block;">-->
+		<div id="_login-box"  class="popup-shadow">
+			<div  class="login-box">
+				<span id="close" class="close" title="关闭"  style="background:url(http://image.muayy.com/useravatar/20200515/89daa482e6a07db4e13d656e584cffb8.png)"></span>
+				<p class="title">安全登录，防止被盗</p>
+				<form id="director-form"  method="post" onsubmit="return buttons();">
+					<!--<form id="director-form"  method="post" action="/web/login">-->
+					<div class="input"><input id="phone"  name = 'phone' type="text" placeholder="请输入手机号"></div>
+					<span class="notic tel"></span>
+					<div class="input"><input id="ercode"  name = 'code' style="width:200px;" type="text" placeholder="请输入验证码"><span class="yzm">获取验证码</span></div>
+					<!--<div class="input"><input id="ercode"  name = 'code' style="width:200px;" type="text" placeholder="请输入验证码"><span class="yzm" id="validate_span" onclick="sendsms(this);">获取验证码</span></div>-->
+					<span class="notic yzmcode"></span>
+					<button id="login_btn" class="login-btn">登录</button>
+					<!--<input class="login-btn" type="submit" value="登录" />-->
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript" src="/web/index/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/web/toastr/toastr.min.js"></script>
+		<script type="text/javascript">
+			//发送验证码函数
+			function sendsms(e) {
+				/*发送验证码功能*/
+				countdown(e);                                   //若发送验证码成功，则调用倒计时函数
+			}
+			//倒计时函数
+			var time = 60;
+			function countdown(e) {
+				if (time == 0) {
+					//e.setAttribute('disabled',false);         对没有disbaled属性的span标签，此方法无效
+					e.setAttribute("onclick", "sendsms(this)");
+					$("#validate_span").html("获取验证码");
+					time = 60;
+				} else {
+					//e.attr('disabled',true);                  对没有disbaled属性的span标签，此方法也无效
+					//e.setAttribute("onclick", '');            这样写也可以
+					e.removeAttribute("onclick");
+					$("#validate_span").html("重新发送(" + time + ")");
+					time--;
+					setTimeout(function () {
+						countdown(e)
+					}, 1000)
+					var phone  = $('#phone').val();
+					$.ajax({
+						url:'/web/smsCode',
+						data:{phone:phone},
+						type:'post',
+						dataType:"json",
+						success:function(res){
+							if(res['code'] == 200){
+								console.log(res);
+								//window.location.href = 'http://newmtestapi.fqparty.com/web/music';
+							}
+						}
+					})
+				}
+			}
+		</script>
+		<script>
+			$(function () {
+				$('.yzm').click(function(){
+					if ($(".yzm").text() != '获取验证码') {
+						return false;
+					}
+					var phone  = $('#phone').val();
+					$.ajax({
+						url:'/web/smsCode',
+						data:{phone:phone},
+						type:'post',
+						dataType:"json",
+						success:function(res){
+							if(res['code'] == 200){
+								clearInterval(timer); //清除计时器
+								var that = this;
+								that.disabled = true;
+								var count = 60;
+								var timer = setInterval(function(){
+									if(count>0){
+										count--;
+										$(".yzm").html("重新获取"+count +"s");
+										$(".yzm").attr("disabled",false);
+									}else{
+										$(".yzm").html("获取验证码");
+										that.disabled = false;
+										clearInterval(timer); //清除计时器
+									}
+								},1000);
+								console.log(res);
+								//window.location.href = 'http://newmtestapi.fqparty.com/web/music';
+							}else{
+								$(".yzm").html("重新发送短信");
+								that.disabled = false;
+								clearInterval(timer); //清除计时器
+							}
+						}
+					})
+				})
+			})
+			//退出
+			$(function () {
+				$('#outLogin').click(function(){
+					var status  = 1;
+					$.ajax({
+						url:'/web/loginOut',
+						data:{status:status},
+						type:'get',
+						dataType:"json",
+						success:function(res){
+							if(res['code'] == 200){
+								console.log(res);
+								window.location.href = window.location.href;
+							}
+						}
+					})
+				})
+			})
+			function buttons(){
+				var datas = $('form').serializeArray();
+				$.ajax({
+					async : false,    //表示请求是否异步处理
+					type : "post",    //请求类型
+					url : "/web/login",//请求的 URL地址
+					dataType : "json",//返回的数据类型
+					data:datas,
+					success: function (rs) {
+						if (rs.code !== 200) {
+							toastr.warning(rs.msg);
+							return false;
+						}
+						toastr.success(rs.msg);
+						setTimeout(location, 1000);   //延迟5秒刷新页面
+					},
+					error:function (rs) {
+						toastr.warning('请求失败');
+					}
+				});
+				function location() {
+					window.location.href = window.location.href;
+				}
+				return false;
+			}
+			function add_imgs(){
+				/*if($("#uid").val() == ""){
+					toastr.warning('未获得用户ID');
+					return false;
+				}*/
+				if($('#avatar')[0].files[0]){
+					var gift_imageType = $('#pretty_avatar')[0].files[0].name.split('.');
+					if(gift_imageType[1] != 'mp3'){
+						toastr.warning('请选择mp3格式文件');
+						return false;
+					}
+				}
+				var formData = new FormData();
+				formData.append("id", $("#uid").val());
+				formData.append("token", $("#token").val());
+				formData.append("master_url", $("#master_url").val());
+				formData.append("pretty_avatar", $('#pretty_avatar')[0].files[0]);
+				$.ajax({
+					async: false,    //表示请求是否异步处理
+					cache: false,
+					processData: false,
+					contentType: false,
+					type: "post",    //请求类型
+					url: "/admin/prettyavatarOssFile",//请求的 URL地址
+					dataType: "json",//返回的数据类型
+					data: formData,
+					success: function (rs) {
+						if (rs.code !== 200) {
+							toastr.warning(rs.msg);
+							return false;
+						}
+						toastr.success(rs.msg);
+						setTimeout(location, 1000);   //延迟5秒刷新页面
+					},
+					error: function (rs) {
+						toastr.warning('请求失败');
+					}
+				});
+				function location() {
+					window.location.href = window.location.href;
+				}
+				return false;
+			}
+		</script>
+
+		<script type="text/javascript">
+			function getCookie(c_name) {
+				if (document.cookie.length > 0) {
+					c_start = document.cookie.indexOf(c_name + "=")
+					if (c_start != -1) {
+						c_start = c_start + c_name.length + 1
+						c_end = document.cookie.indexOf(";", c_start)
+						if (c_end == -1) c_end = document.cookie.length
+						return unescape(document.cookie.substring(c_start, c_end))
+					}
+				}
+				return ""
+			}
+
+			function delCookie(name) {
+				var exp = new Date();
+				exp.setTime(exp.getTime() - 1);
+				var cval = getCookie(name);
+				if (cval != null)
+					document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString() + "; path=/";
+			}
+			$(function() {
+				var username = getCookie("username");
+				if (username != null && username != undefined && username != "" && username != "null") {
+					$(".user").html("欢迎，" + username + "<span>点击退出</span>").show();
+					$(".user span").click(function() {
+						delCookie("username");
+						delCookie("sessionID");
+						delCookie("userid");
+						// window.location.href="https:\/\/www.muayuyin.com/index.html.com\/";
+					});
+				} else {
+					// window.location.href="https:\/\/www.heyheytalk.com\/";
+
+				}
+
+
+				var _type_btn = $("#m_type"),
+						_type_menu = $("#m_type ul");
+
+				_type_btn.click(function() {
+					if ($(this).hasClass("active")) {
+						_type_menu.slideUp("50");
+						$(this).removeClass("active");
+					} else {
+						_type_menu.slideDown("50");
+						$(this).addClass("active");
+					}
+				});
+
+				_type_menu.find("li").click(function() {
+					var text = $(this).text(),
+							type = $(this).attr("data-type");
+					_type_btn.find("span").text(text).attr("data-type", type);
+					_type_menu.slideUp("100");
+				});
+
+
+				var _xy = $("#_xy"),
+						_xy_box = $("#_xy_box"),
+						_close = _xy_box.find(".close");
+				_xy.click(function(event) {
+					event.stopPropagation();
+					_xy_box.fadeIn("100")
+				});
+				_close.click(function() {
+					_xy_box.fadeOut("100")
+				});
+
+				var _xy_input = $("#xy_input");
+				_xy_input.click(function() {
+					if ($(this).hasClass('checked')) {
+						$(this).removeClass("checked").prop("checked", false).attr("checked", false);
+					} else {
+						$(this).addClass("checked").prop("checked", true).attr("checked", "checked");
+					}
+				});
+
+
+				var _upload = $(".upload_btn");
+				var File = null,
+						_m_name, _m_man, _m_type;
+				$("#m_file").on("change", function(event) {
+					File = event.target.files[0];
+					var size = File.size;
+					if (size > 60480000) {
+						alert("文件不能大于20M！");
+						clearInputFile(document.getElementById('m_file'));
+						return false;
+					}
+					document.getElementById("size").value=size;
+					var name = File.name;
+					$(".m-file").text(name).removeClass("red").show();
+				});
+				_upload.click(function() {
+					var _flag = true;
+
+					if ($("#xy_input").prop("checked")!=true) {
+						alert("请同意协议说明！");
+						return false;
+					}
+					if ($("#xy_input").prop("checked")!=true) {
+						alert("请同意协议说明！");
+						return false;
+					}
+					_m_name = $("#m_name").val(),
+							_m_man = $("#m_man").val(),
+							_m_type = $("#m_type span").attr("data-type");
+					if (_m_type == undefined) {
+						$(".m-type").show();
+						$("#m_type").focus();
+						_flag = false;
+					} else {
+						$(".m-type").hide();
+					}
+					if (File == null) {
+						$(".m-file").addClass('red').show();
+						$("#m_file").focus();
+						_flag = false;
+					}
+					if (_m_man == "") {
+						$(".m-man").show();
+						$("#m_man").focus();
+						_flag = false;
+					} else if (strlen(_m_man) > 40) {
+						alert("演唱者不能超过20个字！");
+						return false;
+					} else {
+						$(".m-man").hide();
+					}
+					if (_m_name == "") {
+						$(".m-name").show();
+						$("#m_name").focus();
+						_flag = false;
+					} else if (strlen(_m_name) > 40) {
+						alert("歌曲名不能超过20个字！");
+						return false;
+					} else {
+						$(".m-name").hide();
+					}
+					if (_flag) {
+						upload.uploadMusic();
+					}
+				});
+
+				var upload = {
+					uploadMusic: function() {
+						$("#_loading_box").fadeIn("100");
+						var that = this;
+						var reader = new FileReader();
+						reader.readAsDataURL(File);
+						reader.onload = function(event) {
+							var file = event.target.result;
+							$.ajax({
+								//url: "https:\/\/www.heyheytalk.com\/music/uploadFile",
+								dataType: "json",
+								type: "post",
+								data: '{"file":"' + file + '"}',
+								xhr: function() {
+									var xhrobj = $.ajaxSettings.xhr();
+									if (xhrobj.upload) {
+										xhrobj.upload.addEventListener('progress', function(event) {
+											var percent = 0,
+													position = event.loaded || event.position,
+													total = event.total || e.totalSize;
+											if (event.lengthComputable) {
+												percent = Math.ceil(position / total * 100);
+											}
+											that.musicProcessBar(percent);
+										}, false);
+									}
+									return xhrobj;
+								},
+								success: function(data) {
+									if (data.status == 200) {
+										console.log(data.data.name)
+										that.uploadData(data.data.name);
+									} else {
+										that.processResult(false);
+									}
+								},
+								complete: function() {},
+								error: function(xhr, status, errMsg) {
+									console.log(errMsg);
+								},
+							});
+						};
+					},
+					uploadData: function(filename) {
+						var that = this;
+						$.ajax({
+							//url: "https:\/\/www.heyheytalk.com\/music/uploadMusic",
+							type: "post",
+							dataType: "json",
+							data: '{"song_name":"' + _m_name + '","songer":"' + _m_man + '","song_url":"' + filename + '","type":' + _m_type +
+									'}',
+							success: function(data) {
+								if (data.status == 200) {
+									that.processResult(true);
+								} else {
+									that.processResult(false);
+								}
+							},
+							error: function(xhr) {
+								console.log(xhr);
+							}
+						});
+					},
+					musicProcessBar: function(percent) {
+						var loading_bar = $("#loading .line");
+						loading_bar.css({
+							"width": percent + "%"
+						});
+					},
+					processResult: function(flag) {
+						if (flag) {
+							$("#_loading_box .load-box p").addClass("ok").text("上传成功");
+							$("#_know").css({
+								"display": "block"
+							});
+						} else {
+							$("#_loading_box .load-box p").addClass("no").html("上传失败，<i style='color:#f8587b;'>请重试！</i>");
+							$("#_know").css({
+								"display": "block"
+							});
+						}
+					}
+				};
+				$("#_know").click(function() {
+					$("#_loading_box").fadeOut("100", function() {
+						$("#_know").hide();
+						$(this).find("p").removeClass("ok").removeClass("no").text("上传中...");
+					});
+				});
+
+
+				function strlen(str) {
+					var len = 0;
+					for (var i = 0; i < str.length; i++) {
+						var c = str.charCodeAt(i);
+						if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+							len++;
+						} else {
+							len += 2;
+						}
+					}
+					return len;
+				}
+
+				function clearInputFile(f) {
+					if (f.value) {
+						try {
+							f.value = '';
+						} catch (err) {}
+						if (f.value) {
+							var form = document.createElement('form'),
+									ref = f.nextSibling,
+									p = f.parentNode;
+							form.appendChild(f);
+							form.reset();
+							p.insertBefore(f, ref);
+						}
+					}
+				}
+			});
+
+			// var login = $("#login"),
+			// 	_login-box = $("#_login-box"),
+			// 	_close = _login-box.find(".close");
+			// login.click(function(event) {
+			// 	event.stopPropagation();
+			// 	_login-box.fadeIn("100")
+			// });
+			// _close.click(function() {
+			// 	_login-box.fadeOut("100")
+			// });
+
+			$(document).on('.close','click',function () {
+				$(this).parent().parent().hide()
+			})
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#close").click(function(){
+					$("#_login-box").hide();
+				});
+				$("#login").click(function(){
+					$("#_login-box").show();
+				});
+			});
+		</script>
+
+	</body>
+</html>

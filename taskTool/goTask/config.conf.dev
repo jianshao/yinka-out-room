@@ -1,0 +1,8 @@
+[Task]
+proc_num=2
+file_name="/usr/local/php/bin/php /data/wwwroot/mua/think ShortQueueCommand"
+max_proc=50
+[Redis]
+redis_prefix=""
+redis_host="172.17.213.54:6381"
+redis_auth=""
