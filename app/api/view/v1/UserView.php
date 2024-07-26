@@ -19,6 +19,20 @@ use app\utils\TimeUtil;
 //json key:userInfo
 class UserView
 {
+    public static function viewUser($userModel)
+    {
+        return [
+            'user_id' => (int)$userModel->userId,
+            'nick_name' => $userModel->nickname ?: '未知',
+            'avatar' => CommonUtil::buildImageUrl($userModel->avatar),
+            'sex' => isset($userModel->sex) ? intval($userModel->sex) : 2,
+            'age' => $userModel->birthday ? TimeUtil::birthdayToAge($userModel->birthday) : 18,
+            'intro' => $userModel->intro ?: '你主动我们就有故事',
+            'twelve_animals' => birthextLite($userModel->birthday),
+            'city' => $userModel->city == '' ? '' : $userModel->city,
+            'sound_hot_num' => format_number_string(rand(100,99999)),
+        ];
+    }
 
     public static function viewOnlineUser($roomId, $userModel, $roomTypeModel)
     {

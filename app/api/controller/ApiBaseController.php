@@ -6,6 +6,7 @@ namespace app\api\controller;
 use app\BaseController;
 use app\domain\exceptions\FQFatalException;
 use app\query\site\service\SiteService;
+use think\facade\Log;
 
 class ApiBaseController extends BaseController
 {
@@ -31,6 +32,7 @@ class ApiBaseController extends BaseController
             }
         } else {
             if (version_compare($this->version, $siteConf['apkversion'], '<')) {
+                Log::info(sprintf("3000 result version=%s request=%s", $this->version, json_encode($this->request)));
                 throw new FQFatalException(json_encode(['code' => 3000, 'desc' => '该用户不是最新版本', 'apk_url' => $siteConf['apkaddress']]), 3000);
             }
         }

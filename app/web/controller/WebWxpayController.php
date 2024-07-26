@@ -162,6 +162,7 @@ class WebWxpayController extends BaseController
         $urlObj["scope"] = "snsapi_base";
         $urlObj["state"] = "STATE" . "#wechat_redirect";
         $bizString = $this->ToUrlParams($urlObj);
+        Log::record('__CreateOauthUrlForCode-----'.$bizString);
         return "https://open.weixin.qq.com/connect/oauth2/authorize?" . $bizString;
     }
 

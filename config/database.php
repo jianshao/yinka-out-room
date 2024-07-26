@@ -32,13 +32,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.01'),
             // 数据库名
             'database' => Env::get('database.database', 'user1'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -69,13 +69,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.01'),
             // 数据库名
             'database' => Env::get('database.database', 'user2'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -106,13 +106,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user3'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -143,13 +143,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user4'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -181,13 +181,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user1'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -218,13 +218,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user2'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -255,13 +255,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user3'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -292,13 +292,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'user4'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -330,13 +330,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'common'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -368,13 +368,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'common'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -406,13 +406,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'common'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -444,13 +444,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'common'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -482,13 +482,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rm-2ze7oqeviq2tmw5xj.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.01'),
             // 数据库名
             'database' => Env::get('database.database', 'bi'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数
@@ -520,13 +520,13 @@ return [
             // 数据库类型
             'type' => Env::get('database.type', 'mysql'),
             // 服务器地址
-            'hostname' => Env::get('database.hostname', 'rr-2ze59716535en5m7r.mysql.rds.aliyuncs.com'),
+            'hostname' => Env::get('database.hostname', '127.0.0.1'),
             // 数据库名
             'database' => Env::get('database.database', 'bi'),
             // 用户名
-            'username' => Env::get('database.username', 'yinka'),
+            'username' => Env::get('database.username', 'root'),
             // 密码
-            'password' => Env::get('database.password', 'jjNvaIt07OWcY8Mq'),
+            'password' => Env::get('database.password', '123456'),
             // 端口
             'hostport' => Env::get('database.hostport', '3306'),
             // 数据库连接参数

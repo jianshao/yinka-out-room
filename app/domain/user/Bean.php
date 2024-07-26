@@ -59,12 +59,12 @@ class Bean
         assert($count >= 0);
         if ($count > 0) {
             if ($this->balance($timestamp) < $count) {
-                throw new AssetNotEnoughException('豆数量不足', 500);
+                throw new AssetNotEnoughException('LB数量不足', 500);
             }
             if (!BeanModelDao::getInstance()->incFree($this->getUserId(), $count)) {
                 Log::warning(sprintf('BeanConsumeNotEnough userId=%d count=%d total=%d free=%d balance=%d',
                     $this->getUserId(), $count, $this->model->total, $this->model->free, $this->balance($timestamp)));
-                throw new AssetNotEnoughException('豆数量不足', 500);
+                throw new AssetNotEnoughException('LB数量不足', 500);
             }
             $this->model->free += $count;
 

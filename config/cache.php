@@ -37,23 +37,23 @@ return [
         'redis' => [
             // 驱动方式
             'type'       => 'redis',
-            'host'      => Env::get('redis.hostname', 'r-2zep27hvk4ys3nypqu.redis.rds.aliyuncs.com'),
+            'host'      => Env::get('redis.hostname', '127.0.0.1'),
             'port'      => intval(Env::get('redis.port', 6379)),
-            'password'  => Env::get('redis.password', 'nPyOOousxrIT7IQq'),
+            'password'  => Env::get('redis.password', ''),
         ],
         'aliredis' => [
             // 驱动方式
             'type'       => 'redis',
-            'host'      => Env::get('redis.hostname', 'r-2zep27hvk4ys3nypqu.redis.rds.aliyuncs.com'),
+            'host'      => Env::get('redis.hostname', '127.0.0.1'),
             'port'      => intval(Env::get('redis.port', 6379)),
-            'password'  => Env::get('redis.password', 'nPyOOousxrIT7IQq'),
+            'password'  => Env::get('redis.password', ''),
         ],
         'cacheredis' => [
             // 驱动方式
             'type'       => 'redis',
-            'host'      => Env::get('redis.hostname', 'r-2zep27hvk4ys3nypqu.redis.rds.aliyuncs.com'),
+            'host'      => Env::get('redis.hostname', '127.0.0.1'),
             'port'      => intval(Env::get('redis.port', 6379)),
-            'password'  => Env::get('redis.password', 'nPyOOousxrIT7IQq'),
+            'password'  => Env::get('redis.password', ''),
         ],
         // 更多的缓存连接
     ],

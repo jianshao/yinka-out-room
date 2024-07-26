@@ -15,10 +15,11 @@ class BaseRawLog
     {
         $this->requestHash = generateToken("requestHash");
         $params = $this->getParam($request);
+        $this->WriteBeforeParam($request->url(), $params);
         $this->setParam($request, $params);
         $response = $next($request);
 //        $this->WriteAfterResponse($response->getContent());
-        $this->WriteRunTime();
+//        $this->WriteRunTime();
         return $response;
     }
 

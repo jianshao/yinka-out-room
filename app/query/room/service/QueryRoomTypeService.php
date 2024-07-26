@@ -78,7 +78,8 @@ class QueryRoomTypeService
         foreach ($roomTypes as $roomType) {
             $itemData['type_id']=$roomType->id;
             $itemData['room_mode']=$roomType->roomMode;
-            $itemData['tab_icon']=CommonUtil::buildImageUrl($roomType->tabIcon);
+//            $itemData['tab_icon']=CommonUtil::buildImageUrl($roomType->tabIcon);
+            $itemData['tab_icon']= "";
             $result[] = $itemData;
         }
         return $result;

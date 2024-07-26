@@ -263,6 +263,7 @@ class UserInfoController extends ApiBaseController
             'number_info' => $numberInfo,      //关注,粉丝,最近访客
             'monitoring_info' => $monitoringInfo,      //当前用户模式状态
             'niudanjiUrl' => config('config.niudanji').strval($this->headToken),
+            'is_sound_opcode' => false,  //  是否展示音乐运营弹框
         ];
         return rjson($result);
     }

@@ -10,57 +10,68 @@ use think\facade\Env;
  */
 return array(
 
-    'APP_URL_image' => 'http://resource.ddyuyin.com/',   //域名地址oss
-    'APP_URL_image_two' => 'http://resource.ddyuyin.com/',   //域名2地址oss
+    'APP_URL_image' => 'http://like-game-1318171620.cos.ap-beijing.myqcloud.com/',   //域名地址cos
+    'APP_URL_image_two' => 'http://like-game-1318171620.cos.ap-beijing.myqcloud.com/',   //域名2地址cos
     'WEB_URL' => '',    //域名地址
     'OSS' => [
-        "ACCESS_KEY_ID" => 'LTAI5tAwKEs4qjyddQai4fz6',      ////阿里云OSS  IDLTAI4G1bUCQXqwjG8qo91u3b
-        "ACCESS_KEY_SECRET" => 'L9bkb1ni0xJ6w4KMDiXhMJdYtxWB0Y',        //阿里云OSS 秘钥
+        "ACCESS_KEY_ID" => '',      ////阿里云OSS  IDLTAI4G1bUCQXqwjG8qo91u3b
+        "ACCESS_KEY_SECRET" => '',        //阿里云OSS 秘钥
         "ENDPOINT" => 'oss-cn-beijing.aliyuncs.com',            //阿里云OSS 地址
         "BUCKET" => 'yinka-resource',                       //oss中的文件上传空间
     ],
     'redis' => [
         // 驱动方式
         'type' => 'redis',
-        'host' => Env::get('redis.hostname', 'r-2zep27hvk4ys3nypqu.redis.rds.aliyuncs.com'),
+        'host' => Env::get('redis.hostname', '127.0.0.1'),
         'port' => Env::get('redis.port', 6379),
-        'password' => Env::get('redis.password', 'nPyOOousxrIT7IQq'),
+        'password' => Env::get('redis.password', ''),
     ],
     //短信验证码
     'ALISMS' => [
-        'accessKeyId' => 'LTAI5tQtFAbBc89h5dqLBTt5',
-        'accessSecret' => 'un5CcjysGlbG7lqBY2sOnzJLSmnBUn',
+        'accessKeyId' => '',
+        'accessSecret' => '',
         'ali_sms_regionId' => 'cn-hangzhou',
         'ali_sms_signName' => '佳年互娱',
         'ali_sms_templateCode' => 'SMS_254750890'
     ],
+
+    //短信验证码
+    'tencent_sms' => [
+        "ACCESS_KEY_ID" => '',
+        "ACCESS_KEY_SECRET" => '',
+        "ENDPOINT" => 'sms.tencentcloudapi.com',
+        "Region" => 'ap-beijing',
+        "SignName" => 'like电竞App',
+        'SmsSdkAppId' => '1400824964',
+        'TemplateId' => '1812772',
+    ],
+
     'VERTIFYCODE' => true,
     'ALIGREEN' => [
-        'AccessKeyID' => 'LTAI4G1bUCQXqwjG8qo91u3b',
-        'AccessKeySecret' => 'l1TZsfl9jls6OtjjsA4MFms7bRLPBV',
+        'AccessKeyID' => '',
+        'AccessKeySecret' => '',
     ],
     'THIRDLOGIN' => [
-        2 => ['app_id' => '102028850',
-            //'app_secret'    => 'F6F82C966F1482A1949A8EA2EF9B015B',
-            'app_secret' => 'OeWBhy5yiDblnbFg',
+        2 => ['app_id' => '102055488',
+            'app_secret' => '',
             'scope' => 'get_user_info',],
-        3 => ['app_id' => 'wxeadb1acd6ff08be1',
-            'app_secret' => '025d749f70488896af6abb8ae13a53d3',
+        3 => ['app_id' => 'wx8996aada32e3773a',
+            'app_secret' => '',
             'scope' => 'snsapi_base'],
     ],
 
     'THIRDLOGIN1' => [
-        'app_id' => 'wxc4c6c84a8629a530',
-        'app_secret' => '0e7ea5ff7e23d2730ec694b869d5d01d',
+        'app_id' => '',
+        'app_secret' => '',
         'scope' => 'snsapi_base'
     ],
 
     //阿里云oss地址
-    'ALIYUNURL' => 'http://resource.ddyuyin.com/',
+    'ALIYUNURL' => 'http://like-game-1318171620.cos.ap-beijing.myqcloud.com/',
     //STS访问oss检测配置
     'STSCONF' => [
         "AccessKeyID" => "LTAI5tAwKEs4qjyddQai4fz6",
-        "AccessKeySecret" => "L9bkb1ni0xJ6w4KMDiXhMJdYtxWB0Y",
+        "AccessKeySecret" => "",
         "RoleArn" => "acs:ram::1065065656900457:role/ramosssts",
         "BucketName" => "yinka-resource",
         "Endpoint" => "oss-cn-beijing.aliyuncs.com",
@@ -91,63 +102,56 @@ return array(
         'notify_url' => 'https://ts.api.qqyy.jmhuyu.com/api/v1/paymentnotify',
         'http_verify_url' => 'http://notify.alipay.com/trade/notify_query.do?',
         'https_verify_url' => 'https://mapi.alipay.com/gateway.do?service=notify_verify&',
-        'private_key' => 'MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCP7+fziGl2t4JauefNJjRZgF5JLQeYy+E7vEtseEYOrVVQSS+tagN+NSovm7tESbyn8gfzhMxUKkeI1sHg3Lp85YD0WEA3xovMUDJC7QGU196AYu5gMUqzqgAD/O1kTKKcXqTUpoQKj0/eP5ELhS7VK/G/0LYZEP9nsCyLBKNY8X430837W2RFlcOBZ082bqJGLy+eMeMWcrIU8F+S5lU0d8rTDBhqTjqmMAj3sCWNE3/MZFsF+4VMhr3vGGOKWzzcmVDWqn3Evb0WdbY4T4GsCUOL8H6VruBC6uTPykP3WYuBc60K+A5Qzs9MUE+wHhfXNicVW3wD83V0GC3fK/EdAgMBAAECggEACcROqfDEr0COgNeCiiIghT43p6F9lXmoI+SH/ak/n7lVQ6hjqtG5wPOclDRuBZk3SvIaZgTJ1KA10Gw6Jab0pIryMCJY4TAAxnFep7nrVI09VNrhr/dISV6st5iPBzJICnJFnwRZi1nkIoGPtwdngSGFOu3PnW3Q1tlWfGxpJRzLu56ctLPcI+f5OkLngidYpOu4P4KtFCGc+q44KKO+vfb4GojIFHbFwQHV4ymW2ptS7Y1DGI2iZ7nU976fbIqhS5Jwm2Uj1Cy3ub25c6qZUtWoNSsE+YvWLLyLmAXQrA03w1Hx4Nr9xrkTVC4iQRry7ipcnCLyd9URXKTA6JOQ4QKBgQDRtD/A0Wt3XP6W5/n4xSCv+kcJMmu4/BXeUkus00hATmat33gdsYptF/LMoAjRIfWA1j89PVLDseJ9aFH14L5U6giKmoINV+VXH6o5ZiHO3IMNjZRrpYkiQyPsvkIDUXuxMsyFDc8ejy3va2z4FZjZjHTe0w4+CBVkpxRqx9EoVQKBgQCvtrxFnmuH1aT7ie8bUWu4XmwkKaJS7dLVPXrMfTDa8g6w/AwHUJPHlNNRla7tej89JBKK4jwDyQbhvPgZUU1bpTX7JgJf4qc97bsgokepZvvgDmhik/5h6qqRzAaDqdhWRn7KVsyQGLxUuXxUezFATN5AV/jt68aCdFri9twNqQKBgB4Lw26vEsTBcEDS7//yzqIoK/FnZgPVKpT2GZ2jkCCWmyOidyVaAMlsuv8SlvDP+ssA54KwvKEJZbguMEAYeWzVM3AYfzXGODfpc4xR09o9whE5DeD2kNV15TnQcMjk7eIPszoFJn3sadp5+9z3yzSwaTZb6xh8NAR94/EAvDkZAoGBAKyM0SO4pzXz2hjdYf28ngCmUKHOdMXlH6YhwoYu5hwLmdu5F4LTYNubzUyPpgE0jAdZdhAGjBLXhTeGH0iVa1b0zSa9M5W/eKY63wjz81VqeSuUWnN7i1HSZP/ZkAgZcQWAIqBGTomukLrOj0ZS15GiKpqbCSty3jRbWKkK7BtJAoGAMRRDR3smhObNYu9vAIAj6HmuBzGmN5aM8GSyfGHa1QwTeduPpiMBG4TXdM4YM9g0IbctUSZUb/SByCjpDnN/wvJSV6ok8g/++L+6gR8tIksPR6B95fauw8OQuOpOyVKvNv5EPSz1hWxeJ8TkeyiIXZpcUNsDzSADmAIbGVbq0gg=',
+        'private_key' => '',
         'return_url' => 'https://ts.api.qqyy.jmhuyu.com/api/v1/paymentreturn',
         'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj+/n84hpdreCWrnnzSY0WYBeSS0HmMvhO7xLbHhGDq1VUEkvrWoDfjUqL5u7REm8p/IH84TMVCpHiNbB4Ny6fOWA9FhAN8aLzFAyQu0BlNfegGLuYDFKs6oAA/ztZEyinF6k1KaECo9P3j+RC4Uu1Svxv9C2GRD/Z7AsiwSjWPF+N9PN+1tkRZXDgWdPNm6iRi8vnjHjFnKyFPBfkuZVNHfK0wwYak46pjAI97AljRN/zGRbBfuFTIa97xhjils83JlQ1qp9xL29FnW2OE+BrAlDi/B+la7gQurkz8pD91mLgXOtCvgOUM7PTFBPsB4X1zYnFVt8A/N1dBgt3yvxHQIDAQAB',
         'log' => '/tmp/newalipay.log'
     ],
 
-//支付宝原生
-//支付宝原生
+    //支付宝原生
     'alipay_yuansheng'=>[
-        'app_id'=>'2021003155623605',
-        'notify_url'=>'http://api.ddyuyin.com/api/v1/appalinotify',
-        'redpacket_notify_url' => 'http://api.ddyuyin.com/api/v1/api/v1/alipackets',
+        'app_id'=>'2021002110683957',
+        'notify_url'=>'http://php-api.takecares.cn/api/v1/appalinotify',
+        'redpacket_notify_url' => 'http://php-api.takecares.cn/api/v1/api/v1/alipackets',
         'return_url'=>'',
-        'ali_public_key'=>'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsSapDTz7JFjUr5whzvgRfHbxYlV7Sh3TWCuGgU1+8m76UdyMGoPThgUTo2itM00YrfW8EtSXW4OTCa9iYgzc7aMmRUwMPio2iHuszzNReWmxgdbykXVlGPK6+Lo1X7R9hRGT06tZZf4NqUFUeAZw0JFQrTi4K0FPteATRzG4Ykv71GvUYgmCUbcf/gBnlrOhZyn3gmLKYKY4ELTvxrggDXy6frEUUVjmOEoTVxL5dvocseujvhv5oJvuekLkqM3ggxJEmn2M4HGGkqKPD1U4uf3UoGZJtL0QNgnNncg5BanMjGu/AEhhg90vDT3XJfPm1vYsb7Lv1IiiOPuBU8oJrQIDAQAB',
-        'private_key'=>'MIIEpQIBAAKCAQEA1EgBQUlv+0nsId4Ov8wFcu1AOkVhUk/jU1X4wmRrnjh4OZQPgcuGzw4YR2W0WL8n2mtp8x+2cO0qup4OeCKVd8kxruhzjf5A1ID1Ady+BxEig288wwzXgiT4dn+8MLN4YQ8ZMBzHio7I/Go6aYt1KodZorcG43isPCIwnSE3A4+SBQkLSQ8L6Nom47pFHOiamPmUblC0n8AiFQO1RGWyABDP6sYBAZF2p7xTvv2j0N2SRd/QBbLyEmRf4v6qEqrDJbWwgo3+lsU7HAiBKEgJgEmMOQvfuelqp29qCxrQQpTXytSAbqzvur9NjOHD3sIxHnNUTTkSlx8Bpcsc3ZtxFQIDAQABAoIBAQCL4KZzDqDrRFqENn4hg55TjGG2A+GNC3cPgqbX8LO5HhyaVCWjsSizZuY4pZugntTz57N4sHzXDHALZ/rAzokO1VQXnLQH7HFrlU3cXEga//9t++5d2ChpaVMPQjwPGzNHQVuniE8zzcJCEP1MbshVrboyrcesO+fB+AVwhGJrxQsJ2gPXVFBMXBdEutWS1WMpzOj4q4cLqY/7foGg9NvNw8lQal8MLXFjRcFIepSucX3IkuFDeWi2gj+cyTPQggHXkAnBZ05EBSuHCoIRioL6W16zEYEEUn7xkICr5y3O6KpdTljQGBxyQNMB+/BMJWM74hXLCAIwIPt2pbmdovwBAoGBAPbWG2T8Y/Nf9zW5+wHBMi2ud1chSrK38z7SUgJCJzqyorFKiUpjGgG4od1+qGDAIZISh/i72NtVqeUXpkuhFIsWYuIKF74QdVdLkUeb4LhfS6RtP1nUcFYsTHtGs3ZzfR3ETFNbAyt1C/Fe9tzNJPIBxqkY9JorTViI6G2qFowFAoGBANwpfe4XyeB5coX6T0dzXDAG9pqZorOETJTibi7iz2p7b0+LKJu81uPneRhcPlM7MMiPDyCqJ/u0mejru0s5+F/vWQ8OCLPLiDvDPuy+UJ74yQU1deab2T0NfkKKf6twTJkTwmCvNipE9T/lvjb6uMG2fVQmJdmwYG+Wqm/SUW3RAoGBALFzzW/1TrnptOSIFt71EGjs81jNU1FWk2YHd/OtsVwujm3cwwSaaFjyblO5Ob2MgtXrwprcGRPd6u0K6n+WhxlS97W/QcBfPqyKZCBR/OUvhUbpT1D6O+SHplg9xMkUT891jtWiKY41cGePOPQV+0iMZFCu4zJujQVoL4ifbeQtAoGAPCtezk5UDvRCF1mkhxuBC2MrzG7Gp5c1ss77W/cCxtA7SJr4my+N7zVYxA6ZvfeESpvGf5/hU4o1MhIS2ulZ9yYbyeCFAlZSwjqHHP6aXAgUMEc/FKptQaFJa3gckkcbuA5NZk0cWYsFF9R7Gt2E1vQ/5lqSp57rjDO6Gtt5A7ECgYEApfjjhEBzc2VENx0DX3mSwjwF7x2CIZ6K8zuowZyaIq/BaE7SMem3FoDSoPyERxk8ul5uVYsvK9QO5Ghe07DvQqFR+mUlANTdMA5m5UuN6LcsPzqEe1rslkVUB8Vvhim/X+dK3WjCmMZpOQhoER4NFhOUQz0NUzfVq0AF9pdAGtc=',
+        'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiYoJhEhuDVHHTaurOFcp02LkBuxLfCAQhGHEIZffh0JWgkFvXgeaLceD2YbwaXZAbQwUC0qr+n7+456Er0mU737a5NZ6TeYf7kRXOeiIWDTfpYZtEHm4HCNBLtwKIFzjpR/O/bpxe3KFa77+NHuhqZ5f2oRaaUWndl4nT7NzUgz8ZLtag9/bQ+QGkD/xwDL1gm6OyJR8P67Uoa5HgKReZ+dM58lgvzqSfVo49mdhhjaXq36mKe2ciCUdNAlcbKOzdFQK1dUSVG/SjRRd8Y6yoGaKhD/oBRYyqr+IKkE1H+gN6k5nTWJ2ZhF7PploncYEzSBc3/6dqhvChPSuPAYltQIDAQAB',
+        'private_key' => '',
         'log'=>'/tmp/alipay_yuansheng.log',
-        'PARTNER'=> '2088041031095832',
-        'vip_notify_url'=>'http://api.ddyuyin.com/api/v1/appvipalinotify',
-        'sign_notify_url'=>'http://qq.api.shuoguo.xyz/api/v1/autoSignAliNotify',
+        'PARTNER'=> '2088731529236563',
+        'vip_notify_url'=>'http://php-api.takecares.cn/api/v1/appvipalinotify',
+        'sign_notify_url'=>'http://php-api.takecares.cn/api/v1/autoSignAliNotify',
     ],
-//    'alipay_yuansheng' => [
-//        'app_id' => '2021003128664611',
-//        'notify_url' => 'http://qq.api.shuoguo.xyz/api/v1/appalinotify',
-//        'return_url' => 'https://www.shuoguo.xyz/gw/#/topup',
-//        'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiynYlht0+A6oAk145phc0/z+IpMA7KDWORclwbvJ48CY9UZwTALCy1FRuNY0mrhUoWgxaBNaYbdMmErIVIFDe7ZN9/uKqu1Z3trgkDKRSGNLX6+oa+5Yul2SRUKLY3ihamvBkr//qRv8+n0VWmk8h9MJ6xAMZ6cZzcoyN8TQq61yK9SNHSyS8otbGwvS3QDYJJRxg4p196acYTWZkhltEKzVZYq7AEGdlDyhXeqDbcjF53ZSu+dfeWJa9O71F31D9J3PzNOUOxbzYNAL+QLVJ8jRcIfPveAeWUIKjQUzUAT+HObxzDxoJ0IYS8sQ2s2lWb4lJDgVkn9Vc5hIH8hgfwIDAQAB',
-//        'private_key' => 'MIIEpAIBAAKCAQEAhYi5q3TdqCe88xDRkNU7RzF1JMuXLyWvcEhEwNv6KvWUi4ek/czuByZhkpjfzmSd032hkwiU0fIwb27b49YWZDq75Z1qqQr3hnFGifHWdv4lbxuULQv7dRX1AAZ0DQpvkpqmKKXZMOkffCa0t2rSnVcOWjIfudx1Bcl1bQRPPtT5geq7b6eqnHoh991lQ2EzW0sfvOrZ1R9NzEAtzqB0MupcNLRV0u+Oxgg8YIVEzmk4V+JqhJJq9x42qdGnHyn8tO5mTu4tVNIRcp1XuJgIoUyTKzW3nlszqzA9CYsHlmwLUN0eNbtrVeho3HN2rhllssYarprFaLtdQk1N43GzSwIDAQABAoIBADRq7WduoqwlnThU+868xV42/eMJwDkTtACBfeuu7k76w+rZvlyamz1XRaoENKaSPJoOkORk0/Zt+bFkdRDEs1l47NU/q+TblzrBMI1pz2Q6c3tf+hSMxZK6ocf2wIt180I7TspaAB4BBQj5MKtnVXHKAKpLTsTo008IO/4lWO4ynuXMaMrH9t8qOlVCfGk2OGR8FVY/Rk0RaDAMa1t28XvJK5RK8Qiq7qPM33QE6/fjnvc3AQSy9/LQKt4AcTxpa1zWk3pP0P45nx78rHi+GJ8yxkcyZSj4W2tkHyPo4CZ67nt6V2c35Sm9rp2iWjEv6ehegc5y86nkthBhGwy6SZECgYEAvPvyhIvRsRKNvTMbnYkD+hzTvcJykhv0HirBq5LozWKb5Gk+pFEjIGiQN26eI0gpeExJJOg/escDV912FKXKfY2kvXpRr4iMcAWelxxZ37YuLrsgI+rRHBGPy9U8KtozaThqZCPkEuqZ6hzMohkn+uJzTFU1SxcXOAxmGNWaPoUCgYEAtOL/puMIQDMeoaJWkjbijSTeGVUoSdRbmGF2l/erV7xRf9ctRsvQia7uyEE1chRu7e5c6B0hUOTk2/2K4wyKyS+/KHQX6TBfh5Y79OD/rHpcGAi/BPhdkUOI+O+bJWyFzcGqwyEnIP7fMwc1tXrAOngIq0/lRIkBRHc/9MWp248CgYEAj7VXWguozWo6dmFi4ozKhWteaLJwxUKUhEwnMf1pIqWVvj957yH0ADUDVeO8RUAeqOf5xyMFAqxLkolJvbHFJWyMlblqXH0NrjHXwzk/7qpuvAJ4ElgB48JHAs2ID14WMjFAVh4k1W2o1SpJQgq3KEUDQEybVhqdAXYMPV5RCLECgYBjtGvudV3q5UKRHYZSeeZOnm+9zu6yI1eJms9f3KiZZ7gUm2rdhyKfgckkoKzxAMpUY/raBpSCnmh3yj1wAU3Or37SsYssgflmJy1NQWgsjhWNOeTwvGX22B77+DawXi0yyPlzLScATPyCiArWyZ6Dm/5LT3K0YEBOmNyr8vg5iQKBgQCT45YwH6u79jl2QNYr/MF+Nix/zNkrc5UDOj89aw1k5VeVsTGX3yYgCDvzHHANmLREzexIMyjb34IwmsQEmCep2IBv9X9CdmXroNYe5StowCocqUCye5gOsHtUZW2CDoySkNtnHiDizQ89qPzNrzqRHK4spIQK29kkL6fM9lL8AQ==',
-//        'log' => '/tmp/alipay_yuansheng.log',
-//        'PARTNER' => '2088441299659612',
-//        'vip_notify_url' => 'http://test.api.abyy.shuoguo.xyz/api/v1/appvipalinotify',
-//        'redpacket_notify_url' => 'http://test.api.abyy.shuoguo.xyz/api/v1/alipackets',
-//    ],
+
+
+    'alipay_yuansheng1'=>[
+        'app_id'=>'2021003196666132',
+        'notify_url'=>'http://php-api.takecares.cn/api/v1/appalinotify',
+        'redpacket_notify_url' => 'http://php-api.takecares.cn/api/v1/api/v1/alipackets',
+        'return_url'=>'',
+        'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjiBYEadjP0nbpCBY7nMKHb4PczGSaYAzDpzJ+6bWGOeTVK+9wecaXV2ISvl4RcD28BurWUQU/pGpeqjNSVA6WMlEglTAuqNkNTRgdBMW6RohtCo1aPVAVr4/PW4wZyh/gGhmnl7a/Pr/rmsZ3eFvrTyhE8YDJvm1MwUHj2sntsCY4sbFyhb5T+tchWGM60g9yKfgT0Outw1aCTE+2U/gvJ3Fg4gt2kBpNuNY4fxaTs344XCrEvCqVi6prlJa5XxPYWnZwGcrctKChChH76x0uTPtSGNVfgesSVB9vpP0RnPBlBLz3uA22J3yHNuZXbmzZlS/3sEqlzIJO44sBxV2awIDAQAB',
+        'private_key' => 'MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCLkYghpSJiRcJxKT3jSUXPknoU2O5mPdjbp8Xdh7SqU91CspHXLTxxw5Jz1DXaj2HuiJAFMa6NDnv7BumTPydarWZu2x/gqtIa7po9i7v2ELEnbFXfElu+vMEIE+Q0FB6c23Vvd/PMFR+fOZwWlTedyXJWDmF7BUOtGsnRblmkLin15Vux+bsbdhLTV7fkOqVWVTnCeVWHnt8hzjTghi8zabKHlYZhFXZ9jWBt5VQXsZvzCMSFMEywb5kDNEvk5kqKZve0GkKOkC9EhSfDsGZK0dZ7fubgGiTcAOvwKmo/+vxNtjgzLOsqQMF//VDAw6qjtwt5fJh9j4yaDWlMnIarAgMBAAECggEAIlVowa4X6Ujz7laQ7OrHi6qi8aHz857fTBnXqQmLPiNnWNMI4YA1UF8mFexsWxnOo5lgpIZ2RCj+AuDOcPSmP75MZpTtIJ2lFg8AToejc4LjsakK7tdbTm6spcoO52jTpw6tswA1L006/DZ12XBXwC8gO19KR7Mh1OG0KBsXXjXEd2Ywx229bjdIJZri5uzKpbOKhrwTGIMbyUpSUeeEH7R9DponsojrKBaD20sHopzDHYE5baTgP9T/sp3VR4FIg1jcMrAb8ZRfwjk/HboI3uqrzqpm4uHojN1enxa4u5W3nAc6yBXs5rsgJ+lOPv9ZFUBckmY8wjuzaIrECU/C0QKBgQD5IiG0r6E0HlmhqmaNsJ2rK4pt/DmGEaVRJ7SprkJ4+h1JkK+XDdMgdC+BRaGHKoHAVGb6mNBwd2bpJ5UHiXlb0Uw2XnwMNiHmCRbGx/nJUKRRHmdcal+p5qE2wWjqF8dJlmaHC0hJsPIqjzk6Va/50coUbwufPI77zAGoOvXWTQKBgQCPalFaYi7IqiX2sAYFjlmoSaBExHYWVcTlNZy92LXA+GhQJO2FLfczsLxaKJF/SMUwBxwjDcdkfAXudW7OYyI83n5SwsPNtVFFGBm5EGazcltWBfHyWeVcxrkM/F3Y6lScrh61Y/e7uif1Pq0wCsMGRVeslpuK408sCIqFtlm81wKBgQDUKSfxGrw6iTolfdrWATlUYsEBhxFpxi813I1zDu6W3dEBLBEMn35Tnf4ypZy4Yg+bPYVxFaA0lspx9f5pK77I3YV8q5wSPitCHi1iXTywH1e/qRe20PPk2X4jBjSVXmidl1J64LXP47tnWQ8QSZaSNgFUw3hvRAA0GHi0znk65QKBgFQ68jrubWHHpPJk4bSDrZ7MV0fsRxrJFxIz0bIixGTowINJnQLaQ1TlmUouh33FZKLXmivwXMpkmSs7Z2/qA2LSnkjHQS7hLjExfXIW8uqz4Hb+mOJo7+/0exzoX8oVnspC7aBFbWuhYvSD8j3EJFTbhynDbuk8pfRLs+fieIQTAoGALJbEbE9tr9K0aKYHKyscA9fEHsKPrQP8k+l8DmRRJ5jwWUxke5/dYUcyL+QN1oQdFzvfyUcI1eSDEdAYHerJbxzUKDILKta8n3MgDkgIxlAwDx5RyB6Kpz1dAdhfQruR/QUHGKgdMeJKD0b1/EI3iNxFJgCOyomVeXDrgSc+5xw=',
+        'log'=>'/tmp/alipay_yuansheng.log',
+        'PARTNER'=> '2088641263155711',
+        'vip_notify_url'=>'http://php-api.takecares.cn/api/v1/appvipalinotify',
+        'sign_notify_url'=>'http://php-api.takecares.cn/api/v1/autoSignAliNotify',
+    ],
+
 
     'zeGo' => [
         'appId' => '',
         'secret' => '',
     ],
 
-    'wechat_yuansheng1' => [
-        'appid' => 'wxc4c6c84a8629a530',
-        'app_id' => 'wx8d06b2c769d1ec44',//公众号id
-        'miniapp_id' => '',//小程序id
-        'mch_id' => '1585758811',
-        'key' => 'c8837b23ff8aaa8a2dde915473ce0991',
-        'notify_url' => 'https://ts.api.qqyy.jmhuyu.com/api/v1/appwxnotify',
-        'log' => '/tmp/weixin_yuansheng.log',
-        'vip_notify_url' => 'https://ts.api.qqyy.jmhuyu.com/api/v1/appvipwxnotify',
-    ],
 // ------------ start -------------
     'wechat_yuansheng' => [
-        'appid' => 'wxeadb1acd6ff08be1',
-        'app_id' => 'wxae30b19810e724c5',//公众号id
+        'appid' => 'wx8996aada32e3773a', //
+        'app_id' => 'wx34d93ac79d4e3d72',//公众号id
         'miniapp_id' => '',//小程序id
-        'mch_id' => '1603916885',
+        'mch_id' => '1646017862',  //
         'key' => '04316b19f32fcc1d13818ea20891f1db',
-        'notify_url' => 'http://api.ddyuyin.com/api/v1/appwxnotify',
+        'notify_url' => 'http://php-api.takecares.cn/api/v1/appwxnotify',
         'log' => '/tmp/weixin_yuansheng.log',
-        'redpacket_notify_url' => 'http://api.ddyuyin.com/api/v1/wxpackets',
+        'redpacket_notify_url' => 'http://php-api.takecares.cn/api/v1/wxpackets',
     ],
 
     'alipay_yinlian' => [
@@ -170,13 +174,13 @@ return array(
 
 //微信公众号配置
     'WECHAT_OPEN' => [
-        'APPID' => 'wxae30b19810e724c5',
-        "MCHID" => '1603916885',
-        'APIKEY' => '04316b19f32fcc1d13818ea20891f1db',
-        'APPSECRET' => '56ebbfe59f5fd2bb512469e58486c6a0',
+        'APPID' => 'wx34d93ac79d4e3d72',
+        "MCHID" => '1646017862',
+        'APIKEY' => '',
+        'APPSECRET' => '',
         'PLACE_ORDER' => 'https://api.mch.weixin.qq.com/pay/unifiedorder',
-        'notify_url' => 'http://api.ddyuyin.com/api/v1/appwxnotify',
-        'payment' => 'http://api.ddyuyin.com/api/v1/payment',
+        'notify_url' => 'http://php-api.takecares.cn/api/v1/appwxnotify',
+        'payment' => 'http://php-api.takecares.cn/api/v1/payment',
     ],
 
 //微信web支付
@@ -219,20 +223,18 @@ return array(
 
     ],
     'yunxin' => [
-
-        "Appkey" => '163e50c05b5890d12b0ab167ea8d422e',
-        "Appsecret" => '9cb2e363dce3',
-
+        "Appkey" => 'b9a9a8dbf51cc7163ac6676ceb2439ad',
+        "Appsecret" => '',
     ],
 //消息url
 
-    'socket_url' => 'http://py.abyuyin.com/iapi/broadcast',
-    'socket_url_base' => 'http://py.abyuyin.com/',
+    'socket_url' => 'http://pyapi.takecares.cn/iapi/broadcast',
+    'socket_url_base' => 'http://pyapi.takecares.cn/',
 
     'getui'=> [
-        'appid' => 'yektrexMpx97bw36KYPsiA',
-        'appkey' => 'qb2Xe0udav976L7CGidrH4',
-        'mastersecret' => 'dBpseHNw8k57z0wP2k8PxA',
+        'appid' => 'AKmaiLoayV9IPLW9wto5O3',
+        'appkey' => '',
+        'mastersecret' => '',
         'host' => 'http://sdk.open.api.igexin.com/apiex.htm',
         'loginurl'=>'https://openapi-gy.getui.com/v1/gy/ct_login/gy_get_pn',
     ],
@@ -240,21 +242,21 @@ return array(
     'yunxin_prefix' => 'test_',
     'user_online_single_url' => 'http://182.92.186.104:9081/api/query/online',
     'user_online_all_url' => 'http://182.92.186.104:9081/api/query/device',
-    'fq_assistant' => '1000004',
-    'service_customer' => '1000004',
+    'fq_assistant' => '1056232',
+    'service_customer' => '1056232',
     'gift_box_id' => '376',
 
     'scale' => 1000,    //豆兑换钻石比例 1:1000
     'khd_scale' => 10000,//钱兑换钻石 1:10000
     'bean_coin_scale' => 100,//豆兑换金币 1:100
-    'self_scale' => 0.5,//个人比例
+    'self_scale' => 0.6,//个人比例
     'coin_scale' => 10,//钱兑换豆 1:10
 
     'duobao' => 'https://ts.api.qqyy.jmhuyu.com/build/web-mobile/index.html?mtoken=',
 
     'smsother' => [
         'appkey' => '8X603i',
-        'appsecret' => 'L3st32',
+        'appsecret' => '',
         'appcode' => '1000',
         'host' => 'http://39.97.4.102:9090/sms/batch/v1',
     ],
@@ -264,14 +266,14 @@ return array(
         'float_screen' => [396, 372, 231]
     ],
     'shumei' => [
-        'AccessKey' => 'F1J4MA4kLYJae7HMR4y8',
+        'AccessKey' => '',
         'AppId' => 'default',
         'audioStreamSwitch' => 0
     ],
     'heartInterval' => 20,//用户心跳间隔时间
     'threeLoot' => 'https://ts.api.qqyy.jmhuyu.com/sanrenduobao?mtoken=',
-    'baoxiang' => 'http://www.ddyuyin.com/baoxiang?mtoken=',
-    'zhuanpan' => 'http://www.ddyuyin.com/zhuanpan?mtoken=',
+    'baoxiang' => 'http://php-api.takecares.cn/baoxiang?mtoken=',
+    'zhuanpan' => 'http://php-api.takecares.cn/zhuanpan?mtoken=',
     'taojin' => 'https://ts.api.qqyy.jmhuyu.com/tjzl?mtoken=',
     'dadishu' => 'https://ts.api.qqyy.jmhuyu.com/dadishu?mtoken=',
     'niudanji' => 'https://ts.api.qqyy.jmhuyu.com/niudanji?mtoken=',
@@ -283,12 +285,12 @@ return array(
     'queueKey' => 'queueList', //队列key
 
     'EncryptDriver' => "off",   // enbale:"enable"  close:"off"
-    'EncryptKey' => "na2wtspma4BtZ4XLb1ThQA==",   //encryptKey  打乱后的假值：下发假值，逆向为真值用
-    'EncryptKeySecond' => "aa4BtZ4tspm2wnXLb1ThQA==",   //encryptKey  error
-    'apiSignAuthKey' => "sichuanrongqisign20200223",   //api auth sign key
+    'EncryptKey' => "==",   //encryptKey  打乱后的假值：下发假值，逆向为真值用
+    'EncryptKeySecond' => "==",   //encryptKey  error
+    'apiSignAuthKey' => "",   //api auth sign key
     'apiSignEnable' => "enable",   //api sign auth "enable"// "enable": "off"
     'apiAuthTimestamp' => 'off', // enbale:"enable"  close:"off"
-    'apiSignSalt' => "sichuanrongqisign20200223",
+    'apiSignSalt' => "",
     'ossUrl' => 'http://image2.fqparty.com',
     'appDev' => Env::get('APPDEV', "dev"),  // 测试:"dev"  正式:"online"
     'firstPayUrlIndex' => 'https://ts.api.qqyy.jmhuyu.com/shouchong?mtoken=',
@@ -296,17 +298,16 @@ return array(
     'firstChargeUrlIndex' => "http://test.activity.muayuyin.com/activity/shouchong2/index.html",
     'baseUrl2' => [
         'online_url' => [
-            'api_url' => ['http://api.ddyuyin.com'],
-            'py_url'  => ['http://py.ddyuyin.com/'],
-            'ws_url'  => ['ws://py.ddyuyin.com/ws'],
+            'api_url' => ['http://php-api.takecares.cn'],
+            'py_url'  => ['http://pyapi.takecares.cn'],
+            'ws_url'  => ['http://pyapi.takecares.cn/ws'],
         ],
         'test_url' =>  [
-            'api_url' => ['http://api.ddyuyin.com'],
-            'py_url'  => ['http://py.ddyuyin.com'],
-            'ws_url'  => ['ws://py.ddyuyin.com/ws'],
+            'api_url' => ['http://php-api.takecares.cn'],
+            'py_url'  => ['http://pyapi.takecares.cn'],
+            'ws_url'  => ['http://pyapi.takecares.cn/ws'],
         ],
     ],
-
 
     'ampq_recall' => [
         'host' => Env::get('rabbitmq.host', '172.31.48.10'),
@@ -314,8 +315,8 @@ return array(
         'queue_name' => 'q_member_recall',
         'exchange' => 'ex_member_recall',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
 //    ampq_recall_user_push
@@ -325,8 +326,8 @@ return array(
         'queue_name' => 'q_member_recall_user_push',
         'exchange' => 'ex_member_recall_user_push',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
     // mq
@@ -336,8 +337,8 @@ return array(
         'queue_name' => 'q_im_message',
         'exchange' => 'ex_im_message',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
     'ampq_login_detail_message' => [
@@ -346,8 +347,8 @@ return array(
         'queue_name' => 'q_login_detail_message',
         'exchange' => 'ex_login_detail_message',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
 
@@ -357,8 +358,8 @@ return array(
         'queue_name' => 'q_message_bus_elastic_room',
         'exchange' => 'ex_message_bus',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
     'ampq_elastic_user' => [
         'host' => Env::get('rabbitmq.host', '172.31.48.10'),
@@ -366,8 +367,8 @@ return array(
         'queue_name' => 'q_message_bus_elastic_user',
         'exchange' => 'ex_message_bus',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
     'ampq_message_bus' => [
@@ -377,8 +378,8 @@ return array(
         'queue_name' => '',
         'exchange' => 'ex_message_bus',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
 
     'ampq_user_register_referee' => [
@@ -387,15 +388,9 @@ return array(
         'queue_name' => 'q_user_register_referee',
         'exchange' => 'ex_user_register_referee',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
-
-
-    // es
-    'es_host' => env('ES_HOST', '172.31.48.10:9200'),
-
-    'open_first_charge' => false,  // 是否开启首充 true开启，false关闭
 
     // 特别关心
     'ampq_user_special_care' => [
@@ -404,9 +399,16 @@ return array(
         'queue_name' => 'q_user_special_care',
         'exchange' => 'ex_user_special_care',
         'port' => Env::get('rabbitmq.port', 5672),
-        'user' => 'fanqie',
-        'pass' => 'fanqie123',
+        'user' => Env::get('rabbitmq.user', 'root'),
+        'pass' => Env::get('rabbitmq.password', 'root'),
     ],
+
+
+    // es
+    'es_host' => env('es.host', '172.31.48.10:9200'),
+
+    'open_first_charge' => false,  // 是否开启首充 true开启，false关闭
+
     // 三方支付 - 银联商务
     'chinaaums' => [
         'msgSrc' => 'WWW.SCRQKJI.COM',            //消息来源(msgSrc)
@@ -441,5 +443,28 @@ return array(
     'apple_subscription_password' => '', // 苹果密钥
 
     'old_ios_show_new_vip' => true,
+
+    // 玩么赛事
+    "WanMoGame" => [
+        "token" => "qhrEDE9URnH3cTj4",
+        "secret" => "B4BMzQ3UAQED0Y3JwDn90nVaGQqNmWNTxC6H2c7SGZMhugTqNpR87p95qY5XK6eD",
+    ],
+
+    // 支付内容显示
+    "pay_subject" => "like电竞,扫码刷单是骗局",
+
+    // IP ipdatacloud KEY
+    "ip_cloud_key" => "eb5ec4132edc11ee8ac100163e25360e",
+
+    "write_user_list" => [
+        "1097753","1078990"
+    ],
+
+    "din_pay" => [
+        "merchant_code" => "117002020019",
+        "sub_merchant_code" => "117002020020",
+        "notify_url" => "http://php-api.takecares.cn/api/v1/dinNotify",
+        "client_ip" => Env::get('ip.addr', "127.0.0.1"),
+    ]
 );
 

@@ -75,6 +75,23 @@ class SmsController extends BaseController
         ]);
     }
 
+    public function sendOpenSms()
+    {
+        $phone = Request::param('phone');
+        $code = Request::param('code');
+
+        if (config('config.VERTIFYCODE') && !in_array($phone, array('13800000000', '18888888888', '13888888888'))) {
+            $result = SmsMessageCommon::getInstance()->sendMessage('', $phone, ['code' => $code]);
+        } else {
+            $result['SendStatusSet'][0]['Code'] = "Ok";
+        }
+        if (empty($result) || $result['SendStatusSet'][0]['Code'] !== 'Ok') {
+            throw  new FQException('发送验证码超过限制,请稍后重试', 701);
+        }
+
+        return rjson();
+    }
+
     private function makeFilterKey($phone)
     {
         return sprintf("filter_sendsms:%d", $phone);
@@ -125,11 +142,11 @@ class SmsController extends BaseController
     private function handlerSms($phone, $code, $type)
     {
         if (config('config.VERTIFYCODE') && !in_array($phone, array('13800000000', '18888888888', '13888888888'))) {
-            $result = SmsMessageCommon::getInstance()->sendMessage('ali_sms_templateCode', $phone, ['code' => $code]);
+            $result = SmsMessageCommon::getInstance()->sendMessage('', $phone, ['code' => $code]);
         } else {
-            $result['Code'] = "OK";
+            $result['SendStatusSet'][0]['Code'] = "Ok";
         }
-        if (empty($result) || $result['Code'] !== 'OK') {
+        if (empty($result) || $result['SendStatusSet'][0]['Code'] !== 'Ok') {
             if ($type == 1) {
                 RegisterDataModel::getInstance()->getModel()->where(['deviceid' => $this->deviceId, 'date' => date('Y-m-d')])->update(['send_sms_failed' => 1]);
             }

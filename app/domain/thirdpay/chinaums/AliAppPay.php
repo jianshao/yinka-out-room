@@ -4,7 +4,6 @@
 namespace app\domain\thirdpay\chinaums;
 
 
-use app\domain\autorenewal\service\AutoRenewalService;
 use app\domain\thirdpay\common\ThreePaymentException;
 use app\utils\ArrayUtil;
 use think\facade\Log;
@@ -34,7 +33,6 @@ class AliAppPay extends BasePay
         $payInfo = $this->pay($params);
         if (empty($payInfo) || ArrayUtil::safeGet($payInfo, 'errCode') != 'SUCCESS') {
             Log::channel(['pay', 'file'])->error(sprintf('AliAppPay::payMent response=%s', json_encode($payInfo)));
-            AutoRenewalService::getInstance()->sendPayDingTalkMsg(json_encode(array_merge($payInfo, $params)));
             throw new ThreePaymentException("下单支付失败");
         }
 

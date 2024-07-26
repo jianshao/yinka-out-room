@@ -164,8 +164,12 @@ class AttentionController extends ApiBaseController
         }
         if ($type == 1) {
             $userModel = UserModelCache::getInstance()->getUserInfo($this->headUid);
-            if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
-                return rjson([], 200, '关注成功');
+
+            $writeList = config('config.write_user_list',[]);
+            if (!in_array($this->headUid,$writeList)) {
+                if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
+                    return rjson([], 200, '关注成功');
+                }
             }
         }
         try {
@@ -194,8 +198,11 @@ class AttentionController extends ApiBaseController
         }
         if ($type == 1) {
             $userModel = UserModelCache::getInstance()->getUserInfo($this->headUid);
-            if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
-                return rjson([], 200, '关注成功');
+            $writeList = config('config.write_user_list',[]);
+            if (!in_array($this->headUid,$writeList)) {
+                if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
+                    return rjson([], 200, '关注成功');
+                }
             }
         }
         AttentionService::getInstance()->attentionUsers($this->headUid, [$userided], $type);
@@ -443,9 +450,9 @@ class AttentionController extends ApiBaseController
                 $att_nickname = UserModelCache::getInstance()->findNicknameByUserId($attModel->fansId) . "向你打招呼";
             }
 
-            $image1 = CommonUtil::buildImageUrl('/image/msgcoin/104.png');
-            $image2 = CommonUtil::buildImageUrl('/image/msgcoin/102.png');
-            $image3 = CommonUtil::buildImageUrl('/image/msgcoin/106.png');
+            $image1 = CommonUtil::buildImageUrl('/image/msgcoin/official.png');
+            $image2 = CommonUtil::buildImageUrl('/image/msgcoin/forum.png');
+            $image3 = CommonUtil::buildImageUrl('/image/msgcoin/hi.png');
             if ($this->source == 'chuchu'){
                 $image1 = CommonUtil::buildImageUrl('/image/msgcoin/107.png');
                 $image3 = CommonUtil::buildImageUrl('/image/msgcoin/109.png');
@@ -454,7 +461,8 @@ class AttentionController extends ApiBaseController
             $list = array(
                 '1' => array("id" => 101, 'image' => $image1, 'title' => $title, 'depict' => $notice_title, 'msgCount' => $notice_msg_num, 'endtime' => date('Y-m-d H:i:s', $created_time)),
                 '2' => array("id" => 102, 'image' => $image2, 'title' => "动态消息", 'depict' => $reply_content, 'msgCount' => $forum_msg_count, 'endtime' => $reply_time),
-                '3' => array("id" => 103, 'image' => $image3, 'title' => $att_count > 0 ? "有" . $att_count . "个人和你打招呼" : "打招呼消息", 'depict' => $att_nickname, 'msgCount' => $att_count, 'endtime' => $attention_time),
+//                '3' => array("id" => 103, 'image' => $image3, 'title' => $att_count > 0 ? "有" . $att_count . "个人和你打招呼" : "打招呼消息", 'depict' => $att_nickname, 'msgCount' => $att_count, 'endtime' => $attention_time),
+                '3' => array("id" => 103, 'image' => $image3, 'title' => "打招呼", 'depict' => $att_nickname, 'msgCount' => $att_count, 'endtime' => $attention_time),
             );
 
             $lists = array_values($list);
@@ -549,8 +557,12 @@ class AttentionController extends ApiBaseController
             }
             //女性且非工会或女性非未实名的用户，不能使用【戳一下】的功能
             $userModel = UserModelCache::getInstance()->getUserInfo($fromUserId);
-            if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
-                return rjson([], 200, '发送成功');
+
+            $writeList = config('config.write_user_list',[]);
+            if (!in_array($this->headUid,$writeList)) {
+                if (($userModel->sex == 2 && $userModel->guildId == 0) && $userModel->attestation == 0) {
+                    return rjson([], 200, '发送成功');
+                }
             }
             $pokeWords = $redis->get('pokewords_cache');
             $pokeWordsArr = json_decode($pokeWords, true);

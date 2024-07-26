@@ -17,7 +17,7 @@ use \app\facade\RequestAes as Request;
 class OrderController extends ApiBaseController
 {
     protected $diamond = 1;    //钻石
-    protected $bean = 2;    //咖啡豆
+    protected $bean = 2;    //LB
     protected $rmb = 3;    //人民币
 
     public function androidChargeList()

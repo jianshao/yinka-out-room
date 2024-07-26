@@ -250,7 +250,7 @@ class MemberRecommendController extends ApiBaseController
 
     private function fitOnlineUser($userId, $filterSex, $page, $pageNum, $source)
     {
-        $sex = isset($this->coveSexStr[$filterSex]) ? $this->coveSexStr[$filterSex] : "woman";
+        $sex = $this->coveSexStr[$filterSex] ?? "woman";
         list($userData, $offlineUid) = $this->getOnlineMemberUserList($page, $pageNum, $sex, $userId);
         return $this->coveOnlineUserView($userData, $offlineUid);
     }
@@ -269,6 +269,7 @@ class MemberRecommendController extends ApiBaseController
         shuffle($uids);
         //初始化用户数据
         $userData = UserModelCache::getInstance()->findList($uids);
+
         if (empty($userData)) {
             return [[], 0];
         }

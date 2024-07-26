@@ -85,10 +85,8 @@ class ApplePayService
      */
     private function acurl($receiptData, $sandbox=0, $config)
     {
-        $POSTFIELDS = array('receipt-data' => $receiptData, 'password' => config('config.apple_subscription_password'));
-        if (in_array($config, ['chuchuconfig'])) {
-            $POSTFIELDS = array('receipt-data' => $receiptData);
-        }
+//        $POSTFIELDS = array('receipt-data' => $receiptData, 'password' => config('config.apple_subscription_password'));
+        $POSTFIELDS = array('receipt-data' => $receiptData);
         $POSTFIELDS = json_encode($POSTFIELDS);
 
         //正式购买地址 沙盒购买地址

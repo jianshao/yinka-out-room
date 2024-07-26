@@ -154,23 +154,25 @@ class QueryRoomService
         if (empty($search)) {
             return [[], 0];
         }
-        $cacheData = QueryRoomCache::getInstance()->getSearchRoomForElasticCache($search);
-        if ($cacheData !== false) {
-            return [$cacheData, count($cacheData)];
-        }
-        $lockKey = QueryRoomCache::getInstance()->getSearchRoomForElasticLockKey($search);
-        LockService::getInstance()->lock($lockKey);
-        try {
-            list($list, $total) = $this->searchRoomForElasticDb($search, $offset, $count);
-//            搜索权重sort
-            if (empty($list)) {
-                QueryRoomCache::getInstance()->searchRoomForElasticStoreZero($search);
-            } else {
-                QueryRoomCache::getInstance()->searchRoomForElasticStoreModel($search, $list);
-            }
-        } finally {
-            LockService::getInstance()->unlock($lockKey);
-        }
+//        $cacheData = QueryRoomCache::getInstance()->getSearchRoomForElasticCache($search);
+//        if ($cacheData !== false) {
+//            return [$cacheData, count($cacheData)];
+//        }
+//        $lockKey = QueryRoomCache::getInstance()->getSearchRoomForElasticLockKey($search);
+//        LockService::getInstance()->lock($lockKey);
+//        try {
+//            list($list, $total) = $this->searchRoomForElasticDb($search, $offset, $count);
+////            搜索权重sort
+//            if (empty($list)) {
+//                QueryRoomCache::getInstance()->searchRoomForElasticStoreZero($search);
+//            } else {
+//                QueryRoomCache::getInstance()->searchRoomForElasticStoreModel($search, $list);
+//            }
+//        } finally {
+//            LockService::getInstance()->unlock($lockKey);
+//        }
+        list($list, $total) = $this->searchRoomForElasticDb($search, $offset, $count);
+
         return [$list, $total];
     }
 

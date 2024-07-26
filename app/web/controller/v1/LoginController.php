@@ -4,6 +4,7 @@ namespace app\web\controller\v1;
 
 use AlibabaCloud\Client\AlibabaCloud;
 use app\common\RedisCommon;
+use app\common\SmsMessageCommon;
 use app\domain\dao\BlackListModelDao;
 use app\domain\user\dao\AccountMapDao;
 use app\form\ClientInfo;
@@ -54,9 +55,10 @@ class LoginController extends WebBaseController
             $redis = $this->getRedis();
             $redis->setex($this->login_key . $phone, $expired_time * 60, $code);
             Log::record('官网阿里短信发送开始日志记录:时间:' . time() . ':手机号:' . $phone . ':验证码:' . $code, 'smsCode');
-            $result = $this->_aliSmsSend($phone, json_encode(array('code' => $code)));
-            Log::record('官网阿里短信发送结束日志记录:时间:' . time() . ':手机号:' . $phone . ':验证码:' . $code . ':返回数据:' . json_encode($result), 'smsCode');
-            if (empty($result) || $result['Code'] != 'OK') {
+//            $result = $this->_aliSmsSend($phone, json_encode(array('code' => $code)));
+            $result = SmsMessageCommon::getInstance()->sendMessage('', $phone, ['code' => $code]);
+            Log::record('官网阿官网阿里短信发送结束日志记录:时间:里短信发送结束日志记录:时间:' . time() . ':手机号:' . $phone . ':验证码:' . $code . ':返回数据:' . json_encode($result), 'smsCode');
+            if (empty($result) || $result['SendStatusSet'][0]['Code'] != 'Ok') {
                 return $this->return_json(500, null, '发送验证码失败');
             }
         } catch (\Exception $e) {

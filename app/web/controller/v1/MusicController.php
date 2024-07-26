@@ -9,6 +9,7 @@ use app\web\common\WebBaseController;
 use think\facade\Request;
 use OSS\OssClient;
 use OSS\Core\OssException;
+use Qcloud\Cos\Client;
 
 class MusicController extends WebBaseController
 {
@@ -47,7 +48,7 @@ class MusicController extends WebBaseController
      */
     public function uploadFileMusic()
     {
-        $limitSize = 8; // 限制8MB
+        $limitSize = 20; // 限制8MB
         $token = $this->getToken();
         $userinfo = $this->parseToken($token);
         $username = $userinfo['username'] ?? '';
@@ -60,7 +61,7 @@ class MusicController extends WebBaseController
             return rjson([], 500, '上传的文件太大');
         }
         $file_dir = "/music";
-        $song_url = $this->ossFile($fileobj, $file_dir);
+        $song_url = $this->cosFile($fileobj, $file_dir);
         $song_url = parse_url($song_url)['path'];
         $userId = AccountMapDao::getInstance()->getUserIdByMobile($username);
         //插入数据库
@@ -135,6 +136,58 @@ class MusicController extends WebBaseController
             $result = $ossClient->uploadFile($bucket, $imageObject, $imageFile);//上传成功
             return $result['info']['url'];
         } catch (OssException $e) {
+            printf(__FUNCTION__ . ": FAILED\n");
+            printf($e->getMessage() . "\n");
+            return;
+        }
+    }
+
+    /*
+     * 上传图片
+     */
+    public function cosFile($file_name, $file_dir)
+    {
+        if (is_file(__DIR__ . '/../autoload.php')) {
+            require_once __DIR__ . '/../autoload.php';
+        }
+        if (is_file(__DIR__ . '/../vendor/autoload.php')) {
+            require_once __DIR__ . '/../vendor/autoload.php';
+        }
+        // SECRETID 和 SECRETKEY 请登录访问管理控制台进行查看和管理
+        $stsConf = config('cos');
+        $secretId = $stsConf['ACCESS_KEY_ID']; //用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考https://cloud.tencent.com/document/product/598/37140
+        $secretKey = $stsConf['ACCESS_KEY_SECRET']; //用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考https://cloud.tencent.com/document/product/598/37140
+        $region = $stsConf['Region']; //用户的 region，已创建桶归属的 region 可以在控制台查看，https://console.cloud.tencent.com/cos5/bucket
+        $cosClient = new Client(
+            array(
+                'region' => $region,
+                'schema' => 'https', //协议头部，默认为 http
+                'credentials'=> array(
+                    'secretId'  => $secretId ,
+                    'secretKey' => $secretKey)
+            )
+        );
+
+        $saveName = \think\facade\Filesystem::disk('public')->putFile($file_dir, $file_name);
+        $imageObject = str_replace("\\", "/", $saveName);
+        $imageFile = STORAGE_PATH . str_replace("\\", "/", $saveName);
+
+        ## 上传文件流
+        try {
+            $bucket = $stsConf['BUCKET']; //存储桶名称 格式：BucketName-APPID
+            $file = fopen($imageFile, "rb");
+            if ($file) {
+                $result = $cosClient->putObject(array(
+                    'Bucket' => $bucket,
+                    'Key' => $imageObject,
+                    'Body' => $file));
+                $key =$result['Key']?? '';
+                if ($key) {
+                    $key = '/'.$key;
+                }
+                return $key;
+            }
+        } catch (\Exception $e) {
             printf(__FUNCTION__ . ": FAILED\n");
             printf($e->getMessage() . "\n");
             return;

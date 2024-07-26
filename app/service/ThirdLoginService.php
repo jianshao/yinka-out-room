@@ -59,24 +59,28 @@ class ThirdLoginService
         $config = $conf[$type];
         $config['access_token'] = $thirdToken ?: '';
         $config['code'] = $thirdToken;
+        Log::info(sprintf('thirdLogin token=%s type=%d config=%s',
+            $thirdToken, $type, json_encode($config)));
         if ($type == SnsTypes::$QOPENID) {
             try {
                 $snsInfo = OAuth::qq($config)->userinfo();
+                Log::INFO("qq thirdLogin:" . json_encode($snsInfo));
                 if (empty($snsInfo['openid']) || is_null($snsInfo['openid'])) {
                     throw new FQException('三方账号登录失败', 500);
                 }
                 $snsInfo['snsId'] = $snsInfo['openid'];
             } catch (\Exception $e) {
-                Log::error(sprintf("thirdLogin qq error:%s", $e->getTraceAsString()));
+                Log::error(sprintf("thirdLogin qq error:%s", $e->getMessage()));
                 throw new FQException('三方账号登录失败', 500);
             }
         } elseif ($type == SnsTypes::$WXOPENID) {
+            $_REQUEST['code'] = $config['code'];
             try {
                 $snsInfo = OAuth::weixin($config)->userinfo();
-                Log::INFO("thirdLogin:" . json_encode($snsInfo));
+                Log::INFO("wx thirdLogin:" . json_encode($snsInfo));
                 $snsInfo['snsId'] = $snsInfo['unionid'];
             } catch (\Exception $e) {
-                Log::error(sprintf("thirdLogin wechat error:%s", $e->getTraceAsString()));
+                Log::error(sprintf("thirdLogin wechat error:%s", $e->getMessage()));
                 throw new FQException('三方账号登录失败', 500);
             }
         } else {

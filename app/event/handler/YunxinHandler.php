@@ -204,7 +204,7 @@ class YunxinHandler
                 Log::info(sprintf('YunxinHandler::onChargeEvent event=%s',
                     json_encode($event)));
                 $userModel = UserModelDao::getInstance()->loadUserModel($event->userId);
-                $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信fanqiepaidui02，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
+                $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信 964403648，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
                 //queue YunXinMsg
                 $resMsg = YunXinMsg::getInstance()->sendMsg(['from' => config('config.fq_assistant'), 'ope' => 0, 'toUid' => $event->userId, 'type' => 0, 'msg' => $msg]);
                 Log::info(sprintf('YunxinHandler::onChargeEvent userId=%d resMsg=%s',
@@ -225,7 +225,7 @@ class YunxinHandler
                     Log::info(sprintf('YunxinHandler::onChargeEvent event=%s',
                         json_encode($event)));
                     $userModel = UserModelDao::getInstance()->loadUserModel($event->userId);
-                    $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信fanqiepaidui02，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
+                    $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信 964403648，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
                     //queue YunXinMsg
                     $resMsg = YunXinMsg::getInstance()->sendMsg(['from' => config('config.fq_assistant'), 'ope' => 0, 'toUid' => $event->userId, 'type' => 0, 'msg' => $msg]);
                     Log::info(sprintf('YunxinHandler::onChargeEvent userId=%d resMsg=%s',
@@ -245,7 +245,7 @@ class YunxinHandler
                     Log::info(sprintf('YunxinHandler::onChargeEvent event=%s',
                         json_encode($event)));
                     $userModel = UserModelDao::getInstance()->loadUserModel($event->userId);
-                    $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信fanqiepaidui02，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
+                    $msg = ["msg" => '亲爱的' . $userModel->nickname . '，为保证您在平台内有良好的体验，您可添加客服官方微信 964403648，在平台内遇到的问题均可向客服咨询。祝您玩的愉快！'];
                     //queue YunXinMsg
                     $resMsg = YunXinMsg::getInstance()->sendMsg(['from' => config('config.fq_assistant'), 'ope' => 0, 'toUid' => $event->userId, 'type' => 0, 'msg' => $msg]);
                     Log::info(sprintf('YunxinHandler::onChargeEvent userId=%d resMsg=%s',
@@ -266,7 +266,7 @@ class YunxinHandler
             if ($firstWakePay == false) {
                 Log::info(sprintf('YunxinHandler::onIosChargeEvent event=%s',
                     json_encode($event)));
-                $msg = ["msg" => '如果在支付过程中遇到问题，可添加客服微信 fanqiepaidui02，我们将尽快解决'];
+                $msg = ["msg" => '如果在支付过程中遇到问题，可添加客服微信 964403648，我们将尽快解决'];
                 //queue YunXinMsg
                 $resMsg = YunXinMsg::getInstance()->sendMsg(['from' => config('config.fq_assistant'), 'ope' => 0, 'toUid' => $event->userId, 'type' => 0, 'msg' => $msg]);
                 Log::info(sprintf('YunxinHandler::onIosChargeEvent userId=%d resMsg=%s',

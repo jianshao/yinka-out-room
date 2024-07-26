@@ -99,12 +99,12 @@ class DukeHandler
             $userModel = UserModelDao::getInstance()->loadUserModel($event->userId);
             if ($event->roomId != 0) {
                 $notifyType = in_array($event->newDukeLevel, [1, 2, 3]) ? 1 : 2;
-                RoomNotifyService::getInstance()->notifyDukeLevelChange($event->userId, $userModel, $event->roomId, $event->newDukeLevel, $notifyType);
+//                RoomNotifyService::getInstance()->notifyDukeLevelChange($event->userId, $userModel, $event->roomId, $event->newDukeLevel, $notifyType);
             } else {
                 $this->setDukeCartoon($event->userId, $event->newDukeLevel);
             }
 
-            RoomNotifyService::getInstance()->notifySyncUserData($event->userId);
+//            RoomNotifyService::getInstance()->notifySyncUserData($event->userId);
 //            if ($event->newDukeLevel > $event->oldDukeLevel) {
 //                $this->sendDukeLevelChangedYunxin($event->userId, $userModel, $event->newDukeLevel);
 //            }
@@ -123,7 +123,7 @@ class DukeHandler
             Log::info(sprintf('DukeHandler::sendDukeLevelChangedYunxin userId=%d dukeLevel=%d resMsg=%s',
                 $userId, $dukeLevel, $resMsg));
             if ($dukeLevel == 5) {
-                $msg = ["msg" => "尊敬的" . $userModel->nickname . "，恭喜您成为尊贵的国王身份。您的专属客服将竭诚为您服务，您可添加客服微信fanqievip001。祝您玩的愉快！"];
+                $msg = ["msg" => "尊敬的" . $userModel->nickname . "，恭喜您成为尊贵的国王身份。您的专属客服将竭诚为您服务，您可添加客服微信 964403648。祝您玩的愉快！"];
                 //queue YunXinMsg
                 $resMsg = YunXinMsg::getInstance()->sendMsg(['from' => config('config.fq_assistant'), 'ope' => 0, 'toUid' => $userId, 'type' => 0, 'msg' => $msg]);
                 Log::info(sprintf('DukeHandler::sendDukeLevelChangedYunxin userId=%d dukeLevel=%d resMsg=%s',

@@ -24,11 +24,37 @@ use app\query\user\cache\UserModelCache;
 use app\query\user\dao\UserInfoMapDao;
 use app\utils\CommonUtil;
 use app\utils\Error;
+use TencentCloud\Common\Credential;
+use TencentCloud\Common\Exception\TencentCloudSDKException;
+use TencentCloud\Common\Profile\ClientProfile;
+use TencentCloud\Common\Profile\HttpProfile;
+use TencentCloud\Sts\V20180813\Models\GetFederationTokenRequest;
+use TencentCloud\Sts\V20180813\StsClient;
 use think\facade\Log;
 
 
 class AppDataController extends Base2Controller
 {
+    public function apple_association(){
+        $out = json_decode('{
+    "applinks":{
+        "apps":[
+
+        ],
+        "details":[
+            {
+                "appID":"D8YBJ2LV66.com.like.aiyu",
+                "paths":[
+                    "/*",
+                    "/qq_conn/102055488/*"
+                ]
+            }
+        ]
+    }
+}',true);
+        return json($out);
+    }
+
     //根据用户账号id获取用户头像和昵称
     public function userData() {
         $userId = Request::param('uid');
@@ -182,10 +208,10 @@ class AppDataController extends Base2Controller
     public function getAppData()
     {
         $siteConf = SiteService::getInstance()->getSiteConf(1);
-        $email = 'a17325993101@163.com';
-        $weibo = 'yinkayuyin';
-        $weixin = 'jiutian8858';
-        $wechat_public = '音咖语音';
+        $email = 'likedianjing@163.com';
+        $weibo = '';
+        $weixin = '964403648';
+        $wechat_public = 'like电竞';
         if (version_compare($siteConf['apkversion'], $siteConf['apkversions'], '<')) {
             $appconf = $siteConf['apkversions'];
         } else {
@@ -193,11 +219,12 @@ class AppDataController extends Base2Controller
         }
 
         $res = [
+            'customer_id' => 1001,
             'version' => $appconf,
             'email' => $email,
             'weibo' => $weibo,
             'weixin' => $weixin,
-            'fuwu' => '7*24小时',
+            'fuwu' => '9:00-22:00',
             'wechat_public' => $wechat_public,   // 微信公众号
         ];
         return rjson($res);
@@ -207,7 +234,7 @@ class AppDataController extends Base2Controller
      * 礼物盒子规则
      */
 	public function giftBoxInfo() {
-	    $res['ruleInfo'] = "花费咖啡豆可购买并赠送幸运盒子给自己或指定的一名用户或多名用户，收到幸运盒子的用户可收获随机开出的礼物，并按照礼物的实际价值增加魅力值等。";
+	    $res['ruleInfo'] = "花费LB可购买并赠送幸运盒子给自己或指定的一名用户或多名用户，收到幸运盒子的用户可收获随机开出的礼物，并按照礼物的实际价值增加魅力值等。";
         $siteConf = SiteService::getInstance()->getSiteConf(1);
         $boxGift = json_decode($siteConf['giftbox'],true);
         $giftsId = implode(',',array_keys($boxGift));
@@ -278,6 +305,64 @@ class AppDataController extends Base2Controller
         } catch (\ClientException $e) {
             Log::record('getStsToken:---'.$e->getErrorMessage());
             return rjson([],500,'请稍后再试');
+        }
+    }
+
+    // getCosStsToken cos sts授权访问
+    public function getCosStsToken(){
+        $stsConf = config('cos');
+        $accessKeyID = $stsConf['ACCESS_KEY_ID'];
+        $accessKeySecret = $stsConf['ACCESS_KEY_SECRET'];
+        $endpoint = $stsConf['ENDPOINT'];
+        $Region = $stsConf['Region'];
+        $policy = $stsConf['STS']['Policy'];
+        $stsName = $stsConf['STS']['Name'];
+        $durationSeconds = $stsConf['STS']['DurationSeconds'];
+        $bucket = $stsConf['BUCKET'];
+
+        try {
+            // 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
+            // 代码泄露可能会导致 SecretId 和 SecretKey 泄露，并威胁账号下所有资源的安全性。以下代码示例仅供参考，建议采用更安全的方式来使用密钥，请参见：https://cloud.tencent.com/document/product/1278/85305
+            // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
+            $cred = new Credential($accessKeyID, $accessKeySecret);
+            // 实例化一个http选项，可选的，没有特殊需求可以跳过
+            $httpProfile = new HttpProfile();
+            $httpProfile->setEndpoint($endpoint);
+
+            // 实例化一个client选项，可选的，没有特殊需求可以跳过
+            $clientProfile = new ClientProfile();
+            $clientProfile->setHttpProfile($httpProfile);
+            // 实例化要请求产品的client对象,clientProfile是可选的
+            $client = new StsClient($cred, $Region, $clientProfile);
+
+            // 实例化一个请求对象,每个接口都会对应一个request对象
+            $req = new GetFederationTokenRequest();
+
+            $params = array(
+                "Name" => $stsName,
+                "Policy" => $policy,
+                "DurationSeconds" => $durationSeconds
+            );
+            $req->fromJsonString(json_encode($params));
+
+            // 返回的resp是一个GetFederationTokenResponse的实例，与请求对象对应
+            $resp = $client->GetFederationToken($req);
+
+            // 输出json格式的字符串回包
+            $data = json_decode($resp->toJsonString(),true);
+            $res = [
+                'token'=> $data['Credentials']['Token'],
+                'tmp_secretId'=> $data['Credentials']['TmpSecretId'],
+                'tmp_secretKey'=> $data['Credentials']['TmpSecretKey'],
+                'expired_time'=> $data['ExpiredTime'],
+                'bucket'=> $bucket,
+                'region'=> $Region,
+                'start_time'=> time(),
+            ];
+            return rjson($res,200,'success');
+        } catch(TencentCloudSDKException | \Exception $e) {
+            Log::error('getStsToken:---'.$e->getMessage());
+            return rjson([],500,'server error');
         }
     }
 

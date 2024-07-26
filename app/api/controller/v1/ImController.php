@@ -3,6 +3,8 @@
 namespace app\api\controller\v1;
 
 use app\api\controller\ApiBaseController;
+use app\common\RedisCommon;
+use app\domain\Config;
 use app\domain\dao\ImCheckMessageModelDao;
 use app\domain\im\service\ImService;
 use app\domain\models\ImCheckMessageModel;
@@ -105,6 +107,14 @@ class ImController extends ApiBaseController
     {
         $res = true;
         $text = $message;
+
+        $redis = RedisCommon::getInstance()->getRedis(["select" => 3]);
+        $bannedList = $redis->sMembers("banned_cache_set");
+        $replacement = "**";
+        foreach ($bannedList as $v) {
+            $text = str_replace($v, $replacement, $text);
+            $message = str_replace($v, $replacement, $message);
+        }
         $response = null;
         switch ($type) {
             case 0:

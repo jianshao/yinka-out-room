@@ -119,9 +119,6 @@ class PayController extends ApiBase2Controller
             case 3:
                 return ['app_wechat_normal' => $payResult];
                 break;
-            case 4:
-                return $payResult;
-                break;
             case 13:
                 return ['web_wxpay_normal' => $payResult];
                 break;
@@ -129,7 +126,7 @@ class PayController extends ApiBase2Controller
                 return ['web_wxpay_code' => $payResult];
                 break;
             default:
-                return [];
+                return $payResult;
                 break;
         }
     }
@@ -175,13 +172,14 @@ class PayController extends ApiBase2Controller
 
         try {
             if ($code && !in_array($channel, PayConstant::CHINAUMS_CHANNEL_CODE_PAYS)) {
+                Log::info(sprintf('PayController::PayMent $userId=%d openid=%s', $userId, $code));
                 $order = ChargeService::getInstance()->gzhBuyProduct($userId, $rmb, $channel, $isActive, $this->config, $code);
-                $openid = curlData('http://api.ddyuyin.com/web/gzhindex', ['code' => $code]);
+                $openid = curlData('http://php-api.jiawei8.cn/web/gzhindex', ['code' => $code]);
                 Log::record('openid----' . $openid);
                 $order = [
                     'out_trade_no' => $order->orderId,
                     'total_amount' => $order->rmb * 100,
-                    'subject' => '音咖语音',
+                    'subject' => config('config.pay_subject'),
                 ];
                 $result = PayService::getInstance()->wxGzhPay($order, $openid);
                 //组装页面中调起支付的参数
@@ -270,7 +268,7 @@ class PayController extends ApiBase2Controller
             $order = [
                 'out_trade_no' => $order->orderId,
                 'total_amount' => $order->rmb * 100,
-                'subject' => '音咖',
+                'subject' => 'like电竞',
             ];
             $result = PayService::getInstance()->wxGzhPay($order, $openid);
             //组装页面中调起支付的参数
@@ -309,6 +307,7 @@ class PayController extends ApiBase2Controller
             'ali_code' => 2,
             'wechat_applet' => 32,  // 目前原生没有
             'wechat_gzh' => 4,
+            'din_wechat_h5' => 51,
         ];
         // 如果微信走银联商务渠道
         if ($wechatPayChannelWay == 2) {

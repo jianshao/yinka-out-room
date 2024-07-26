@@ -322,7 +322,7 @@ class BiOrderService
         return
             [
                 'title' => [
-                    ['type' => 'txt', 'content' => '钻石兑换咖啡豆'],
+                    ['type' => 'txt', 'content' => '钻石兑换LB'],
                 ],
                 'timestamp' => $model->createTime,
                 'number' => $model->type == BIConfig::$BEAN_TYPE ? (string)$model->change : (string)filter_money($model->change / config('config.khd_scale'))
@@ -530,7 +530,7 @@ class BiOrderService
                 $goodsImage = $goods->image;
                 break;
             case BIConfig::$BEAN_TYPE:
-                $goodsName = "咖啡豆";
+                $goodsName = "LB";
                 $goodsImage = "/image/md.png";
                 break;
             case BIConfig::$DIAMOND_TYPE:
@@ -730,7 +730,7 @@ class BiOrderService
         return
             [
                 'title' => [
-                    ['type' => 'txt', 'content' => '咖啡豆兑换金币'],
+                    ['type' => 'txt', 'content' => 'LB兑换金币'],
                 ],
                 'timestamp' => $model->createTime,
                 'number' => $model->change

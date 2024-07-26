@@ -825,3 +825,19 @@ function uploadOssFileSecond($file_name, $file_dir)
 
 }
 
+// 定义一个函数，可以把数字转换成带有单位的字符串
+function format_number_string($number) {
+    // 如果数字大于等于10000，则除以10000，并在后面加上"w"单位
+    if ($number >= 10000) {
+        return round($number / 10000, 1) . "w";
+    }
+    // 如果数字大于等于1000，则除以1000，并在后面加上"k"单位
+    elseif ($number >= 1000) {
+        return round($number / 1000, 1) . "k";
+    }
+    // 否则，直接返回数字本身
+    else {
+        return $number;
+    }
+}
+

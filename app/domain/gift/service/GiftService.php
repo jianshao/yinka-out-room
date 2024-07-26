@@ -790,7 +790,10 @@ class GiftService
         foreach ($giftKind->boxIntroduction['boxBackgrounds'] as $key => $image){
             $boxBackgrounds[$key] = CommonUtil::buildImageUrl($image);
         }
-        $data['backgrounds'] = empty($boxBackgrounds) ? null : $boxBackgrounds;
+        $data['backgrounds'] = empty($boxBackgrounds) ? [
+            'bigBackground' => '',
+            'smallBackground'=> '',
+            'bottomBackground'=> CommonUtil::buildImageUrl("images/resource/jxdd.png")] : $boxBackgrounds;
         $data['boxGiftList'] = $this->buildBoxWeightList($giftKind->giftWeightList, $giftKind->totalWeight);
         return $data;
     }

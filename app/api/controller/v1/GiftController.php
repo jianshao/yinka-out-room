@@ -217,7 +217,7 @@ class GiftController extends ApiBaseController
                         'gift_name' => '发红包',
                         'gift_number' => '0',
                         'gift_coin' => '0',
-                        'gift_image' => 'https://resource.abyy.shuoguo.xyz/image/testtxk/ic_red_envelope.png',
+                        'gift_image' => config("config.APP_URL_image").'image/testtxk/ic_red_envelope.png',
                         'gift_type' => '0',
                         'gift_animation' => '',
                         'gift_mp4animation' => '',

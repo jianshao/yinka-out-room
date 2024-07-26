@@ -192,6 +192,9 @@ Route::get('dukeDocqq','FqpartyQQController/dukeDocLove');//爵位协议
 Route::get('actionRuleqq','FqpartyQQController/actionRuleLove');//爵位协议
 Route::rule('qq','FqpartyQQController/love');       //首页
 
+Route::get('privacyKlk','FqpartyQQController/PrivacyLoveKlk');// 克拉克隐私
+Route::get('privacyLrf','FqpartyQQController/PrivacyLoveLrf');// 拉尔夫隐私
+
 //楚楚语音
 Route::get('pactcc','FqpartyCCController/pactLove');//用户隐私协议
 Route::get('chargecc','FqpartyCCController/chargeLove');//用户充值协议

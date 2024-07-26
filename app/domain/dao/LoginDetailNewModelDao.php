@@ -35,6 +35,7 @@ class LoginDetailNewModelDao extends ModelDao
             'simulator' => (int)$model->simulator,
             'imei' => $model->imei,
             'app_id' => $model->appId,
+            'source' => $model->source,
             'ext_param_1' => $model->ext_param_1,
             'ext_param_2' => $model->ext_param_2,
             'ext_param_3' => $model->ext_param_3,

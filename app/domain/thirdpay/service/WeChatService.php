@@ -5,6 +5,7 @@ namespace app\domain\thirdpay\service;
 
 use app\common\RedisCommon;
 use app\domain\exceptions\FQException;
+use app\service\PayService;
 use app\utils\ArrayUtil;
 use think\facade\Log;
 
@@ -34,8 +35,8 @@ class WeChatService
 
     private function __construct()
     {
-        $this->appid = config("config.chinaaums.appid");
-        $this->appSecret = config("config.chinaaums.appSecret");
+        $this->appid = config("config.WECHAT_APPLET.appid");
+        $this->appSecret = config("config.WECHAT_APPLET.appSecret");
     }
 
     /**
@@ -75,10 +76,10 @@ class WeChatService
     {
         // 先从缓存获取
         $redis = RedisCommon::getInstance()->getRedis();
-        $redisKey = 'chinaums:wxApplet:access_token';
+        $redisKey = 'third:wxApplet:access_token';
 
         // $isForce  true从微信获取AccessToken   false先查询缓存
-        if (!$isForce){
+        if (!$isForce) {
             $cacheAccessToken = $redis->get($redisKey);
             if ($cacheAccessToken) {
                 return $cacheAccessToken;
@@ -137,9 +138,26 @@ class WeChatService
             $response = $this->getUrlLinkResponse($linkParams, true);
             $errCode = ArrayUtil::safeGet($response, 'errcode');
             if ($errCode !== 0) {
+                $this->handleExceptionLink($response);
                 throw new FQException('获取url_link失败', 500);
             }
         }
         return ArrayUtil::safeGet($response, 'url_link');
+    }
+
+    /**
+     * 处理获取小程序链接异常
+     * @param $response
+     */
+    public function handleExceptionLink($response)
+    {
+        PayService::getInstance()->sendPayDingTalkMsg(json_encode($response));
+        $redis = RedisCommon::getInstance()->getRedis();
+        $redisKey = 'pay_exception_get_link';
+        $redis->incr($redisKey);
+        $redis->expire($redisKey, 60);
+        if ($redis->get($redisKey) > 8) {
+            PayService::getInstance()->toggleNativePay();
+        }
     }
 }

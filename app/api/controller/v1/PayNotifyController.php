@@ -260,6 +260,40 @@ class PayNotifyController extends BaseController
         }
     }
 
+    public function dinNotify()
+    {
+        $params = Request::param(); // 获取回调参数
+        $paramsStr = json_encode($params);
+//        $paramsStr = '{"msgType":"wx.notify","payTime":"2022-04-21 11:36:22","buyerCashPayAmt":"1","connectSys":"UNIONPAY","sign":"59393711343F419F8200D42A887E669E","merName":"\u97f3\u604b\u8bed\u97f3","mid":"89844014816ABEN","invoiceAmount":"1","settleDate":"2022-04-21","mW":"mqZR","billFunds":"\u73b0\u91d1:1","buyerId":"otdJ_uB3AVLA_E9mksWVdht76WeM","mchntUuid":"2d9081bd8003b043018017c0be64414d","tid":"K4SLDX6A","instMid":"MINIDEFAULT","receiptAmount":"1","couponAmount":"0","cardAttr":"BALANCE","targetOrderId":"4200001321202204212968838353","signType":"MD5","billFundsDesc":"\u73b0\u91d1\u652f\u4ed80.01\u5143\u3002","subBuyerId":"oy5-E5btOxiWK_kaURjPSMF9GBYk","orderDesc":"\u97f3\u604b\u8bed\u97f3","seqId":"26936918907N","merOrderId":"7266test0023899","targetSys":"WXPay","bankInfo":"OTHERS","totalAmount":"1","createTime":"2022-04-21 11:36:17","buyerPayAmount":"1","notifyId":"cf4ca5b2-e653-402d-8f64-7f4644e157ce","subInst":"104000","status":"TRADE_SUCCESS"}';
+//        $params = json_decode($params,true);
+        Log::channel(['pay', 'file'])->info(sprintf('PayNotifyController::dinNotify response=%s', $paramsStr));
+
+        $orderId = $params['order_no'] ?? "";
+        $dealId = $params['bank_seq_no'] ?? "";
+        $status = $params['trade_status'] ?? "";
+        if ($orderId && $dealId && $status == 'SUCCESS') {
+            try {
+                ChargeService::getInstance()->payAndDeliveryOrder($orderId, $dealId, $params);
+                Log::channel(['pay', 'file'])->info(sprintf('PayNotifyController::dinNotify SUCCESS orderId=%s dealId=%s',
+                    $orderId, $dealId));
+                echo 'SUCCESS';
+            } catch (AlreadyDeliveryException $e) {
+                Log::channel(['pay', 'file'])->info(sprintf('PayNotifyController::dinNotify SUCCESS AlreadyDelivery orderId=%s dealId=%s',
+                    $orderId, $dealId));
+                echo 'SUCCESS';
+            } catch (\Throwable $e) {
+                Log::channel(['pay', 'file'])->error(sprintf('PayNotifyController::dinNotify params=%s ex=%d:%s trace=%s',
+                    $paramsStr, $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
+                file_put_contents('/tmp/app_ali_dinpay_error.log',
+                    time() . ':' . $paramsStr . '' . PHP_EOL,FILE_APPEND);
+                echo 'error1';
+            }
+        } else {
+            Log::channel(['pay', 'file'])->error(sprintf('PayNotifyController::dinNotify params=%s', $paramsStr));
+            echo 'error';
+        }
+    }
+
     /**
      * @desc 支付宝自动续费回调  ( 签约成功有回调，解约没有回调 )
      * @throws \Exception

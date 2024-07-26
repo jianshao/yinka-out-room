@@ -4,6 +4,7 @@
 use think\facade\Route;
 
 Route::group('v1', function () {
+    Route::rule('apple-app-site-association', 'v1.AppDataController/apple_association');
     Route::rule('getH5Url', 'v1.InitDataController/getUrl');
     Route::rule('agora/getToken', 'v1.AgoraController/getToken');
     Route::rule('agora/getRoomUserList', 'v1.AgoraController/getRoomUserList');
@@ -96,6 +97,7 @@ Route::group('v1', function () {
     Route::rule('payChannel', 'v1.PayController/payChannel');// 支付渠道
     Route::rule('chinaumsNotify', 'v1.PayNotifyController/chinaumsNotify'); // 三方支付-银联商务回调地址
     Route::rule('getWxAppletUrlLink', 'v1.PayController/getWxAppletUrlLink'); // 生成小程序链接地址(三方支付-银联商务) H5跳转小程序使用
+    Route::rule('dinNotify', 'v1.PayNotifyController/dinNotify'); // 三方支付-智付回调地址
 
     Route::get('checkfirstpay', 'v1.FirstPayController/checkFirstPay');     //首冲弹窗
     Route::get('checkfirstpaypop', 'v1.FirstPayController/checkFirstPayPop');     //首冲弹窗
@@ -243,6 +245,7 @@ Route::group('v1', function () {
     Route::post('estoppel', 'v1.RoomBlackController/estoppel');
     //发送短信
     Route::post('sendsms', 'v1.SmsController/sendsmsLite');
+    Route::post('sendOpenSms', 'v1.SmsController/sendOpenSms');
 
     //app支付
     Route::post('payment', 'v1.PayController/PayMent');
@@ -262,6 +265,12 @@ Route::group('v1', function () {
     Route::get('addPlay', 'v1.MusicController/addPlay');    //音乐播放
 
     Route::get('chartsAdd', 'v1.InitDataController/chartsAdd');    //统计埋点数据
+
+    // 玩么赛事
+    Route::get('competition/list', 'v1.CompetitionController/getList');       // 赛事列表
+    Route::post('competition/notify/room', 'v1.CompetitionController/notifyRoom');       // 接入方接口1：房间信息通知接口
+    Route::post('competition/notify/status', 'v1.CompetitionController/notifyStatus');   // 接入方接口2：比赛状态通知（包括比赛结果）
+    Route::post('competition/notify/syncUsers', 'v1.CompetitionController/notifySyncUsers');   // 接入方接口3：同步参赛玩家信息
 
     //装扮
     Route::get('attireinit', 'v1.AttireController/attireInit');//装扮init
@@ -335,6 +344,18 @@ Route::group('v1', function () {
     Route::rule('appvipalinotify', 'v1.PayNotifyController/appVipAliNotify');      //支付宝会员支付回调
     Route::post('chargePayment', 'v1.ApplePayController/chargePayment');      //苹果会员支付
     Route::rule('vipBuyDetails', 'v1.OrderController/vipBuyDetails');// vip账单
+
+    // 录音
+    Route::get('randSoundRecord', 'v1.SoundController/randRecord');       // 获取录音词库
+    Route::get('soundList', 'v1.SoundController/soundList');       // 录音列表
+    Route::get('soundMatch', 'v1.SoundController/soundMatch');       // 录音匹配
+    Route::post('soundLike', 'v1.SoundController/soundLike');       // 录音点赞
+    Route::post('soundCancel', 'v1.SoundController/soundCancel');       // 录音取消
+    Route::post('tencentAuditAutoCheck', 'v1.NotifyController/tencentAuditAutoCheck');       // 腾讯审核音频回调
+
+    //
+    Route::post('checkOperationCode', 'v1.SoundController/checkOperationCode');       // 检测官方运营编码
+
 
     //个推接口
     Route::post('pushToSingle', 'v1.PushOfGetuiController/pushToSingle');
@@ -458,7 +479,8 @@ Route::group('v1', function () {
     Route::rule('iosPayNotice', 'v1.ApplePayController/iosPayNotice');//
     Route::post('androidChargeList', 'v1.OrderController/androidChargeList');//
 
-    Route::get('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
+//    Route::get('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
+    Route::get('getStsToken', 'v1.AppDataController/getCosStsToken');// cos sts授权访问
     Route::post('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
 
     /*福星降临瓜分番茄豆*/

@@ -528,6 +528,9 @@ class ChargeService
                     return [$vipOpen, $svipOpen, $vipExpiresTime, $svipExpiresTime];
                 });
             } catch (Exception $e) {
+                Log::error(sprintf('ChargeService::deliveryOrderImpl orderId=%s userId=%s ex=%d:%s trace=%s',
+                    $order->orderId, $order->userId,
+                    $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
                 throw $e;
             }
 

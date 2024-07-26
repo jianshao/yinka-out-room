@@ -101,7 +101,7 @@ class LanguageroomController extends ApiBaseController
         $createRooms = [];
         $roomTypes = QueryRoomTypeDao::getInstance()->loadRoomTypeByPidWhere(['pid', '=', 0]);
         foreach ($roomTypes as $roomType) {
-            $roomTypeModels = QueryRoomTypeDao::getInstance()->loadRoomTypeByPidWhere(['pid', '=', $roomType->id], 1);
+            $roomTypeModels = QueryRoomTypeDao::getInstance()->loadRoomTypeByPidWhere([['pid', '=', $roomType->id],['mode_type', '=', 1]], 1);
             $childList = [];
             foreach ($roomTypeModels as $k => $roomTypeModel) {
                 $nameList = RoomNameModelDao::getInstance()->findRoomNames($roomTypeModel->id);
@@ -380,20 +380,20 @@ class LanguageroomController extends ApiBaseController
         $userModel = UserModelCache::getInstance()->getUserInfo($userId);
         if ($userModel->lvDengji >= 20) {
             $result['gameList'] = [
-                [
-                    'type' => 'h5',
-                    'image' => CommonUtil::buildImageUrl('/activity/baoxiang.png'),
-                    'name' => '星战风暴',
-                    'url' => config('config.baoxiang') . $this->headToken,
-                    'show_type' => 0
-                ],
-                [
-                    'type' => 'h5',
-                    'image' => CommonUtil::buildImageUrl('/activity/zhuanpan.png'),
-                    'name' => '幸运大转盘',
-                    'url' => config('config.zhuanpan') . $this->headToken,
-                    'show_type' => 0
-                ],
+//                [
+//                    'type' => 'h5',
+//                    'image' => CommonUtil::buildImageUrl('/activity/baoxiang.png'),
+//                    'name' => '星战风暴',
+//                    'url' => config('config.baoxiang') . $this->headToken,
+//                    'show_type' => 0
+//                ],
+//                [
+//                    'type' => 'h5',
+//                    'image' => CommonUtil::buildImageUrl('/activity/zhuanpan.png'),
+//                    'name' => '幸运大转盘',
+//                    'url' => config('config.zhuanpan') . $this->headToken,
+//                    'show_type' => 0
+//                ],
 //                [
 //                    'type' => 'h5',
 //                    'image' => CommonUtil::buildImageUrl('/image/dadishu.png'),
@@ -404,13 +404,13 @@ class LanguageroomController extends ApiBaseController
             ];
         } else {
             $result['gameList'] = [
-                [
-                    'type' => 'h5',
-                    'image' => CommonUtil::buildImageUrl('/activity/baoxiang.png'),
-                    'name' => '星战风暴',
-                    'url' => config('config.baoxiang') . $this->headToken,
-                    'show_type' => 0
-                ],
+//                [
+//                    'type' => 'h5',
+//                    'image' => CommonUtil::buildImageUrl('/activity/baoxiang.png'),
+//                    'name' => '星战风暴',
+//                    'url' => config('config.baoxiang') . $this->headToken,
+//                    'show_type' => 0
+//                ],
 //                [
 //                    'type' => 'h5',
 //                    'image' => CommonUtil::buildImageUrl('/image/dadishu.png'),
@@ -665,10 +665,11 @@ class LanguageroomController extends ApiBaseController
         $newRoomInfo = [];
         $image_url = config('config.APP_URL_image');
         $roomInfo['background_image'] = $roomInfo['background_image'] ? $image_url . $roomInfo['background_image'] : '';
+        $where[] = ['pid', '=', 100];
         if ($roomInfo['guild_id'] > 0) {
-            $where = ['pid', '=', 100];
+            $where = ['mode_type', 'in', '1,2'];
         } else {
-            $where = ['pid', 'in', '1,2'];
+            $where = ['mode_type', 'in', '1'];
         }
         $roomTypeModels = QueryRoomTypeDao::getInstance()->loadRoomTypeByPidWhere($where);
         foreach ($roomTypeModels as $roomTypeModel) {
@@ -935,7 +936,7 @@ class LanguageroomController extends ApiBaseController
             ];
             $list = QueryRoomTypeService::getInstance()->loadRoomTypeForPidOne();
         }
-        if ($remen) {
+        if (isset($remen) && $remen) {
             array_unshift($list, $remen);
         }
         if ($type != 1) {

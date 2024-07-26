@@ -7,6 +7,8 @@ use app\domain\asset\UserAssets;
 use app\domain\duke\Duke;
 use app\domain\exceptions\FQException;
 use app\domain\queue\producer\YunXinMsg;
+use app\domain\sound\dao\SoundModel;
+use app\domain\sound\service\SoundService;
 use app\domain\task\UserTasks;
 use app\domain\user\dao\UserLastInfoDao;
 use app\domain\user\dao\UserModelDao;
@@ -18,6 +20,7 @@ use app\domain\vip\Vip;
 use app\query\user\cache\CachePrefix;
 use app\utils\ArrayUtil;
 use app\utils\TimeUtil;
+use constant\SoundConstant;
 use think\facade\Log;
 
 class User
@@ -263,8 +266,13 @@ class User
                 $this->userModel->voiceTime = ArrayUtil::safeGet($voice, 'voiceTime', '');
                 $updateData['pretty_avatar'] = $this->userModel->voiceIntro;
                 $updateData['pretty_avatar_svga'] = $this->userModel->voiceTime;
-                return UserModelDao::getInstance()->updateDatas($this->getUserId(), $updateData);
+                UserModelDao::getInstance()->updateDatas($this->getUserId(), $updateData);
 
+                return SoundService::getInstance()->insertSound(
+                    $this->getUserId(),
+                    $this->userModel->voiceIntro,
+                    $this->userModel->voiceTime
+                );
         }
         return false;
     }

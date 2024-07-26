@@ -309,6 +309,17 @@ Route::group('ka/v3', function () {
     Route::rule('appvipalinotify', 'v1.PayNotifyController/appVipAliNotify');      //支付宝会员支付回调
     Route::post('chargePayment', 'v1.ApplePayController/chargePayment');      //苹果会员支付
 
+    // 录音
+    Route::get('randSoundRecord', 'v1.SoundController/randRecord');       // 获取录音词库
+    Route::get('soundList', 'v1.SoundController/soundList');       // 录音列表
+    Route::get('soundMatch', 'v1.SoundController/soundMatch');       // 录音匹配
+    Route::post('soundLike', 'v1.SoundController/soundLike');       // 录音点赞
+    Route::post('soundCancel', 'v1.SoundController/soundCancel');       // 录音取消
+    Route::post('tencentAuditAutoCheck', 'v1.NotifyController/tencentAuditAutoCheck');       // 腾讯审核音频回调
+
+    //
+    Route::post('checkOperationCode', 'v1.SoundController/checkOperationCode');       // 检测官方运营编码
+
     //个推接口
     Route::post('pushToSingle', 'v1.PushOfGetuiController/pushToSingle');
     Route::post('pushToList', 'v1.PushOfGetuiController/pushToList');
@@ -423,7 +434,8 @@ Route::group('ka/v3', function () {
     Route::rule('iosPayNotice', 'v1.ApplePayController/iosPayNotice');//
     Route::post('androidChargeList', 'v1.OrderController/androidChargeList');//
 
-    Route::get('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
+//    Route::get('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
+    Route::get('getStsToken', 'v1.AppDataController/getCosStsToken');// cos sts授权访问
     Route::post('getStsToken', 'v1.AppDataController/getStsToken');//oss授权访问
 
     Route::get('getSbImHistory', 'v1.AppDataController/getSbImHistory');   //用户私聊记录

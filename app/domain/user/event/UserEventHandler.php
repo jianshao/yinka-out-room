@@ -47,6 +47,24 @@ class UserEventHandler
                 $event->userId, $e->getCode(), $e->getMessage()));
         }
 
+        // 更新用户所属城市
+        try {
+            if ($event->clientInfo) {
+                $ip = $event->clientInfo->clientIp;
+                $url = sprintf("https://api.ipdatacloud.com/v2/query?ip=%s&key=%s",$ip,config("config.ip_cloud_key"));
+                $response = trim(file_get_contents($url));
+                Log::info(sprintf('UserEventHandler::getIp ip=%s result=%s', $ip, $response));
+                $res = json_decode($response,true);
+                $city = $res['data']['location']['city']?? '';
+                if ($city) {
+                    UserModelDao::getInstance()->updateDatas($event->userId, ['city' => $city]);
+                }
+            }
+        } catch (Exception $e) {
+            Log::error(sprintf('UserEventHandler::getIp userId=%d ex=%d:%s',
+                $event->userId, $e->getCode(), $e->getMessage()));
+        }
+
     }
 
     /**

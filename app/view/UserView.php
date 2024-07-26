@@ -78,7 +78,7 @@ class UserView
             'avatar' => CommonUtil::buildImageUrl($userModel->avatar),
             'regist_roomid' => self::getRegisterRoomId($user),
             'is_pwd' => $userModel->password ? 1 : 0,
-            'mobile' => $userModel->username,
+            'mobile' => $userModel->mobile,
             'zy_uid' => '',
             'login_time' => TimeUtil::timeToStr($userModel->loginTime),
             'attestation' => $userModel->attestation,

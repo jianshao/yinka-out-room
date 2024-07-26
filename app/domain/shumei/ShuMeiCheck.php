@@ -205,7 +205,7 @@ class ShuMeiCheck
      */
     public function aliAudioCheck($filename)
     {
-
+        return true;
         AlibabaCloud::accessKeyClient(config('config.OSS.ACCESS_KEY_ID'), config('config.OSS.ACCESS_KEY_SECRET'))
             ->regionId('cn-hangzhou')
             ->asDefaultClient();

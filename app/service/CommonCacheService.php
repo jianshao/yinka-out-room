@@ -79,6 +79,22 @@ class CommonCacheService
         return 1;
     }
 
+    /**
+     * @info 获取房间麦位信息
+     * @param $roomId
+     * @return array
+     */
+    public function getLiveUserIDbyRoom($roomId):array
+    {
+        if (empty($roomId)) {
+            return [];
+        }
+
+        $redis = RedisCommon::getInstance()->getRedis();
+        $cacheKey = sprintf("mic_online_users_%d", $roomId);
+        return $redis->ZREVRANGE($cacheKey, 0, -1);
+    }
+
 
     public function getNewVisitor($userId)
     {

@@ -8,7 +8,7 @@ class AssetKindBean extends AssetKind
     public function __construct($kindId) {
         $this->kindId = $kindId;
         $this->unit = '个';
-        $this->displayName = '咖啡豆';
+        $this->displayName = 'LB';
         $this->image = '/image/md.png';
     }
 

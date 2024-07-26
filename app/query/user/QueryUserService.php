@@ -123,23 +123,25 @@ class QueryUserService
         if (empty($search)) {
             return [[], 0];
         }
-        $cacheData = QueryUserCache::getInstance()->getSearchUserForElasticCache($search);
-        if ($cacheData !== false) {
-            return [$cacheData, count($cacheData)];
-        }
-        $lockKey = QueryUserCache::getInstance()->getSearchUserForElasticLockKey($search);
-        LockService::getInstance()->lock($lockKey);
-        try {
-            list($list, $total) = $this->searchUsersForElasticDb($search, $offset, $count);
-//            搜索权重sort
-            if (empty($list)) {
-                QueryUserCache::getInstance()->searchUserForElasticStoreZero($search);
-            } else {
-                QueryUserCache::getInstance()->searchUserForElasticStoreModel($search, $list);
-            }
-        } finally {
-            LockService::getInstance()->unlock($lockKey);
-        }
+//        $cacheData = QueryUserCache::getInstance()->getSearchUserForElasticCache($search);
+//        if ($cacheData !== false) {
+//            return [$cacheData, count($cacheData)];
+//        }
+//        $lockKey = QueryUserCache::getInstance()->getSearchUserForElasticLockKey($search);
+//        LockService::getInstance()->lock($lockKey);
+//        try {
+//            list($list, $total) = $this->searchUsersForElasticDb($search, $offset, $count);
+////            搜索权重sort
+//            if (empty($list)) {
+//                QueryUserCache::getInstance()->searchUserForElasticStoreZero($search);
+//            } else {
+//                QueryUserCache::getInstance()->searchUserForElasticStoreModel($search, $list);
+//            }
+//        } finally {
+//            LockService::getInstance()->unlock($lockKey);
+//        }
+        list($list, $total) = $this->searchUsersForElasticDb($search, $offset, $count);
+
         return [$list, $total];
     }
 

@@ -20,22 +20,37 @@ class RoomView
         $queryRoom->tagImage = RoomTag::getInstance()->getSourceImageForId($queryRoom->tagId, $source);
         $queryRoom->tabIcon = RoomMode::getInstance()->getSourceImageForId($queryRoom->roomType, $source);
         $pkStatus = RoomService::getInstance()->getRoomPkstatus($queryRoom->roomId);
-        $isLive = CommonCacheService::getInstance()->getRoomIsLive($queryRoom->roomId);
+        $liveUserIDs = CommonCacheService::getInstance()->getLiveUserIDbyRoom($queryRoom->roomId);
+        $isLive = 0;
+        $micUsers = [];
+        $userInfo = UserModelCache::getInstance()->getUserInfo($queryRoom->ownerUserId);
+        if (!empty($liveUserIDs)){
+            $isLive = 1;
+            $userModels = UserModelCache::getInstance()->findList($liveUserIDs);
+            foreach ($userModels as $key=>$user) {
+                $micUsers[$key]['user_id'] = $user->userId;
+                $micUsers[$key]['avatar_image'] = CommonUtil::buildImageUrl($user->avatar);
+                $micUsers[$key]['nickname'] = $user->nickname;
+            }
+        }
         return [
             'room_id' => intval($queryRoom->roomId),
             'room_pretty_id' => intval($queryRoom->prettyRoomId),
             'room_name' => $queryRoom->roomName,
             'room_type' => $queryRoom->roomTypeName,
+            'room_mode' => $queryRoom->roomMode,
             'room_lock' => intval($queryRoom->lock),
             'visitor_number' => formatNumberLite($queryRoom->visitorNumber),
             'is_live' => $isLive,
             'room_image' => CommonUtil::buildImageUrl($queryRoom->ownerAvatar),
             'avatar_image' => CommonUtil::buildImageUrl($queryRoom->ownerAvatar),
             'nickname' => $queryRoom->ownerNickname,
+            'sex' => intval($userInfo->sex),
             'tag_image' => CommonUtil::buildImageUrl($queryRoom->tagImage),
             'tab_icon' => CommonUtil::buildImageUrl($queryRoom->tabIcon),
             'popularNumber' => $queryRoom->popularNumber,
             'pk_status' => $pkStatus,
+            'mic_user_list' => $micUsers,
         ];
     }
 

@@ -95,142 +95,143 @@ class ImService
                 return [$resCode, $resMessage, $apiResponse];
             }
 
-            if ($userModel->lvDengji < 10) {
-                throw new ImException("等级大于等于10级才可以私聊哦",9);
-            }
-            return [$resCode, $resMessage, $apiResponse];
+//            if ($userModel->lvDengji < 10) {
+//                throw new ImException("等级大于等于10级才可以私聊哦",9);
+//            }
+//            return [$resCode, $resMessage, $apiResponse];
 //            //判断消息触发方式（2主动私聊/1被动回复）
-//            $triggerMode = ImCheckMessageModelDao::getInstance()->getTriggerMode($fromUid, $toUid);
-//            //获取被私聊对象角色（0用户 / 1主播）
-//            $toUserRole = MemberSocityModelDao::getInstance()->getUserRole($toUid);
-//            if ($triggerMode == 1) {
-//                if ($toUserRole == 0) {
-//                    if ($userModel->attestation == 1) {
-//                        return [$resCode, $resMessage, $apiResponse];
-//                    } else {
-//                        //判断用户是否充值
-//                        $bean = BeanModelDao::getInstance()->loadBean($fromUid);
-//                        if ($bean->total > 0) {
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        } else {
-//                            $replyUserIds = $this->getReplyUserIds($fromUid, $toUserRole);
-//                            if (count($replyUserIds) >= 5) {
-//                                if (in_array($toUid, $replyUserIds)) {
-//                                    return [$resCode, $resMessage, $apiResponse];
-//                                } else {
-//                                    throw new ImException("您需要进行实名认证或等级≥【6级】才可以发送聊天",9);
-//                                }
-//                            } else{
-//                                $this->addReplyUserId($fromUid, $toUid, $toUserRole);
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    return [$resCode, $resMessage, $apiResponse];
-//                }
-//            } else {
-//                if ($toUserRole == 0) {
-//                    if ($userModel->attestation == 1) {
-//                        $redis = RedisCommon::getInstance()->getRedis();
-//                        $isExists = $redis->hExists('userinfo_'. $fromUid, 'auth_deviceId');
-//                        if (!$isExists) {
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        } else {
-//                            if ($deviceId == $redis->hGet('userinfo_' . $fromUid,'auth_deviceId')) {
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            } else {
-//                                if ($userModel->lvDengji < 2) {
-//                                    throw new ImException("等级达到【2级】，解锁更多私聊机会",1);
-//                                } else if ($userModel->lvDengji >= 2 && $userModel->lvDengji <= 5) {
-//                                    $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                                    if (count($activeChatUserIds) >= 1) {
-//                                        if (in_array($toUid, $activeChatUserIds)) {
-//                                            return [$resCode, $resMessage, $apiResponse];
-//                                        } else {
-//                                            throw new ImException("等级达到【6级】，解锁更多私聊机会",2);
-//                                        }
-//                                    } else {
-//                                        $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                                        return [$resCode, $resMessage, $apiResponse];
-//                                    }
-//                                } else if ($userModel->lvDengji >= 6 && $userModel->lvDengji <= 10) {
-//                                    $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                                    if (count($activeChatUserIds) >= 3) {
-//                                        if (in_array($toUid, $activeChatUserIds)) {
-//                                            return [$resCode, $resMessage, $apiResponse];
-//                                        } else {
-//                                            throw new ImException("等级达到【11级】，解锁更多私聊机会",3);
-//                                        }
-//                                    } else {
-//                                        $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                                        return [$resCode, $resMessage, $apiResponse];
-//                                    }
-//                                } else {
-//                                    return [$resCode, $resMessage, $apiResponse];
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        if ($userModel->lvDengji < 2) {
-//                            throw new ImException("您需要进行实名认证或等级≥【2级】才可以主动发起聊天",4);
-//                        } elseif ($userModel->lvDengji >=2 && $userModel->lvDengji <= 5) {
-//                            $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                            if (count($activeChatUserIds) >= 3) {
-//                                if (in_array($toUid, $activeChatUserIds)) {
-//                                    return [$resCode, $resMessage, $apiResponse];
-//                                } else {
-//                                    throw new ImException("您需要进行实名认证或等级≥【6级】才可以主动发起聊天",5);
-//                                }
-//                            } else {
-//                                $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            }
-//                        } else {
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        }
-//                    }
-//                } else {
-//                    if ($userModel->lvDengji < 2) { //10
-//                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                        if (count($activeChatUserIds) >= 10) {
-//                            if (in_array($toUid, $activeChatUserIds)) {
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            } else {
-//                                throw new ImException("等级达到【2级】，解锁更多私聊机会",6);
-//                            }
-//                        } else {
-//                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        }
-//                    } elseif ($userModel->lvDengji >= 2 && $userModel->lvDengji <= 5) { //11
-//                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                        if (count($activeChatUserIds) >= 11) {
-//                            if (in_array($toUid, $activeChatUserIds)) {
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            } else {
-//                                throw new ImException("等级达到【6级】，解锁更多私聊机会",7);
-//                            }
-//                        } else {
-//                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        }
-//                    } elseif ($userModel->lvDengji >= 6 && $userModel->lvDengji <= 10) { //14
-//                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
-//                        if (count($activeChatUserIds) >= 14) {
-//                            if (in_array($toUid, $activeChatUserIds)) {
-//                                return [$resCode, $resMessage, $apiResponse];
-//                            } else {
-//                                throw new ImException("等级达到【11级】，解锁畅聊模式",8);
-//                            }
-//                        } else {
-//                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
-//                            return [$resCode, $resMessage, $apiResponse];
-//                        }
-//                    } else {
-//                        return [$resCode, $resMessage, $apiResponse];
-//                    }
-//                }
+            $triggerMode = ImCheckMessageModelDao::getInstance()->getTriggerMode($fromUid, $toUid);
+            //获取被私聊对象角色（0用户 / 1主播）
+            $toUserRole = MemberSocityModelDao::getInstance()->getUserRole($toUid);
+            if ($triggerMode == 1) {
+                if ($toUserRole == 0) {
+                    if ($userModel->attestation == 1) {
+                        return [$resCode, $resMessage, $apiResponse];
+                    } else {
+                        //判断用户是否充值
+                        $bean = BeanModelDao::getInstance()->loadBean($fromUid);
+                        if ($bean->total > 0) {
+                            return [$resCode, $resMessage, $apiResponse];
+                        } else {
+                            $replyUserIds = $this->getReplyUserIds($fromUid, $toUserRole);
+                            if (count($replyUserIds) >= 5) {
+                                if (in_array($toUid, $replyUserIds)) {
+                                    return [$resCode, $resMessage, $apiResponse];
+                                } else {
+                                    throw new ImException("您需要进行实名认证或等级≥【6级】才可以发送聊天",9);
+                                }
+                            } else{
+                                $this->addReplyUserId($fromUid, $toUid, $toUserRole);
+                                return [$resCode, $resMessage, $apiResponse];
+                            }
+                        }
+                    }
+                } else {
+                    return [$resCode, $resMessage, $apiResponse];
+                }
+            } else {
+                if ($toUserRole == 0) {
+                    if ($userModel->attestation == 1) {
+                        $redis = RedisCommon::getInstance()->getRedis();
+                        $isExists = $redis->hExists('userinfo_'. $fromUid, 'auth_deviceId');
+                        if (!$isExists) {
+                            return [$resCode, $resMessage, $apiResponse];
+                        } else {
+                            if ($deviceId == $redis->hGet('userinfo_' . $fromUid,'auth_deviceId')) {
+                                return [$resCode, $resMessage, $apiResponse];
+                            } else {
+                                if ($userModel->lvDengji < 2) {
+                                    throw new ImException("等级达到【2级】，解锁更多私聊机会",1);
+                                } else if ($userModel->lvDengji >= 2 && $userModel->lvDengji <= 5) {
+                                    $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                                    if (count($activeChatUserIds) >= 1) {
+                                        if (in_array($toUid, $activeChatUserIds)) {
+                                            return [$resCode, $resMessage, $apiResponse];
+                                        } else {
+                                            throw new ImException("等级达到【6级】，解锁更多私聊机会",2);
+                                        }
+                                    } else {
+                                        $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                                        return [$resCode, $resMessage, $apiResponse];
+                                    }
+                                } else if ($userModel->lvDengji >= 6 && $userModel->lvDengji <= 10) {
+                                    $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                                    if (count($activeChatUserIds) >= 3) {
+                                        if (in_array($toUid, $activeChatUserIds)) {
+                                            return [$resCode, $resMessage, $apiResponse];
+                                        } else {
+                                            throw new ImException("等级达到【11级】，解锁更多私聊机会",3);
+                                        }
+                                    } else {
+                                        $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                                        return [$resCode, $resMessage, $apiResponse];
+                                    }
+                                } else {
+                                    return [$resCode, $resMessage, $apiResponse];
+                                }
+                            }
+                        }
+                    } else {
+                        if ($userModel->lvDengji < 2) {
+                            throw new ImException("您需要进行实名认证或等级≥【2级】才可以主动发起聊天",4);
+                        } elseif ($userModel->lvDengji >=2 && $userModel->lvDengji <= 5) {
+                            $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                            if (count($activeChatUserIds) >= 3) {
+                                if (in_array($toUid, $activeChatUserIds)) {
+                                    return [$resCode, $resMessage, $apiResponse];
+                                } else {
+                                    throw new ImException("您需要进行实名认证或等级≥【6级】才可以主动发起聊天",5);
+                                }
+                            } else {
+                                $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                                return [$resCode, $resMessage, $apiResponse];
+                            }
+                        } else {
+                            return [$resCode, $resMessage, $apiResponse];
+                        }
+                    }
+                } else {
+                    if ($userModel->lvDengji < 2) { //10
+                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                        if (count($activeChatUserIds) >= 10) {
+                            if (in_array($toUid, $activeChatUserIds)) {
+                                return [$resCode, $resMessage, $apiResponse];
+                            } else {
+                                throw new ImException("等级达到【2级】，解锁更多私聊机会",6);
+                            }
+                        } else {
+                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                            return [$resCode, $resMessage, $apiResponse];
+                        }
+                    } elseif ($userModel->lvDengji >= 2 && $userModel->lvDengji <= 5) { //11
+                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                        if (count($activeChatUserIds) >= 11) {
+                            if (in_array($toUid, $activeChatUserIds)) {
+                                return [$resCode, $resMessage, $apiResponse];
+                            } else {
+                                throw new ImException("等级达到【6级】，解锁更多私聊机会",7);
+                            }
+                        } else {
+                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                            return [$resCode, $resMessage, $apiResponse];
+                        }
+                    } elseif ($userModel->lvDengji >= 6 && $userModel->lvDengji <= 10) { //14
+                        $activeChatUserIds = $this->getActiveChatUserIds($fromUid, $toUserRole);
+                        if (count($activeChatUserIds) >= 14) {
+                            if (in_array($toUid, $activeChatUserIds)) {
+                                return [$resCode, $resMessage, $apiResponse];
+                            } else {
+                                throw new ImException("等级达到【11级】，解锁畅聊模式",8);
+                            }
+                        } else {
+                            $this->addActiveChatUserId($fromUid, $toUid, $toUserRole);
+                            return [$resCode, $resMessage, $apiResponse];
+                        }
+                    } else {
+                        return [$resCode, $resMessage, $apiResponse];
+                    }
+                }
+            }
         } catch (FQException $e) {
             return [$e->getCode(), $e->getMessage(), $e->getMessage()];
         } catch (ImException $e) {
@@ -291,13 +292,13 @@ class ImService
                 return true;
             }
             $sendMsg = false;
-            if ($channel === 'appStore' && version_compare($version, '2.9.3', '<=')) {
-                $sendMsg = true;
-            }
-
-            if ($channel !== 'appStore' && version_compare($version, '3.2.7', '<=')) {
-                $sendMsg = true;
-            }
+//            if ($channel === 'appStore' && version_compare($version, '2.9.3', '<=')) {
+//                $sendMsg = true;
+//            }
+//
+//            if ($channel !== 'appStore' && version_compare($version, '3.2.7', '<=')) {
+//                $sendMsg = true;
+//            }
 
             if ($sendMsg) {
                 $strdate = date("Ymd");

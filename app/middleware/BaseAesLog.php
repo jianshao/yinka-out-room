@@ -178,15 +178,16 @@ class BaseAesLog
 //        $this->requestHash = generateToken("requestHash");
         $requestHeaders = $this->loadRequestHeader($request);
         $params = $this->getOriginParam($request);
+        $this->WriteBeforeParam($request->url(), $params);
         $this->setParam($request, $params);
         $this->setHeader($request, $params);
-        if ($requestHeaders->encrypt !== "false") {
-            throw new FQException("未知错误11001", 1);
-        }
+//        if ($requestHeaders->encrypt !== "false") {
+//            throw new FQException("未知错误11001", 1);
+//        }
 
         $response = $next($request);
 //        $this->WriteAfterResponse($response->getContent());
-        $this->WriteRunTime();
+//        $this->WriteRunTime();
         return $response;
     }
 

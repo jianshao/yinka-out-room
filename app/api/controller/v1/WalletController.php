@@ -126,7 +126,7 @@ class WalletController extends BaseController
     {
         $exchangeBean = intval(Request::param('exchangebean'));
         if (!is_integer($exchangeBean) || $exchangeBean < 1) {
-            return rjson([], 500, '音豆数量输入错误');
+            return rjson([], 500, 'LB数量输入错误');
         }
         $userId = $this->headUid;
         try {

@@ -4,18 +4,24 @@
 namespace app\service;
 
 
+//use app\domain\exceptions\FQException;
+//use app\domain\pay\ProductSystem;
+//use app\domain\vip\constant\VipConstant;
+//use app\domain\vip\service\VipService;
+//use app\domain\thirdpay\chinaums\PayConstant;
+//use app\domain\thirdpay\service\ChinaumsPayService;
+//use app\domain\thirdpay\service\WeChatService;
+//use app\utils\ArrayUtil;
+//use think\facade\Log;
+//use Yansongda\Pay\Pay;
+//use think\facade\View;
+//require_once "../app/common/phpqrcode.php";
+
+use app\common\RedisCommon;
 use app\domain\exceptions\FQException;
-use app\domain\pay\ProductSystem;
-use app\domain\vip\constant\VipConstant;
-use app\domain\vip\service\VipService;
-use app\domain\thirdpay\chinaums\PayConstant;
-use app\domain\thirdpay\service\ChinaumsPayService;
-use app\domain\thirdpay\service\WeChatService;
+use app\domain\pay\channel\PayConstant;
 use app\utils\ArrayUtil;
 use think\facade\Log;
-use Yansongda\Pay\Pay;
-use think\facade\View;
-require_once "../app/common/phpqrcode.php";
 
 
 class PayService
@@ -29,8 +35,94 @@ class PayService
         return self::$instance;
     }
 
-    public function pay($order, $config, $isRedPackets=false, $code=false) {
+    /**
+     * 支付渠道
+     * @var array[]
+     */
+    protected $channelMap = [
+        \app\domain\pay\channel\PayConstant::APP_ALIPAY_CHANNEL => [  // app内支付宝支付（原生）
+            'class' => \app\domain\pay\channel\AppAlipay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::WEB_ALIPAY_CHANNEL => [ // 支付宝网页支付（原生）
+            'class' => \app\domain\pay\channel\WebAlipay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::APP_WECHAT_CHANNEL => [ // app内微信支付 （原生）
+            'class' => \app\domain\pay\channel\AppWechatPay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::WECHAT_GZH_CHANNEL => [ // 原生公众号
+            'class' => \app\domain\pay\channel\WechatOpenPay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::WEB_WECHAT_CHANNEL => [ // 微信web支付
+            'class' => \app\domain\pay\channel\WebWechatPay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::WECHAT_CODE_CHANNEL => [  // 微信扫码支付
+            'class' => \app\domain\pay\channel\WechatCodePay::class,
+            'method' => 'pay'
+        ],
+        PayConstant::H5_ALIPAY_CHANNEL => [  // 支付宝手机网页支付
+            'class' => \app\domain\pay\channel\AlipayH5::class,
+            'method' => 'pay'
+        ],
+        PayConstant::SHENG_WECHAT_APPLET_CHANNEL => [ // 微信小程序-盛付通
+            'class' => \app\domain\pay\channel\ShengPay::class,
+            'method' => 'wxAppletPay'
+        ],
+        PayConstant::SHENG_WECHAT_GZH_CHANNEL => [ // 微信公众号-盛付通
+            'class' => \app\domain\pay\channel\ShengPay::class,
+            'method' => 'wxGzhPay'
+        ],
+        PayConstant::SHENG_WECHAT_SCAN_CHANNEL => [ // 微信扫码-盛付通
+            'class' => \app\domain\pay\channel\ShengPay::class,
+            'method' => 'wxScanPay'
+        ],
+        PayConstant::DIN_WECHAT_H5_CHANNEL => [ // 智付-微信H5
+            'class' => \app\domain\pay\channel\DinPay::class,
+            'method' => 'wxH5Pay'
+        ],
+        PayConstant::DIN_ALI_H5_CHANNEL => [ // 智付-支付宝H5
+            'class' => \app\domain\pay\channel\DinPay::class,
+            'method' => 'aliH5Pay'
+        ],
+    ];
+
+    /**
+     * 支付
+     * @param $order
+     * @param $config
+     * @param false $isRedPackets 是否是红包
+     * @param false $code code码
+     * @return false|mixed
+     * @throws FQException
+     */
+    public function pay($order, $config, $isRedPackets = false, $code = false)
+    {
+        Log::channel(['pay', 'file'])->info(sprintf('PayService pay order:%s config:%s isRedPackets:%s code:%s',
+            $order->orderId, $config, $isRedPackets, $code));
+        $channelInfo = $this->channelMap[$order->payChannel] ?? [];
+        if (empty($channelInfo)) {
+            throw new FQException('充值渠道错误', 500);
+        }
+        $class = ArrayUtil::safeGet($channelInfo, 'class');
+        $method = ArrayUtil::safeGet($channelInfo, 'method');
+        try {
+            $app = new $class($config, $code);
+            return call_user_func([$app, $method], $order, $isRedPackets);
+        } catch (\Exception $e) {
+            $errMsg = sprintf("PayService pay order:%s code:%s er_code:%s msg:%s file:%s line:%s trance:%s",
+                $order->orderId, $code, $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+            Log::channel(['pay', 'file'])->error($errMsg);
+            throw new FQException('下单失败,请重试', 500);
+        }
+    }
+
+    public function pay1($order, $config, $isRedPackets=false, $code=false) {
         $time_expire = config('config.orderExpire');
+        $paySubject = config('config.pay_subject');
         $time = time();
         $minute = intval($time_expire / 60);
         switch ($order->payChannel) {
@@ -42,7 +134,7 @@ class PayService
                 $order = [
                     'out_trade_no' => $order->orderId,
                     'total_amount' => $order->rmb,
-                    'subject' => '音咖',
+                    'subject' => $paySubject,
                     'timeout_express' => $minute.'m'
                 ];
                 return $this->webAlipay($order);
@@ -51,7 +143,7 @@ class PayService
                 $payOrder = [
                     'out_trade_no' => $order->orderId,
                     'total_fee' => $order->rmb * 100,
-                    'body' => '音咖',
+                    'body' => $paySubject,
                     'time_expire' => date('YmdHis', $time + $time_expire),
                 ];
                 $result = $this->appWechatPay($payOrder, $config, $isRedPackets);
@@ -62,7 +154,7 @@ class PayService
                 $order = [
                     'out_trade_no' => $order->orderId,
                     'total_fee' => $order->rmb * 100,
-                    'body' => '音咖',
+                    'body' => $paySubject,
                     'time_expire' => date('YmdHis', $time + $time_expire),
                 ];
                 return $this->webWechatPay($order);
@@ -71,11 +163,12 @@ class PayService
                 $order = [
                     'out_trade_no' => $order->orderId,
                     'total_fee'      => $order->rmb * 100,
-                    'body' => '音咖',
+                    'body' => $paySubject,
                     'time_expire' => date('YmdHis', $time + $time_expire),
                 ];
                 $result = $this->WechatCode($order);
                 $url = $result->code_url;
+                Log::info(sprintf('PayService::15 url=%s',$url));
                 return \QRcode::png($url);
 
                 break;
@@ -83,7 +176,7 @@ class PayService
                 $order = [
                     'out_trade_no' => $order->orderId,
                     'total_amount' => $order->rmb,
-                    'subject' => '音咖',
+                    'subject' => $paySubject,
                     'timeout_express' => $minute.'m'
                 ];
                 return $this->AlipayH5($order);
@@ -125,7 +218,7 @@ class PayService
         $payOrder = [
             'out_trade_no' => $order->orderId,
             'total_amount' => $order->rmb,
-            'subject' => '音咖',
+            'subject' => config('config.pay_subject'),
             'timeout_express' => $minute . 'm'
         ];
         // 自动续费参数
@@ -139,7 +232,7 @@ class PayService
             $payOrder = [
                 'out_trade_no' => $order->orderId,
                 'total_amount' => $order->rmb,
-                'subject' => '音咖',
+                'subject' => config('config.pay_subject'),
                 'timeout_express' => $minute . 'm',
                 'product_code' => 'CYCLE_PAY_AUTH',
                 'agreement_sign_params' => [
@@ -177,7 +270,7 @@ class PayService
         $payOrder = [
             'order_id' => $order->orderId,
             'totalAmount' => $order->rmb * 100,
-            'orderDesc' => '音咖',
+            'orderDesc' => config('config.pay_subject'),
             'expireTime' => $expireTime,
         ];
         if ($code) {
@@ -292,7 +385,7 @@ class PayService
 //                $order = [
 //                    'out_trade_no' => $order->orderId,
 //                    'total_amount' => $order->rmb * 100,
-//                    'subject' => '音咖',
+//                    'subject' => $paySubject,
 //                ];
 //                $result = $this->wxGzhPay($order, $openid);
 //                //组装页面中调起支付的参数

@@ -60,6 +60,16 @@ class FqpartyQQController extends BaseController
         return View::fetch('../view/web/fqpartyQQ/privacy.html');
     }
 
+    public function PrivacyLoveKlk()
+    {
+        return View::fetch('../view/web/fqpartyQQ/privacyKlk.html');
+    }
+
+    public function PrivacyLoveLrf()
+    {
+        return View::fetch('../view/web/fqpartyQQ/privacyLrf.html');
+    }
+
     public function RegisteredLove()
     {
         return View::fetch('../view/web/fqpartyQQ/registered.html');

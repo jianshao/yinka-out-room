@@ -1,0 +1,449 @@
+<?php
+
+/**
+ * 定时脚本任务
+ */
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$jobby = new \Jobby\Jobby();
+
+
+//示例
+//ClosureExample 任务名称 （名字必须唯一）
+//【 测试服务器中   sihai和开发执行任务名要分开设置 】
+//
+$jobby->add('shili', array(
+    'command' => 'ls',  //执行php脚本路径
+    //也可支持闭包  直接执行php代码
+    // 'closure' => function() {
+    //     echo "hahah";
+    //     return true;
+    // },
+    'schedule' => '* * * * *', //执行时间间隔 crontab时间格式。也可使用日期时间字符串'schedule' => '2017-05-03 17:15:00',
+
+    'output' => 'runtime/joblog/closure.log', //【可选】执行脚本打印日志。统一路径设置为runtime/joblog/  日志文件名自定义
+    'enabled' => false, //【可选】 这个任务是否要执行  执行参数为:true
+    'maxRuntime' => 20,//【可选】 最大执行时间  单位为:秒数
+));
+
+
+/**
+ * 【API任务】
+ * 声优晋级
+ */
+$jobby->add('shengyou', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-service/thinkshengyou',
+    'schedule' => '0 0 25-30 11 *',
+//  'schedule' => '0 0 1-4 12 *',
+
+//    'output' => 'runtime/joblog/sendmsg.log',
+    'enabled' => false,
+));
+
+
+/**
+ * 【API任务】
+ * 房间排行
+ */
+$jobby->add('fangjian', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-service/think fangjian',
+    'schedule' => '0 0 19-30 11 *',
+    //'schedule' => '0 0 1-8 12 *',
+
+//    'output' => 'runtime/joblog/sendmsg.log',
+    'enabled' => false,
+));
+
+/**
+ * 【API任务】
+ * 回帖消息
+ */
+$jobby->add('sendmsg', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-service/think sendmsg',
+    'schedule' => '* * * * *',
+
+//    'output' => 'runtime/joblog/sendmsg.log',
+    'enabled' => false,
+));
+
+/**
+ * 【API任务】
+ * 登录时间
+ */
+$jobby->add('logintime', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-service/think logintime',
+    'schedule' => '* */2 * * *',
+    'enabled' => true,
+));
+
+/**
+ * 【API任务】
+ * 周榜砸蛋礼物
+ */
+$jobby->add('egggift', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-service/think egggift',
+    'schedule' => '01 00 * * 1',
+    'enabled' => false,
+));
+
+/**
+ * 【API任务】
+ * 砸蛋送豆
+ */
+/*$jobby->add('eggcoin', array(
+    'command' => '/usr/local/php/bin/php /www/wwwroot/like-php-servicemaster/Muayy/mua/think eggcoin',
+    'schedule' => '02 00 * * 1',
+    'enabled' => true,
+));
+*/
+
+$jobby->add('eggcoin1cache', array(
+    'command' => "curl 'http://glht.57xun.com/api/v1/egglistnocache?action=BreakEgg1&week=0'",
+    'schedule' => '*/4 * * * *',
+    'enabled' => false,
+));
+
+$jobby->add('eggcoini0cache', array(
+    'command' => "curl 'http://glht.57xun.com/api/v1/egglistnocache?action=BreakEgg0&week=0'",
+    'schedule' => '*/4 * * * *',
+    'enabled' => false,
+));
+
+$jobby->add('bill', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think bill",
+    'schedule' => '0 0 * * *',
+    'enabled' => false,
+));
+$jobby->add('billfull', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think billfull",
+    'schedule' => '0 0 * * *',
+    'output' => 'runtime/joblog/billfull.log',
+    'enabled' => true,
+));
+
+$jobby->add('Eggrandomj', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think Eggrandomj",
+    'schedule' => '* * * * *',
+    'enabled' => false,
+));
+
+$jobby->add('Eggrandomy', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think Eggrandomy",
+    'schedule' => '* * * * *',
+    'enabled' => false,
+));
+
+//执行首页房间用户礼物热度值方法
+$jobby->add('RoomReduCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think RoomReduCommand",
+    'schedule' => '*/5 * * * *',
+    'output' => 'runtime/joblog/roomredu.log',
+    'enabled' => true,
+));
+
+//执行派对房间用户礼物热度值方法
+$jobby->add('GiftReduCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think GiftReduCommand",
+    'schedule' => '* * * * *',
+    'output' => 'runtime/joblog/giftRedu.log',
+    'enabled' => true,
+));
+//拉黑说禁言方法
+$jobby->add('RoomBlackCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think RoomBlackCommand",
+    'schedule' => '* * * * *',
+    'output' => 'runtime/joblog/roomBlack.log',
+    'enabled' => true,
+));
+
+$jobby->add('PropSetCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think PropSetCommand",
+    'schedule' => '*/15 * * * *',
+    'output' => 'runtime/joblog/propSet.log',
+    'enabled' => true,
+));
+
+//福星榜第一名送头像框
+$jobby->add('fuxingCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think fuxingCommand",
+    'schedule' => '02 00 * * *',
+    'output' => 'runtime/joblog/fuxing.log',
+    'enabled' => true,
+));
+
+//执行会员过期
+$jobby->add('UninstallVipCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UninstallVipCommand",
+    'schedule' => '0 1 * * *',
+    'output' => 'runtime/joblog/uninstallvip.log',
+    'enabled' => true,
+));
+
+
+//删除宝箱个人缓存
+$jobby->add('DelredisCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think DelredisCommand",
+    'schedule' => '59 4 23 * *',
+    'output' => 'runtime/joblog/delrediscommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('SetGiftStartCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think SetGiftStartCommand",
+    'schedule' => '0 0 * * 1',
+    'output' => 'runtime/joblog/giftstartcommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallOneCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallOneCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecallonecommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallTwoCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallTwoCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecalltwocommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallFiveFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallFiveFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecallfivecommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallTenFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallTenFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecalltencommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallFifteenFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallFifteenFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecallfifteencommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallTwentyFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallTwentyFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecalltwentycommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallTwentyFiveFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallTwentyFiveFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecalltwentyfivecommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserReCallThirtyFreeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserReCallThirtyFreeCommand",
+    'schedule' => '00 16 * * *',
+    'output' => 'runtime/joblog/userrecallthirtycommand *.log',
+    'enabled' => true,
+));
+
+$jobby->add('DukeLevelCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think DukeLevelCommand",
+    'schedule' => '*/5 0 * * *',
+    'output' => 'runtime/joblog/dukelevel.log',
+    'enabled' => true,
+));
+
+$jobby->add('DukeNoticeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think DukeNoticeCommand",
+    'schedule' => '30 21 * * *',
+    'output' => 'runtime/joblog/dukenotice.log',
+    'enabled' => true,
+));
+
+$jobby->add('NewYearPartitionCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think  NewYearPartitionCommand",
+    'schedule' => '0 0 * * *',
+    'output' => 'runtime/joblog/newyearpartition.log',
+    'enabled' => false,
+));
+
+$jobby->add('UpdatePropStatusCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think  UpdatePropStatusCommand",
+    'schedule' => '*/5 * * * *',
+    'output' => 'runtime/joblog/UpdatePropStatusCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('LuckStarPartitionCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think  LuckStarPartitionCommand",
+    'schedule' => '0 0 * * *',
+    'output' => 'runtime/joblog/luckstarpartition.log',
+    'enabled' => true,
+));
+
+$jobby->add('EventYearPartitionCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think  EventYearPartitionCommand",
+    'schedule' => '0 0 * * *',
+    'output' => 'runtime/joblog/eventyearpartition.log',
+    'enabled' => false,
+));
+
+$jobby->add('UserOnlineKickCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserOnlineKickCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/useronlinekick.log',
+    'enabled' => true,
+));
+
+$jobby->add('ValentinesDayPartitionCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think ValentinesDayPartitionCommand",
+    'schedule' => '0 0 * * *',
+    'output' => 'runtime/joblog/useronlinekick.log',
+    'enabled' => false,
+));
+
+$jobby->add('ThreeLootRefundCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think ThreeLootRefundCommand",
+    'schedule' => '*/10 * * * *',
+    'output' => 'runtime/joblog/threelootrefund.log',
+    'enabled' => true,
+));
+
+$jobby->add('ThreeLootGetPoolTypeCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think ThreeLootGetPoolTypeCommand",
+    'schedule' => '*/10 * * * *',
+    'output' => 'runtime/joblog/threelootgetpooltype.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserBucketCommandMan', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserBucketCommand man",
+    'schedule' => '*/3 * * * *',
+    'output' => 'runtime/joblog/userBucketMan.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserBucketCommandWoman', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserBucketCommand woman",
+    'schedule' => '*/3 * * * *',
+    'output' => 'runtime/joblog/userBucketWoman.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserBucketCommandAll', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserBucketCommand all",
+    'schedule' => '*/4 * * * *',
+    'output' => 'runtime/joblog/userBucketAll.log',
+    'enabled' => true,
+));
+
+$jobby->add('ConfessionLovePartitionCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think ConfessionLovePartitionCommand",
+    'schedule' => '* * * * *',
+    'output' => 'runtime/joblog/lovepartition.log',
+    'enabled' => false,
+));
+
+$jobby->add('GuildRoomCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think GuildRoomCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/guildRoomCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('PersonRoomCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think PersonRoomCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/personRoomCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('DeductRoomHotCommandGuild', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think DeductRoomHotCommand entry",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/deductRoomHotCommandGuild.log',
+    'enabled' => true,
+));
+
+$jobby->add('DeductRoomHotCommandPerson', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think DeductRoomHotCommand entryPerson",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/deductRoomHotCommandPerson.log',
+    'enabled' => true,
+));
+
+$jobby->add('AsoCallBackCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think AsoCallBackCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/AsoCallBackCommand.log',
+    'enabled' => false,
+));
+
+$jobby->add('MuaRoomCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think MuaRoomCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/MuaRoomCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('MuaRoomKingKongCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think MuaRoomKingKongCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/MuaRoomKingKongCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('MuaRoomDataRefreshCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think MuaRoomDataRefreshCommand",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/MuaRoomDataRefreshCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('GenerateNicknameCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think GenerateNicknameCommand",
+    'schedule' => '25 0 * * *',
+    'output' => 'runtime/joblog/GenerateNicknameCommand.log',
+    'enabled' => true,
+));
+
+$jobby->add('UserCancellationCheckCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think UserCancellationCheckCommand",
+    'schedule' => '26 0 * * *',
+    'output' => 'runtime/joblog/UserCancellationCheckCommand.log',
+    'enabled' => true,
+));
+
+
+$jobby->add('RecommendRoomCommandhomeHotHandler', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think RecommendRoomCommand homeHotHandler",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/RecommendRoomCommandhomeHotHandler.log',
+    'enabled' => true,
+));
+
+$jobby->add('RecommendRoomCommandrecreationHotHandler', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think RecommendRoomCommand recreationHotHandler",
+    'schedule' => '*/1 * * * *',
+    'output' => 'runtime/joblog/RecommendRoomCommandrecreationHotHandler.log',
+    'enabled' => true,
+));
+
+$jobby->add('CreateUserAssetLogCommand', array(
+    'command' => "/usr/local/php/bin/php /www/wwwroot/like-php-service/think CreateUserAssetLogCommand",
+    'schedule' => '0 3 * * *',
+    'output' => 'runtime/joblog/CreateUserAssetLogCommand.log',
+    'enabled' => true,
+));
+
+
+$jobby->run();
+
+
+

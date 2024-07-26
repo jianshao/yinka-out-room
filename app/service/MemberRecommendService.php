@@ -234,24 +234,24 @@ class MemberRecommendService
 
         //1级女性且无工会 || 1级女性且无实名
         $userInfo = UserModelCache::getInstance()->getUserInfo($userId);
-        if (!empty($userInfo)) {
-            if (($userInfo->sex == 2 && $userInfo->guildId == 0 && $userInfo->lvDengji == 1) && $userInfo->attestation == 0) {
-                return rjson();
-            }
-        }
+//        if (!empty($userInfo)) {
+//            if (($userInfo->sex == 2 && $userInfo->guildId == 0 && $userInfo->lvDengji == 1) && $userInfo->attestation == 0) {
+//                return true;
+//            }
+//        }
 
         if ($greetType == 1) {
             //获取用户剩余打招呼次数
-            $greetTimes = $this->incrGreetTimes($userId);
-            if ($greetTimes > $this->MAX_GREET_TIMES) {
-                throw new FQException('今日次数已用完，去其他地方看看吧', 500);
-            }
+//            $greetTimes = $this->incrGreetTimes($userId);
+//            if ($greetTimes > $this->MAX_GREET_TIMES) {
+//                throw new FQException('今日次数已用完，去其他地方看看吧', 500);
+//            }
 
             $userLastInfo = UserLastInfoDao::getInstance()->getUserInfo($userId);
             if (!empty($userLastInfo)) {
                 if ($userLastInfo['channel'] == 'appStore' && in_array($userLastInfo['device'], $this->unSendMsgModel)) {
                     Log::info('ios un send msg');
-                    return rjson();
+                    return true;
                 }
             }
 
@@ -267,7 +267,7 @@ class MemberRecommendService
 //                event(new UserGreetEvent($userId, $value, $timestamp));
             }
         }
-        return rjson();
+        return true;
     }
 
     private function greetToUser($userId, $toUserId, $greetMessage)

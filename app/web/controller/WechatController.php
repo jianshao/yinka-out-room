@@ -14,8 +14,9 @@ class WechatController extends BaseController
     private $toUsername;
     private $times;
     private $keyword;
-    private $app_id = 'wx3b58662042cff217';
-    private $app_secret = '2ee536a95a37647b6a5eb5b3b319e7c8';
+    private $app_id = 'wx34d93ac79d4e3d72';
+    private $app_secret = '76fc32408753c833bf065ef3bb738341';
+    // EncodingAESKey : vg87em7xOYmGJky9KbMGQQNxhJunvcGrF2X9RbtmhaT
     public function getAccessToken() {
         $access_token = $this->get_access_token();
         echo $access_token;die;
@@ -54,7 +55,7 @@ class WechatController extends BaseController
                 array(
                     'name'=>urlencode("下载"),
                     'type'=>'view',
-                    'url'=>'https://fqparty.com/gw/#/download'
+                    'url'=>'http://gw.jiawei8.cn/#/'
                 ),
                 array(
                     'name' => urlencode("产品相关"),
@@ -62,13 +63,13 @@ class WechatController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('公司官网'),
-                            'url' => 'https://fqparty.com/gw/#/download'
+                            'url' => 'http://gw.jiawei8.cn/#/'
                         ),
-                        array(
-                            'type' => 'view',
-                            'name' => urlencode('公会招募'),
-                            'url' => 'https://image2.fqparty.com/resource/html/gonghuizhaomu.html'
-                        )
+//                        array(
+//                            'type' => 'view',
+//                            'name' => urlencode('公会招募'),
+//                            'url' => 'https://image2.fqparty.com/resource/html/gonghuizhaomu.html'
+//                        )
                     )
                 ),
                 array(
@@ -77,13 +78,13 @@ class WechatController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('充值'),
-                            'url' => 'https://fqparty.com/gw/#/topup'
+                            'url' => 'http://gw.jiawei8.cn/#/topup'
                         ),
-                        array(
-                            'type' => 'view',
-                            'name' => urlencode('提现'),
-                            'url' => 'https://newmapi2.fqparty.com/tixian/#/login'
-                        )
+//                        array(
+//                            'type' => 'view',
+//                            'name' => urlencode('提现'),
+//                            'url' => 'https://newmapi2.fqparty.com/tixian/#/login'
+//                        )
                     )
                 )
             )
@@ -301,7 +302,7 @@ class WechatController extends BaseController
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
 
-        $token = 'fqparty';
+        $token = 'like';
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr);
         $tmpStr = implode( $tmpArr );

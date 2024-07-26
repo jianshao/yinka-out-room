@@ -37,7 +37,9 @@
     "alipaysdk/easysdk": "^2.0",
     "rmccue/requests": "^1.7",
     "alibabacloud/dypnsapi-20170525": "1.0.1",
-    "elasticsearch/elasticsearch": "v7.16.0"
+    "elasticsearch/elasticsearch": "v7.16.0",
+    "tencentcloud/tencentcloud-sdk-php": "^3.0",
+    "qcloud/cos-sdk-v5": "^2.6"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2"

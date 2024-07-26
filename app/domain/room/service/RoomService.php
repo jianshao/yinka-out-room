@@ -109,7 +109,7 @@ class RoomService
 
         $roomType = RoomTypeModelDao::getInstance()->loadRoomType($roomType);
 
-        if ($roomType == null || $roomType->pid == 100) {
+        if ($roomType == null) {
             throw new FQException('该类型不存在', 500);
         }
 
@@ -1146,6 +1146,8 @@ class RoomService
         if (!$updateRe) {
             return false;
         }
+        RoomInfoMapDao::getInstance()->updateInsertGuildId($guildId, $roomId);
+
 //        初始化房间热度值
         RoomHotValueDao::getInstance()->setFieldValue($roomId, 'orignal', 1);
 
@@ -1215,6 +1217,8 @@ class RoomService
         if (!$updateRe) {
             return false;
         }
+        RoomInfoMapDao::getInstance()->updateInsertGuildId(0, $roomId);
+
         $profile['room_type'] = $data['room_type'];
         $profile['background_image'] = $data['background_image'];
         event(new RoomUpdateEvent($roomModel->userId, $roomId, $profile, time()));

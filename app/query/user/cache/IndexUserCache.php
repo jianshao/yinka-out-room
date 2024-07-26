@@ -59,12 +59,12 @@ class IndexUserCache
 //        初始化
         $pubilcKey = $this->getPublicBuckedSexKey();
         $publicData = $this->redis->lRange($pubilcKey, 0, -1);
-        foreach ($publicData as $uid) {
+        foreach ($publicData as $key => $uid) {
             if ($uid == $userId) {
-                continue;
+                unset($publicData[$key]);
             }
-            $this->redis->rPush($privateKey, $uid);
         }
+        $this->redis->rPush($privateKey, ...$publicData);
         $this->redis->expire($privateKey, 180);
         return true;
     }

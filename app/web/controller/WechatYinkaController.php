@@ -55,7 +55,7 @@ class WechatYinkaController extends BaseController
                 array(
                     'name'=>urlencode("下载"),
                     'type'=>'view',
-                    'url'=>'http://www.ddyuyin.com/#/download'
+                    'url'=>'http://php-api.jiawei6.cn/#/download'
                 ),
                 array(
                     'name' => urlencode("产品相关"),
@@ -63,7 +63,7 @@ class WechatYinkaController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('公司官网'),
-                            'url' => 'http://www.ddyuyin.com/#/'
+                            'url' => 'http://php-api.jiawei6.cn/#/'
                         ),
 //                        array(
 //                            'type' => 'view',
@@ -83,12 +83,12 @@ class WechatYinkaController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('充值'),
-                            'url' => 'http://www.ddyuyin.com/#/topup'
+                            'url' => 'http://php-api.jiawei6.cn/#/topup'
                         ),
                         array(
                             'type' => 'view',
                             'name' => urlencode('提现'),
-                            'url' => 'http://www.ddyuyin.com/tixian/#/login'
+                            'url' => 'http://php-api.jiawei6.cn/tixian/#/login'
                         )
                     )
                 )
@@ -117,7 +117,7 @@ class WechatYinkaController extends BaseController
                 array(
                     'name'=>urlencode("下载"),
                     'type'=>'view',
-                    'url'=>'http://www.ddyuyin.com/#/download'
+                    'url'=>'http://php-api.jiawei6.cn/#/download'
                 ),
                 array(
                     'name' => urlencode("产品相关"),
@@ -125,7 +125,7 @@ class WechatYinkaController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('公司官网'),
-                            'url' => 'http://www.ddyuyin.com/#/'
+                            'url' => 'http://php-api.jiawei6.cn/#/'
                         ),
 //                        array(
 //                            'type' => 'view',
@@ -142,7 +142,7 @@ class WechatYinkaController extends BaseController
                 array(
                     'name' => urlencode("提现"),
                     'type' => 'view',
-                    'url' => 'http://www.ddyuyin.com/tixian/#/login'
+                    'url' => 'http://php-api.jiawei6.cn/tixian/#/login'
                 ),
             ),
             'matchrule' => array(
@@ -173,7 +173,7 @@ class WechatYinkaController extends BaseController
                 array(
                     'name'=>urlencode("下载"),
                     'type'=>'view',
-                    'url'=>'http://www.ddyuyin.com/#/download'
+                    'url'=>'http://php-api.jiawei6.cn/#/download'
                 ),
                 array(
                     'name' => urlencode("产品相关"),
@@ -181,7 +181,7 @@ class WechatYinkaController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('公司官网'),
-                            'url' => 'http://www.ddyuyin.com/#/'
+                            'url' => 'http://php-api.jiawei6.cn/#/'
                         ),
 //                        array(
 //                            'type' => 'view',
@@ -201,12 +201,12 @@ class WechatYinkaController extends BaseController
                         array(
                             'type' => 'view',
                             'name' => urlencode('充值'),
-                            'url' => 'http://www.ddyuyin.com/#/topup'
+                            'url' => 'http://php-api.jiawei6.cn/#/topup'
                         ),
                         array(
                             'type' => 'view',
                             'name' => urlencode('提现'),
-                            'url' => 'http://www.ddyuyin.com/tixian/#/login'
+                            'url' => 'http://php-api.jiawei6.cn/tixian/#/login'
                         )
                     )
                 )
@@ -250,10 +250,10 @@ class WechatYinkaController extends BaseController
                     $fromUser = $postObj->ToUserName;
                     $time = time();
                     $msgType = 'text';
-                    $content = '恭喜你！成为音咖一员~
+                    $content = '恭喜你！成为like电竞一员~
 处CP交友通通都可以哦~
 各种小游戏，你画我猜 谁是卧底让您体验哦~
-欢迎关注音咖哦！
+欢迎关注like电竞哦！
 希望小番茄们继续支持我们哦~
 
 注意:苹果手机用户回复"充值"获取充值链接';
@@ -262,16 +262,16 @@ class WechatYinkaController extends BaseController
                             <FromUserName><![CDATA[%s]]></FromUserName>
                             <CreateTime>%s</CreateTime>
                             <MsgType><![CDATA[%s]]></MsgType>
-<Content>hi，小伙伴，欢迎来到音咖语音~
+<Content>hi，小伙伴，欢迎来到like电竞语音~
 非常感谢您的关注~我们将为您提供专属服务哦！
  
 ☞回复 【下载】
 恋爱交友，心动速配，总有人为你而来。
  游戏开黑，实时语音；K歌房间，想唱就唱；互动社区，美好生活，甜满你整个世界。更多玩法等你体验，赶紧下载吧~
  
-☞【&lt;a href=&quot;http://www.ddyuyin.com/#/topup&quot;&gt;官网充值&lt;/a&gt;】
-☞提现服务请点击【&lt;a href=&quot;http://www.ddyuyin.com/tixian/#/login&quot;&gt;提现&lt;/a&gt;】
-☞如有疑问请咨询音咖语音QQ客服：3425184378，我们的客服将会在第一时间为您处理，感谢您的关注~
+☞【&lt;a href=&quot;http://php-api.jiawei6.cn/#/topup&quot;&gt;官网充值&lt;/a&gt;】
+☞提现服务请点击【&lt;a href=&quot;http://php-api.jiawei6.cn/tixian/#/login&quot;&gt;提现&lt;/a&gt;】
+☞如有疑问请咨询like电竞语音QQ客服：3425184378，我们的客服将会在第一时间为您处理，感谢您的关注~
 </Content>
                             </xml>";
                     $info = sprintf($template, $toUser, $fromUser, $time, $msgType, $content);
@@ -303,12 +303,12 @@ class WechatYinkaController extends BaseController
                     {
                         case "充值";
                             $contentStr = "亲爱的小伙伴，应苹果政策要求，公众号菜单栏的iOS充值功能将暂时关闭（安卓用户不受影响），如需充值，请点击".
-                                "【<a href='http://www.ddyuyin.com/#/topup'>充值链接</a>】"."进入官网，在官网中进行充值哦~
+                                "【<a href='http://php-api.jiawei6.cn/#/topup'>充值链接</a>】"."进入官网，在官网中进行充值哦~
 如有其它充值问题，请在APP内咨询在线客服，我们将在24小时内为您解答哦~";
                             break;
                         default;
                             $contentStr = "亲爱的小伙伴，应苹果政策要求，公众号菜单栏的iOS充值功能将暂时关闭（安卓用户不受影响），如需充值，请点击".
-                                "【<a href='http://www.ddyuyin.com/#/topup'>充值链接</a>】"."进入官网，在官网中进行充值哦~
+                                "【<a href='http://php-api.jiawei6.cn/#/topup'>充值链接</a>】"."进入官网，在官网中进行充值哦~
 如有其它充值问题，请在APP内咨询在线客服，我们将在24小时内为您解答哦~";
                     }
 

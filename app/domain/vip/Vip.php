@@ -10,6 +10,7 @@ use app\domain\vip\dao\VipModelDao;
 use app\domain\vip\service\VipService;
 use app\utils\ArrayUtil;
 use app\utils\TimeUtil;
+use think\Exception;
 use think\facade\Log;
 
 class Vip
@@ -166,7 +167,7 @@ class Vip
                 } else {
                     $userAssets->add($privilegeAsset->assetId, $privilegeAsset->count, $timestamp, $biEvent);
                 }
-            } catch (FQException $e) {
+            } catch (FQException | Exception $e) {
                 Log::error(sprintf('Vip::addOrConsumeVipAssets userId=%d assetId=%s ex=%d:%s',
                     $this->getUserId(), $privilegeAsset->assetId, $e->getCode(), $e->getMessage()));
             }

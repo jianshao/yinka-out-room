@@ -17,6 +17,7 @@ use app\domain\user\model\MemberDetailAuditActionModel;
 use app\query\user\cache\UserModelCache;
 use app\query\user\service\AttentionService;
 use app\service\CommonCacheService;
+use app\service\TencentAuditService;
 use app\utils\ArrayUtil;
 use app\utils\CommonUtil;
 use app\utils\TimeUtil;
@@ -139,9 +140,12 @@ class ForumController extends ApiBaseController
             }
 
             # 1级用户或未实名用户，评论不让发
-            $userModel = UserModelCache::getInstance()->getUserInfo($this->headUid);
-            if ($userModel->lvDengji == 1 && $userModel->attestation == 0) {
-                return rjson([], 200, '评论成功');
+            $writeList = config('config.write_user_list',[]);
+            if (!in_array($this->headUid,$writeList)) {
+                $userModel = UserModelCache::getInstance()->getUserInfo($this->headUid);
+                if ($userModel->lvDengji == 1 && $userModel->attestation == 0) {
+                    return rjson([], 200, '评论成功');
+                }
             }
 
             ForumService::getInstance()->replyForum($this->headUid, $forumId, $type, $content, $replyAtuid, $replyParentId);
@@ -495,11 +499,9 @@ class ForumController extends ApiBaseController
                 }
             }
             if(!empty($voice)){
-                //todo 音频文件检测
-//                $checkStatus = ShuMeiCheck::getInstance()->aliAudioCheck($voice);
-//                if(!$checkStatus){
-//                    return rjson([], 500, "动态语音违反平台规定");
-//                }
+                if (!TencentAuditService::getInstance()->checkVoice($voice)) {
+                    throw new FQException('语音介绍违反平台规定');
+                }
             }
             ForumService::getInstance()->addForum($this->headUid, $topic, $content, $image, $voice, $forum_voice_time, $latitudes, $longitudes);
             return rjson([], 200, '发布成功');
